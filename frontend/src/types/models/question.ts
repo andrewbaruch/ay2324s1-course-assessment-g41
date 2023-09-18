@@ -1,7 +1,7 @@
-export enum QuestionDifficulty {
-  EASY = 'EASY',
-  MEDIUM = 'MEDIUM',
-  HARD = 'HARD',
+export enum QuestionComplexity {
+  EASY = 'Easy',
+  MEDIUM = 'Medium',
+  HARD = 'Hard',
 }
 
 export interface Question {
@@ -9,5 +9,5 @@ export interface Question {
   id: number;
   description: string;
   categories: string[];
-  complexity: QuestionDifficulty;
+  complexity: QuestionComplexity;
 }

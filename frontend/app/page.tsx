@@ -2,7 +2,7 @@
 "use client";
 
 import QuestionDetails from "@/components/question";
-import { QuestionDifficulty } from "@/types/models/question";
+import { QuestionComplexity } from "@/types/models/question";
 import { Box, extendTheme, Stack, Text } from "@chakra-ui/react";
 
 import { CacheProvider } from "@chakra-ui/next-js";
@@ -34,7 +34,7 @@ A row i is weaker than a row j if one of the following is true:
 The number of soldiers in row i is less than the number of soldiers in row j.
 Both rows have the same number of soldiers and i < j.
 Return the indices of the k weakest rows in the matrix ordered from weakest to strongest.`}
-      complexity={QuestionDifficulty.EASY}
+      complexity={QuestionComplexity.EASY}
       id={1}
       categories={["DFS"]}
     />
