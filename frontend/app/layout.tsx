@@ -1,4 +1,4 @@
-// app/layout.tsx
+import ThemeProvider from "./ThemeProvider";
 
 export const metadata = {
   title: "PeerPrep",
@@ -15,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }

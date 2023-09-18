@@ -3,27 +3,6 @@
 
 import QuestionDetails from "@/components/question";
 import { QuestionComplexity } from "@/types/models/question";
-import { Box, extendTheme, Stack, Text } from "@chakra-ui/react";
-
-import { CacheProvider } from "@chakra-ui/next-js";
-import { ChakraProvider } from "@chakra-ui/react";
-
-const themifyWithChakra = (
-  WrappedComponent: React.FC,
-  theme = extendTheme({})
-) => {
-  const WithTheme = (props: {}) => {
-    return (
-      <CacheProvider>
-        <ChakraProvider theme={theme}>
-          <WrappedComponent {...props} />
-        </ChakraProvider>
-      </CacheProvider>
-    );
-  };
-
-  return WithTheme;
-};
 
 const Root = () => {
   return (
@@ -41,4 +20,4 @@ Return the indices of the k weakest rows in the matrix ordered from weakest to s
   );
 };
 
-export default themifyWithChakra(Root);
+export default Root;
