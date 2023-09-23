@@ -12,7 +12,7 @@ const QuestionDetails = ({ title, complexity, description, id }: Question) => {
       >
         <Stack spacing={2}>
           <Heading fontWeight="medium" size={"lg"}>
-            {id}. {title}
+            {title}
           </Heading>
           <Badge variant="subtle" colorScheme="blue" w="fit-content">
             {complexity}
