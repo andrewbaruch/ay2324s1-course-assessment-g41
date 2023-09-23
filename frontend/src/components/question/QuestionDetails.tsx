@@ -38,12 +38,12 @@ export const QuestionDetails = ({
   return !isEdit ? (
     <Flex
       direction="column"
-      px={6}
-      py={8}
-      bgColor="white"
+      px={isPreview ? 0 : 6}
+      py={isPreview ? 0 : 8}
+      bgColor={isPreview ? "transparent" : "white"}
       borderRadius={12}
       borderColor="gray.100"
-      borderWidth={1}
+      borderWidth={isPreview ? 0 : 1}
       overflowY="auto"
       height="100%"
       minH="45vh"
@@ -59,8 +59,6 @@ export const QuestionDetails = ({
         <ReactMarkdown components={ChakraUIRenderer()} skipHtml>
           {description || ""}
         </ReactMarkdown>
-
-        {/* <Text color="muted">{description}</Text> */}
 
         <Accordion allowToggle>
           <AccordionItem>

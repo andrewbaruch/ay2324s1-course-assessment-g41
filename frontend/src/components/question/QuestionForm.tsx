@@ -59,13 +59,13 @@ export const QuestionForm = ({
         with your peers again.
       </Text>
       <Tabs variant="soft-rounded" flex={1}>
-        <TabList>
+        <TabList px={0}>
           <Tab>Input</Tab>
           <Tab>Preview</Tab>
         </TabList>
 
         <TabPanels>
-          <TabPanel>
+          <TabPanel px={0}>
             <Stack spacing={2} display="flex" px={0}>
               <FormControl>
                 <FormLabel htmlFor="title">Question Title</FormLabel>
@@ -131,7 +131,7 @@ export const QuestionForm = ({
             </Stack>
           </TabPanel>
 
-          <TabPanel>
+          <TabPanel px={0}>
             <QuestionDetails
               title={watch("title")}
               complexity={watch("complexity")}
