@@ -1,6 +1,5 @@
 import { useHeaderTab } from "@/hooks/useHeaderTabs";
 import { useQuestion } from "@/hooks/useQuestion";
-import { useQuestionList } from "@/hooks/useQuestionList";
 import { HeaderTabs } from "@/types/models/header";
 import { Question } from "@/types/models/question";
 import {
@@ -14,15 +13,14 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { BsCodeSlash, BsCodeSquare } from "react-icons/bs";
-import { QuestionForm } from "./QuestionForm";
+import { BsCodeSquare } from "react-icons/bs";
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   const { setQuestion } = useQuestion();
   const { setTab } = useHeaderTab();
 
   return (
-    <Stack>
+    <Stack spacing={4}>
       <Heading fontWeight="bold">Coding Questions</Heading>
       <Tooltip
         label="Design your own question, or save a question you encountered from a technical interview here!"
