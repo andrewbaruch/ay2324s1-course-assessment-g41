@@ -9,7 +9,7 @@ import {
 import { useHeaderTab } from "@/hooks/useHeaderTabs";
 import { useQuestion } from "@/hooks/useQuestion";
 import { useQuestionList } from "@/hooks/useQuestionList";
-import { HeaderTabs } from "@/types/models/header";
+import { HeaderTabs } from "@/types/header";
 
 const Root = () => {
   const { questions } = useQuestionList();

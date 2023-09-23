@@ -1,5 +1,5 @@
 import { atom, useAtom } from 'jotai'
-import { HeaderTabs } from "@/types/models/header";
+import { HeaderTabs } from "@/types/header";
 import { useQuestion } from './useQuestion';
 
 interface HeaderTab {

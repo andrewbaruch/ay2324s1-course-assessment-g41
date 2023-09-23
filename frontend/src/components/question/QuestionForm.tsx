@@ -52,12 +52,15 @@ export const QuestionForm = ({
       display="flex"
     >
       <Heading fontWeight="bold">Question Details</Heading>
-      <Text fontSize="lg">Add a question!</Text>
-      <Text color="gray.500">
-        You can record questions you encountered in your technical interviews.
-        By saving a question here, you can easily use the question for practice
-        with your peers again.
-      </Text>
+      {question ? null : <Text fontSize="lg">Add a question!</Text>}
+      {question ? null : (
+        <Text color="gray.500">
+          You can record questions you encountered in your technical interviews.
+          By saving a question here, you can easily use the question for
+          practice with your peers again.
+        </Text>
+      )}
+
       <Tabs variant="soft-rounded" flex={1}>
         <TabList px={0}>
           <Tab>Input</Tab>
@@ -105,10 +108,10 @@ export const QuestionForm = ({
                 <FormLabel htmlFor="title">Description</FormLabel>
                 <Textarea
                   placeholder="Describe the problem details. You may write in Markdown."
-                  size="sm"
                   focusBorderColor="gray.500"
                   defaultValue={question ? question.description : undefined}
                   {...register("description")}
+                  h="20vh"
                 />
               </FormControl>
 
