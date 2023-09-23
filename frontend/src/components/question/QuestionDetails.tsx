@@ -15,6 +15,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { QuestionForm } from "./QuestionForm";
 
 export const QuestionDetails = ({
   title,
@@ -23,8 +25,10 @@ export const QuestionDetails = ({
   id,
   categories,
 }: Question) => {
-  const { editQuestion, removeQuestion } = useQuestionList();
-  return (
+  const { removeQuestion } = useQuestionList();
+  const [isEdit, setIsEdit] = useState(false);
+
+  return !isEdit ? (
     <Flex
       direction="column"
       px={6}
@@ -62,9 +66,19 @@ export const QuestionDetails = ({
         </Accordion>
       </Stack>
       <HStack>
-        <Button>Edit</Button>
+        <Button onClick={() => setIsEdit(!isEdit)}>Edit</Button>
         <Button onClick={() => removeQuestion({ id })}>Delete</Button>
       </HStack>
     </Flex>
+  ) : (
+    <QuestionForm
+      question={{
+        title,
+        complexity,
+        description,
+        id,
+        categories,
+      }}
+    />
   );
 };

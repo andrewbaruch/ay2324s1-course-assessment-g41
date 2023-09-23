@@ -10,17 +10,21 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-import { QuestionComplexity } from "@/types/models/question";
+import { Question, QuestionComplexity } from "@/types/models/question";
 import { useForm } from "react-hook-form";
 import { useQuestionList } from "@/hooks/useQuestionList";
 
-export const QuestionForm = () => {
+export const QuestionForm = ({
+  question = null,
+}: {
+  question: Question | null;
+}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { addQuestion } = useQuestionList();
+  const { addQuestion, editQuestion } = useQuestionList();
 
   return (
     <Stack
@@ -53,6 +57,7 @@ export const QuestionForm = () => {
           rounded="md"
           focusBorderColor="gray.500"
           {...register("title")}
+          defaultValue={question ? question.title : undefined}
         />
       </FormControl>
 
@@ -67,6 +72,7 @@ export const QuestionForm = () => {
           rounded="md"
           focusBorderColor="gray.500"
           {...register("complexity")}
+          defaultValue={question ? question.complexity : undefined}
         >
           {Object.values(QuestionComplexity).map((complexity) => (
             <option>{complexity}</option>
@@ -80,6 +86,7 @@ export const QuestionForm = () => {
           placeholder="Describe the problem details."
           size="sm"
           focusBorderColor="gray.500"
+          defaultValue={question ? question.description : undefined}
           {...register("description")}
         />
       </FormControl>
@@ -94,6 +101,7 @@ export const QuestionForm = () => {
           w="full"
           rounded="md"
           focusBorderColor="gray.500"
+          defaultValue={question ? question.categories : undefined}
           {...register("categories")}
         >
           <option>DFS</option>
@@ -103,12 +111,20 @@ export const QuestionForm = () => {
       <Button
         type="submit"
         onClick={handleSubmit((data) =>
-          addQuestion({
-            categories: data.categories ? [data.categories] : [],
-            title: data.title,
-            description: data.description,
-            complexity: data.complexity,
-          })
+          question
+            ? editQuestion({
+                id: question.id,
+                categories: data.categories ? [data.categories] : [],
+                title: data.title,
+                description: data.description,
+                complexity: data.complexity,
+              })
+            : addQuestion({
+                categories: data.categories ? [data.categories] : [],
+                title: data.title,
+                description: data.description,
+                complexity: data.complexity,
+              })
         )}
         w="fit-content"
       >

@@ -23,7 +23,7 @@ const Root = () => {
       <QuestionDetails {...question} />
     )
   ) : (
-    <QuestionForm />
+    <QuestionForm question={null} />
   );
 };
 
