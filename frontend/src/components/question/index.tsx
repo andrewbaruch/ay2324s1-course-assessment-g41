@@ -1,3 +1,3 @@
-import QuestionDetails from "./QuestionDetails";
-
-export default QuestionDetails;
+export * from "./QuestionForm";
+export * from "./QuestionList";
+export * from "./QuestionDetails";

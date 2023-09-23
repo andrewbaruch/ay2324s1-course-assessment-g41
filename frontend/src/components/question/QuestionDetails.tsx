@@ -1,7 +1,12 @@
 import { Question } from "@/types/models/question";
 import { Badge, Heading, Stack, Text } from "@chakra-ui/react";
 
-const QuestionDetails = ({ title, complexity, description, id }: Question) => {
+export const QuestionDetails = ({
+  title,
+  complexity,
+  description,
+  id,
+}: Question) => {
   return (
     <Stack spacing={{ base: 8, lg: 6 }}>
       <Stack
@@ -23,5 +28,3 @@ const QuestionDetails = ({ title, complexity, description, id }: Question) => {
     </Stack>
   );
 };
-
-export default QuestionDetails;
