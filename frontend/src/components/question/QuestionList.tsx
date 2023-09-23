@@ -1,35 +1,46 @@
 import { useQuestion } from "@/hooks/useQuestion";
 import { Question } from "@/types/models/question";
-import { Badge, Box, Divider, HStack, Stack, Text } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Divider,
+  Heading,
+  HStack,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   const { setQuestion } = useQuestion();
 
   return (
-    <Stack borderWidth={1} borderRadius={4} spacing={0}>
-      {questions.map((q, index) =>
-        index !== questions.length - 1 ? (
-          <Box
-            key={`q-${index}`}
-            _hover={{ background: "gray.100", cursor: "pointer" }}
-            onClick={() => setQuestion({ ...q })}
-          >
-            <Box p={4}>
+    <Stack>
+      <Heading fontWeight="bold">Coding Questions</Heading>
+      <Stack borderWidth={1} borderRadius={4} spacing={0} background="white">
+        {questions.map((q, index) =>
+          index !== questions.length - 1 ? (
+            <Box
+              key={`q-${index}`}
+              _hover={{ background: "gray.100", cursor: "pointer" }}
+              onClick={() => setQuestion({ ...q })}
+            >
+              <Box p={4}>
+                <QuestionCard {...q} />
+              </Box>
+              <Divider />
+            </Box>
+          ) : (
+            <Box
+              p={4}
+              key={`q-${index}`}
+              _hover={{ background: "gray.100", cursor: "pointer" }}
+              onClick={() => setQuestion({ ...q })}
+            >
               <QuestionCard {...q} />
             </Box>
-            <Divider />
-          </Box>
-        ) : (
-          <Box
-            p={4}
-            key={`q-${index}`}
-            _hover={{ background: "gray.100", cursor: "pointer" }}
-            onClick={() => setQuestion({ ...q })}
-          >
-            <QuestionCard {...q} />
-          </Box>
-        )
-      )}
+          )
+        )}
+      </Stack>
     </Stack>
   );
 };

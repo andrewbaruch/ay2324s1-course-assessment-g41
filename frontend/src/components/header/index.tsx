@@ -19,8 +19,8 @@ export const Header = () => {
   const { currentTab, setTab } = useHeaderTab();
 
   return (
-    <Box w="100%" boxShadow="sm" bgColor={"gray.500"}>
-      <Container maxW="8xl" py={4} px={{ base: 4, lg: 0 }}>
+    <Box w="100%" boxShadow="sm" bgColor={"gray.500"} h="10vh">
+      <Container maxW="8xl" p={4}>
         <HStack w="full">
           <Button
             onClick={() =>

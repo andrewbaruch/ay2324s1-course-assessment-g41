@@ -11,13 +11,9 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
   return (
     <CacheProvider>
       <ChakraProvider theme={theme}>
-        <Box as="section" height="100vh" overflowY="auto">
+        <Box as="section" height="100vh" overflowY="auto" bgColor="gray.50">
           <Header />
-          <Container
-            maxW="8xl"
-            pb={{ base: 12, lg: 24 }}
-            pt={{ base: 8, lg: 12 }}
-          >
+          <Container maxW="8xl" height="90vh" p={4}>
             {children}
           </Container>
         </Box>

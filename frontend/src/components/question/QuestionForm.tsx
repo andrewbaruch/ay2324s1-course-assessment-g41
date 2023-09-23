@@ -23,7 +23,16 @@ export const QuestionForm = () => {
   const { addQuestion } = useQuestionList();
 
   return (
-    <Stack>
+    <Stack
+      px={6}
+      py={8}
+      bgColor="white"
+      borderRadius={12}
+      borderColor="gray.100"
+      borderWidth={1}
+      overflowY="auto"
+      height="100%"
+    >
       <Heading fontWeight="bold">Question Details</Heading>
 
       <Text fontSize="lg">Add a question!</Text>
