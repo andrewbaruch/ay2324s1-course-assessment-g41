@@ -1,21 +1,43 @@
+import { useHeaderTab } from "@/hooks/useHeaderTabs";
 import { useQuestion } from "@/hooks/useQuestion";
+import { useQuestionList } from "@/hooks/useQuestionList";
+import { HeaderTabs } from "@/types/models/header";
 import { Question } from "@/types/models/question";
 import {
   Badge,
   Box,
+  Button,
   Divider,
   Heading,
   HStack,
   Stack,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
+import { BsCodeSlash, BsCodeSquare } from "react-icons/bs";
+import { QuestionForm } from "./QuestionForm";
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   const { setQuestion } = useQuestion();
+  const { setTab } = useHeaderTab();
 
   return (
     <Stack>
       <Heading fontWeight="bold">Coding Questions</Heading>
+      <Tooltip
+        label="Design your own question, or save a question you encountered from a technical interview here!"
+        hasArrow
+        placement="right"
+      >
+        <Button
+          w="fit-content"
+          onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
+          leftIcon={<BsCodeSquare />}
+          size="sm"
+        >
+          Craft Question
+        </Button>
+      </Tooltip>
       <Stack borderWidth={1} borderRadius={4} spacing={0} background="white">
         {questions.map((q, index) =>
           index !== questions.length - 1 ? (

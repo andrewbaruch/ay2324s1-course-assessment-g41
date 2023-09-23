@@ -1,5 +1,6 @@
 import { atom, useAtom } from 'jotai'
 import { HeaderTabs } from "@/types/models/header";
+import { useQuestion } from './useQuestion';
 
 interface HeaderTab {
   currentTab: HeaderTabs
@@ -11,6 +12,7 @@ const headerTabAtom = atom<HeaderTab>({
 
 export const useHeaderTab = () => {
   const [tabWrapper, setTabWrapper] = useAtom(headerTabAtom)
+  const {setQuestion} = useQuestion();
 
   const setTab = (tab: HeaderTabs) => {
     setTabWrapper({
@@ -18,9 +20,15 @@ export const useHeaderTab = () => {
     })
   }
 
+  const goToBrowsePage = () => {
+    setQuestion()
+    setTab(HeaderTabs.QUESTION_LIST)
+  }
+
   return {
     currentTab: tabWrapper.currentTab,
-    setTab
+    setTab,
+    goToBrowsePage
   }
 }
 

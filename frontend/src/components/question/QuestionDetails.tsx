@@ -1,5 +1,9 @@
+import { useHeaderTab } from "@/hooks/useHeaderTabs";
 import { useQuestionList } from "@/hooks/useQuestionList";
 import { Question } from "@/types/models/question";
+import ReactMarkdown from "react-markdown";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+
 import {
   Accordion,
   AccordionButton,
@@ -13,9 +17,9 @@ import {
   Heading,
   HStack,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { BsPencilSquare, BsTrash2 } from "react-icons/bs";
 import { QuestionForm } from "./QuestionForm";
 
 export const QuestionDetails = ({
@@ -24,7 +28,10 @@ export const QuestionDetails = ({
   description,
   id,
   categories,
-}: Question) => {
+
+  isPreview = false,
+}: Question & { isPreview?: boolean }) => {
+  const { goToBrowsePage } = useHeaderTab();
   const { removeQuestion } = useQuestionList();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -39,6 +46,8 @@ export const QuestionDetails = ({
       borderWidth={1}
       overflowY="auto"
       height="100%"
+      minH="45vh"
+      gap={4}
     >
       <Stack spacing={4} flex={1}>
         <Heading fontWeight="medium" size={"md"}>
@@ -47,7 +56,11 @@ export const QuestionDetails = ({
         <Badge variant="subtle" colorScheme="blue" w="fit-content">
           {complexity}
         </Badge>
-        <Text color="muted">{description}</Text>
+        <ReactMarkdown components={ChakraUIRenderer()} skipHtml>
+          {description || ""}
+        </ReactMarkdown>
+
+        {/* <Text color="muted">{description}</Text> */}
 
         <Accordion allowToggle>
           <AccordionItem>
@@ -65,10 +78,27 @@ export const QuestionDetails = ({
           </AccordionItem>
         </Accordion>
       </Stack>
-      <HStack>
-        <Button onClick={() => setIsEdit(!isEdit)}>Edit</Button>
-        <Button onClick={() => removeQuestion({ id })}>Delete</Button>
-      </HStack>
+      {isPreview ? null : (
+        <HStack>
+          <Button
+            size="sm"
+            leftIcon={<BsPencilSquare />}
+            onClick={() => setIsEdit(!isEdit)}
+          >
+            Edit
+          </Button>
+          <Button
+            size="sm"
+            leftIcon={<BsTrash2 />}
+            onClick={() => {
+              removeQuestion({ id });
+              goToBrowsePage();
+            }}
+          >
+            Delete
+          </Button>
+        </HStack>
+      )}
     </Flex>
   ) : (
     <QuestionForm
