@@ -1,12 +1,19 @@
 import { Question } from "@/types/models/question";
 
 import { QuestionComplexity } from "@/types/models/question";
+import { complex } from "framer-motion";
 
 const PEER_PREP_A1_KEY = 'PEER_PREP_A1_KEY';
 
 // TODO: refactor to interface with backend question microservice
 class QuestionService {
   static addQuestion({title, description, complexity, categories }: {title: string, description: string, complexity: QuestionComplexity, categories: string[]}) {
+    try {
+      QuestionService.validateAddQuestion({title, description, complexity, categories })
+    } catch (err) {
+      throw err
+    }
+
     // local storage 
     const id = this.getLatestQuestionId()
     const questions = this.getQuestions()
@@ -23,7 +30,14 @@ class QuestionService {
   }
 
   static editQuestion(questionData: Question) {
+    try {
+      QuestionService.validateAddQuestion(questionData)
+    } catch (err) {
+      throw err
+    }
+
     let allQuestions: Question[] = []
+
     this.getQuestions().forEach(q => {
       if (q.id === questionData.id) {
         q = {...questionData}
@@ -45,6 +59,44 @@ class QuestionService {
     }
     const questions: Question[] = JSON.parse(storage)
     return questions
+  }
+
+  private static validateAddQuestion({title, description, complexity, categories }: {title: string, description: string, complexity: QuestionComplexity, categories: string[]}) {
+    if (!title) {
+      throw new Error("Missing title field.")
+    }
+    if (!description) {
+      throw new Error("Missing description field.")
+    }
+
+    if (!complexity) {
+      throw new Error("Missing complexity field.")
+    }
+
+    if (!categories || categories.length === 0) {
+      throw new Error("Missing categories field.")
+    }
+
+    // check if duplicate exists
+    const questions = this.getQuestions()
+    const isDuplicate = questions.filter(q => q.title === title && q.description === description && q.complexity === q.complexity && q.categories.length === categories.length).filter(q => {
+      let setOfCategories = new Set([...categories])
+      q.categories.forEach(cat => {
+        if (!setOfCategories.has(cat)) {
+          return false
+        }
+      })
+
+      return true
+    }).length === 0
+
+    console.log(isDuplicate)
+
+    if (isDuplicate) {
+      throw new Error("Exact question already exists. No change detected.")
+    }
+
+    return true
   }
 }
 
