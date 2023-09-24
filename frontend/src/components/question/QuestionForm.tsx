@@ -45,6 +45,8 @@ export const QuestionForm = ({
   const { addQuestion, editQuestion } = useQuestionList();
   const { goToBrowsePage } = useHeaderTab();
 
+  register("categories", { required: true });
+
   return (
     <Stack
       px={6}
@@ -86,7 +88,7 @@ export const QuestionForm = ({
                   w="full"
                   rounded="md"
                   focusBorderColor="gray.500"
-                  {...register("title")}
+                  {...register("title", { required: true })}
                   defaultValue={question ? question.title : undefined}
                 />
               </FormControl>
@@ -101,7 +103,7 @@ export const QuestionForm = ({
                   w="full"
                   rounded="md"
                   focusBorderColor="gray.500"
-                  {...register("complexity")}
+                  {...register("complexity", { required: true })}
                   defaultValue={question ? question.complexity : undefined}
                 >
                   {Object.values(QuestionComplexity).map((complexity) => (
@@ -116,7 +118,7 @@ export const QuestionForm = ({
                   placeholder="Describe the problem details. You may write in Markdown."
                   focusBorderColor="gray.500"
                   defaultValue={question ? question.description : undefined}
-                  {...register("description")}
+                  {...register("description", { required: true })}
                   h="20vh"
                 />
               </FormControl>

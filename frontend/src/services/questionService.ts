@@ -1,7 +1,6 @@
 import { Question } from "@/types/models/question";
 
 import { QuestionComplexity } from "@/types/models/question";
-import { complex } from "framer-motion";
 
 const PEER_PREP_A1_KEY = 'PEER_PREP_A1_KEY';
 
@@ -88,9 +87,7 @@ class QuestionService {
       })
 
       return true
-    }).length === 0
-
-    console.log(isDuplicate)
+    }).length > 0
 
     if (isDuplicate) {
       throw new Error("Exact question already exists. No change detected.")
