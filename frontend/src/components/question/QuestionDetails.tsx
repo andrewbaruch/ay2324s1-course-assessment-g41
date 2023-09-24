@@ -59,31 +59,33 @@ export const QuestionDetails = ({
           {description || ""}
         </ReactMarkdown>
 
-        <Accordion allowToggle>
-          <AccordionItem>
-            <AccordionButton px={0} _hover={{}}>
-              <Box as="span" textAlign="left" flex={1} fontWeight={500}>
-                Topics
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel px={0}>
-              <HStack wrap="wrap">
-                {categories?.map((cat) => (
-                  <Badge
-                    variant="outline"
-                    textTransform="none"
-                    px={2}
-                    py={1}
-                    w="fit-content"
-                  >
-                    {cat}
-                  </Badge>
-                ))}
-              </HStack>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+        {categories?.length > 0 ? (
+          <Accordion allowToggle>
+            <AccordionItem>
+              <AccordionButton px={0} _hover={{}}>
+                <Box as="span" textAlign="left" flex={1} fontWeight={500}>
+                  Topics
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel px={0}>
+                <HStack wrap="wrap">
+                  {categories?.map((cat) => (
+                    <Badge
+                      variant="outline"
+                      textTransform="none"
+                      px={2}
+                      py={1}
+                      w="fit-content"
+                    >
+                      {cat}
+                    </Badge>
+                  ))}
+                </HStack>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        ) : null}
       </Stack>
       {isPreview ? null : (
         <HStack>

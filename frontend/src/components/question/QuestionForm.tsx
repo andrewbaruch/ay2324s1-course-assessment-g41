@@ -16,6 +16,8 @@ import {
   CheckboxGroup,
   Checkbox,
   SimpleGrid,
+  FormErrorMessage,
+  useToast,
 } from "@chakra-ui/react";
 
 import {
@@ -38,14 +40,18 @@ export const QuestionForm = ({
     handleSubmit,
     watch,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm({
     defaultValues: question ? { ...question } : undefined,
   });
   const { addQuestion, editQuestion } = useQuestionList();
   const { goToBrowsePage } = useHeaderTab();
+  const toast = useToast();
 
-  register("categories", { required: true });
+  register("categories", {
+    required: "At least one category must be selected.",
+  });
 
   return (
     <Stack
@@ -78,7 +84,7 @@ export const QuestionForm = ({
         <TabPanels>
           <TabPanel px={0}>
             <Stack spacing={2} display="flex" px={0}>
-              <FormControl>
+              <FormControl isInvalid={errors.title ? true : false}>
                 <FormLabel htmlFor="title">Question Title</FormLabel>
                 <Input
                   type="text"
@@ -88,12 +94,15 @@ export const QuestionForm = ({
                   w="full"
                   rounded="md"
                   focusBorderColor="gray.500"
-                  {...register("title", { required: true })}
+                  {...register("title", { required: "Title is required." })}
                   defaultValue={question ? question.title : undefined}
                 />
+                {errors.title ? (
+                  <FormErrorMessage>{errors.title.message}</FormErrorMessage>
+                ) : null}
               </FormControl>
 
-              <FormControl>
+              <FormControl isInvalid={errors.complexity ? true : false}>
                 <FormLabel htmlFor="complexity">Complexity</FormLabel>
                 <Select
                   id="complexity"
@@ -103,31 +112,51 @@ export const QuestionForm = ({
                   w="full"
                   rounded="md"
                   focusBorderColor="gray.500"
-                  {...register("complexity", { required: true })}
+                  {...register("complexity", {
+                    required: "Complexity of the question is required.",
+                  })}
                   defaultValue={question ? question.complexity : undefined}
                 >
                   {Object.values(QuestionComplexity).map((complexity) => (
                     <option>{complexity}</option>
                   ))}
                 </Select>
+                {errors.complexity ? (
+                  <FormErrorMessage>
+                    {errors.complexity.message}
+                  </FormErrorMessage>
+                ) : null}
               </FormControl>
 
-              <FormControl>
+              <FormControl isInvalid={errors.description ? true : false}>
                 <FormLabel htmlFor="title">Description</FormLabel>
                 <Textarea
                   placeholder="Describe the problem details. You may write in Markdown."
                   focusBorderColor="gray.500"
                   defaultValue={question ? question.description : undefined}
-                  {...register("description", { required: true })}
+                  {...register("description", {
+                    required: "Description is required.",
+                  })}
                   h="20vh"
                 />
+                {errors.description ? (
+                  <FormErrorMessage>
+                    {errors.description.message}
+                  </FormErrorMessage>
+                ) : null}
               </FormControl>
 
-              <FormControl>
+              <FormControl isInvalid={errors.categories ? true : false}>
                 <FormLabel htmlFor="categories">Topics</FormLabel>
+                {errors.categories ? (
+                  <FormErrorMessage>
+                    {errors.categories.message}
+                  </FormErrorMessage>
+                ) : null}
                 <CheckboxGroup
                   onChange={(val: string[]) => {
                     setValue("categories", val);
+                    trigger("categories");
                   }}
                   defaultValue={question ? question.categories : undefined}
                 >
@@ -159,22 +188,33 @@ export const QuestionForm = ({
       <Button
         type="submit"
         onClick={handleSubmit((data) => {
-          question
-            ? editQuestion({
-                id: question.id,
-                categories: data.categories ? data.categories : [],
-                title: data.title,
-                description: data.description,
-                complexity: data.complexity,
-              })
-            : addQuestion({
-                categories: data.categories ? data.categories : [],
-                title: data.title,
-                description: data.description,
-                complexity: data.complexity,
-              });
-
-          goToBrowsePage();
+          try {
+            question
+              ? editQuestion({
+                  id: question.id,
+                  categories: data.categories ? data.categories : [],
+                  title: data.title,
+                  description: data.description,
+                  complexity: data.complexity,
+                })
+              : addQuestion({
+                  categories: data.categories ? data.categories : [],
+                  title: data.title,
+                  description: data.description,
+                  complexity: data.complexity,
+                });
+            goToBrowsePage();
+          } catch (err) {
+            toast({
+              status: "error",
+              description:
+                err?.message ||
+                "Unknown error encountered. Please try again later.",
+              isClosable: true,
+              duration: 3000,
+              position: "bottom",
+            });
+          }
         })}
         w="fit-content"
         py={2}
