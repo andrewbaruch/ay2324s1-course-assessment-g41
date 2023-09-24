@@ -21,6 +21,7 @@ import {
 import { useState } from "react";
 import { BsPencilSquare, BsTrash2 } from "react-icons/bs";
 import { QuestionForm } from "./QuestionForm";
+import { ComplexityBadge } from "../complexity";
 
 export const QuestionDetails = ({
   title,
@@ -50,12 +51,10 @@ export const QuestionDetails = ({
       gap={4}
     >
       <Stack spacing={4} flex={1}>
-        <Heading fontWeight="medium" size={"md"}>
+        <Heading fontWeight={700} fontSize="2xl">
           {title}
         </Heading>
-        <Badge variant="subtle" colorScheme="blue" w="fit-content">
-          {complexity}
-        </Badge>
+        <ComplexityBadge>{complexity}</ComplexityBadge>
         <ReactMarkdown components={ChakraUIRenderer()} skipHtml>
           {description || ""}
         </ReactMarkdown>
@@ -69,9 +68,19 @@ export const QuestionDetails = ({
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel px={0}>
-              {categories.map((cat) => (
-                <Badge>{cat}</Badge>
-              ))}
+              <HStack wrap="wrap">
+                {categories?.map((cat) => (
+                  <Badge
+                    variant="outline"
+                    textTransform="none"
+                    px={2}
+                    py={1}
+                    w="fit-content"
+                  >
+                    {cat}
+                  </Badge>
+                ))}
+              </HStack>
             </AccordionPanel>
           </AccordionItem>
         </Accordion>

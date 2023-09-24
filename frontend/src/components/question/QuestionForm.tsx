@@ -13,9 +13,16 @@ import {
   TabList,
   TabPanel,
   TabPanels,
+  CheckboxGroup,
+  Checkbox,
+  SimpleGrid,
 } from "@chakra-ui/react";
 
-import { Question, QuestionComplexity } from "@/types/models/question";
+import {
+  Question,
+  QuestionCategories,
+  QuestionComplexity,
+} from "@/types/models/question";
 import { useForm } from "react-hook-form";
 import { useQuestionList } from "@/hooks/useQuestionList";
 import { QuestionDetails } from "./QuestionDetails";
@@ -30,11 +37,10 @@ export const QuestionForm = ({
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
-    defaultValues: question
-      ? { ...question, categories: question.categories[0] || "" }
-      : undefined,
+    defaultValues: question ? { ...question } : undefined,
   });
   const { addQuestion, editQuestion } = useQuestionList();
   const { goToBrowsePage } = useHeaderTab();
@@ -117,19 +123,20 @@ export const QuestionForm = ({
 
               <FormControl>
                 <FormLabel htmlFor="categories">Topics</FormLabel>
-                <Select
-                  id="categories"
-                  placeholder={"Select an option"}
-                  shadow="sm"
-                  size="sm"
-                  w="full"
-                  rounded="md"
-                  focusBorderColor="gray.500"
+                <CheckboxGroup
+                  onChange={(val: string[]) => {
+                    setValue("categories", val);
+                  }}
                   defaultValue={question ? question.categories : undefined}
-                  {...register("categories")}
                 >
-                  <option>DFS</option>
-                </Select>
+                  <SimpleGrid gap={1} columns={{ sm: 2, md: 3, lg: 5, xl: 6 }}>
+                    {Object.values(QuestionCategories).map((val) => (
+                      <Checkbox value={val} size="sm">
+                        {val}
+                      </Checkbox>
+                    ))}
+                  </SimpleGrid>
+                </CheckboxGroup>
               </FormControl>
             </Stack>
           </TabPanel>
@@ -138,7 +145,7 @@ export const QuestionForm = ({
             <QuestionDetails
               title={watch("title")}
               complexity={watch("complexity")}
-              categories={[watch("categories")]}
+              categories={watch("categories")}
               description={watch("description")}
               id={-1}
               isPreview={true}
@@ -153,13 +160,13 @@ export const QuestionForm = ({
           question
             ? editQuestion({
                 id: question.id,
-                categories: data.categories ? [data.categories] : [],
+                categories: data.categories ? data.categories : [],
                 title: data.title,
                 description: data.description,
                 complexity: data.complexity,
               })
             : addQuestion({
-                categories: data.categories ? [data.categories] : [],
+                categories: data.categories ? data.categories : [],
                 title: data.title,
                 description: data.description,
                 complexity: data.complexity,

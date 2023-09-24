@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { BsCodeSquare } from "react-icons/bs";
+import { ComplexityBadge } from "../complexity";
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   const { setQuestion } = useQuestion();
@@ -76,14 +77,13 @@ const QuestionCard = ({
     <Stack spacing={4}>
       <Text fontWeight={600}>{title}</Text>
 
-      <Text color={"gray.500"} noOfLines={1}>
+      {/* <Text color={"gray.500"} noOfLines={1}>
         {description}
-      </Text>
+      </Text> */}
 
-      <HStack spacing={1}>
-        <Badge variant="subtle" colorScheme="blue" w="fit-content">
-          {complexity}
-        </Badge>
+      <HStack spacing={4} overflowX={"auto"}>
+        <ComplexityBadge>{complexity}</ComplexityBadge>
+
         {categories.map((cat) => (
           <Badge key={cat}>{cat}</Badge>
         ))}
