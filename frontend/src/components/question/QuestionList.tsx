@@ -77,16 +77,27 @@ const QuestionCard = ({
     <Stack spacing={4}>
       <Text fontWeight={600}>{title}</Text>
 
-      {/* <Text color={"gray.500"} noOfLines={1}>
+      <Text color={"gray.500"} noOfLines={1}>
         {description}
-      </Text> */}
+      </Text>
 
       <HStack spacing={4} overflowX={"auto"}>
         <ComplexityBadge>{complexity}</ComplexityBadge>
 
-        {categories.map((cat) => (
-          <Badge key={cat}>{cat}</Badge>
-        ))}
+        <HStack spacing={1}>
+          {categories.map((cat) => (
+            <Badge
+              variant="outline"
+              textTransform="none"
+              px={2}
+              py={1}
+              w="fit-content"
+              key={cat}
+            >
+              {cat}
+            </Badge>
+          ))}
+        </HStack>
       </HStack>
     </Stack>
   );
