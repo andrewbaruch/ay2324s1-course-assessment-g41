@@ -1,6 +1,10 @@
+import useAutoLogin from '@/hooks/auth/useAutoLogin';
 import { Box, Heading, Text, Button, List, ListItem } from '@chakra-ui/react';
 
+// karwi: create a settings page (authenticated)
 export default function Home() {
+  useAutoLogin();
+
   return (
     <Box p={10}>
       <Box mb={5}>
