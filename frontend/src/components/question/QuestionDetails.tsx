@@ -1,6 +1,6 @@
 import { useHeaderTab } from "@/hooks/useHeaderTabs";
 import { useQuestionList } from "@/hooks/useQuestionList";
-import { Question } from "@/types/models/question";
+import { Question } from "@/@types/models/question";
 import ReactMarkdown from "react-markdown";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 

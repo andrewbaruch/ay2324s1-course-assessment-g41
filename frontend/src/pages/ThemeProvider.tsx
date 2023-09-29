@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { CacheProvider } from "@chakra-ui/next-js";
-import { Box, ChakraProvider, Container, extendTheme } from "@chakra-ui/react";
-import { Header } from "@/components/header";
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { CacheProvider } from '@chakra-ui/next-js';
+import { Box, ChakraProvider, Container, extendTheme } from '@chakra-ui/react';
+import { Header } from '@/components/header';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 const theme = extendTheme({});
 
 const ThemeProvider = ({ children }: PropsWithChildren) => {
   const headerRef = useRef<HTMLDivElement>(null);
-  const [headerHeight, setHeaderHeight] = useState("0px");
+  const [headerHeight, setHeaderHeight] = useState('0px');
 
   useEffect(() => {
     if (!headerRef?.current) return;
@@ -18,7 +18,7 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
         headerRef.current && headerRef.current.clientHeight
           ? headerRef.current.clientHeight
           : 0
-      }px`
+      }px`,
     );
   }, [headerRef, headerRef?.current]);
 

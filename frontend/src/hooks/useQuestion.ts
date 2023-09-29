@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { atom, useAtom } from 'jotai'
-import { Question } from "@/types/models/question";
+import { Question } from "@/@types/models/question";
 
 interface QuestionAtom {
   question: Question | undefined

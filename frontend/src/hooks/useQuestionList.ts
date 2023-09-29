@@ -1,5 +1,5 @@
 import { atom, useAtom } from 'jotai'
-import { Question, QuestionComplexity } from "@/types/models/question";
+import { Question, QuestionComplexity } from "@/@types/models/question";
 import QuestionService from "@/services/questionService";
 
 interface QuestionListAtom {

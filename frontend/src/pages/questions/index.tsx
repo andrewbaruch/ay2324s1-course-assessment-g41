@@ -1,17 +1,17 @@
 // `app/page.tsx` is the UI for the `/` URL
-"use client";
+'use client';
 
 import {
   QuestionsList,
   QuestionDetails,
   QuestionForm,
-} from "@/components/question";
-import { useHeaderTab } from "@/hooks/useHeaderTabs";
-import { useQuestion } from "@/hooks/useQuestion";
-import { useQuestionList } from "@/hooks/useQuestionList";
-import { HeaderTabs } from "@/types/header";
+} from '@/components/question';
+import { useHeaderTab } from '@/hooks/useHeaderTabs';
+import { useQuestion } from '@/hooks/useQuestion';
+import { useQuestionList } from '@/hooks/useQuestionList';
+import { HeaderTabs } from '@/@types/header';
 
-const Root = () => {
+const Questions = () => {
   const { questions } = useQuestionList();
   const { hasSelectedQuestion, question } = useQuestion();
   const { currentTab } = useHeaderTab();
@@ -27,4 +27,4 @@ const Root = () => {
   );
 };
 
-export default Root;
+export default Questions;

@@ -1,7 +1,7 @@
 import { useHeaderTab } from "@/hooks/useHeaderTabs";
 import { useQuestion } from "@/hooks/useQuestion";
-import { HeaderTabs } from "@/types/header";
-import { Question } from "@/types/models/question";
+import { HeaderTabs } from "@/@types/header";
+import { Question } from "@/@types/models/question";
 import {
   Badge,
   Box,

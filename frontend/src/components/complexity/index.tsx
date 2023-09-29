@@ -1,4 +1,4 @@
-import { QuestionComplexity } from "@/types/models/question";
+import { QuestionComplexity } from "@/@types/models/question";
 import { HStack, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { TbStairsUp } from "react-icons/tb";

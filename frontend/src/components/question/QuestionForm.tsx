@@ -24,7 +24,7 @@ import {
   Question,
   QuestionCategories,
   QuestionComplexity,
-} from "@/types/models/question";
+} from "@/@types/models/question";
 import { useForm } from "react-hook-form";
 import { useQuestionList } from "@/hooks/useQuestionList";
 import { QuestionDetails } from "./QuestionDetails";
