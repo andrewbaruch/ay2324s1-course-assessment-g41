@@ -78,7 +78,7 @@ class QuestionService {
 
     // check if duplicate exists
     const questions = this.getQuestions()
-    const isDuplicate = questions.filter(q => q.title === title && q.description === description && q.complexity === q.complexity && q.categories.length === categories.length).filter(q => {
+    const isDuplicate = questions.filter(q => q.title === title && q.description === description && q.complexity === complexity && q.categories.length === categories.length).filter(q => {
       let setOfCategories = new Set([...categories])
       q.categories.forEach(cat => {
         if (!setOfCategories.has(cat)) {
