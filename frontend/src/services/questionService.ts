@@ -113,7 +113,7 @@ class QuestionService {
           (q) =>
             q.title === title &&
             q.description === description &&
-            q.complexity === q.complexity &&
+            q.complexity === complexity &&
             q.categories.length === categories.length,
         )
         .filter((q) => {
