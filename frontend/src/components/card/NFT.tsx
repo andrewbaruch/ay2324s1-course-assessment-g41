@@ -162,7 +162,7 @@ export default function NFT(props: {
                 px="24px"
                 py="5px"
               >
-                Place Bid
+                Attempt
               </Button>
             </Link>
           </Flex>
