@@ -3,13 +3,10 @@ import { store } from 'src/store';
 import { AppProps } from 'next/app';
 import { NextPage } from 'next';
 import { ProfileProvider } from '@/contexts/auth/ProfileContext';
-import ThemeProvider from './ThemeProvider';
-import { authProviderFactory } from '../authProviders';
-import { DEFAULT_AUTH_PROVIDER } from '../config';
-import { AuthProvider } from 'src/@types/auth';
-import { AppContext } from 'next/app';
-import { useEffect } from 'react';
 import { jwtAuthProvider } from '@/authProviders/jwt';
+import SignIn from './login';
+import { ChakraProvider } from '@chakra-ui/react';
+import theme from 'src/theme/theme';
 
 interface MyAppProps extends AppProps {
   Component: NextPage;
@@ -24,12 +21,12 @@ export default function MyApp(props: MyAppProps) {
   const { Component, pageProps } = props;
 
   return (
-    <Provider store={store}>
-      <ProfileProvider authProvider={jwtAuthProvider}>
-        <ThemeProvider>
+    <ChakraProvider theme={theme}>
+      <Provider store={store}>
+        <ProfileProvider authProvider={jwtAuthProvider}>
           <Component {...pageProps} />
-        </ThemeProvider>
-      </ProfileProvider>
-    </Provider>
+        </ProfileProvider>
+      </Provider>
+    </ChakraProvider>
   );
 }

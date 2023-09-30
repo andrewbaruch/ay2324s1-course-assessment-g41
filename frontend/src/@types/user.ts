@@ -1,8 +1,4 @@
-import { QuestionComplexity, 
-    QuestionAdvancedCategories, 
-    QuestionIntermediateCategories, 
-    QuestionBasicCategories } from './models/question';
-
+import { QuestionComplexity } from './models/question';
 
 export interface User {
   userId: string;
