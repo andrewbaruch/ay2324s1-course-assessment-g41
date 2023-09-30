@@ -33,9 +33,9 @@ export default function Auth({ children }: PropsWithChildren) {
           position="relative"
           w="100%"
           transition="all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)"
-          transitionDuration=".2s, .2s, .35s"
-          transitionProperty="top, bottom, width"
-          transitionTimingFunction="linear, linear, ease"
+          transitionDuration=".2s, .2s, .35s, .2s" // added one more duration for background color
+          transitionProperty="top, bottom, width, background-color" // add 'background-color'
+          transitionTimingFunction="linear, linear, ease, ease" // added one more timing function for background color
         >
           <Box mx="auto" minH="100vh">
             {children}
