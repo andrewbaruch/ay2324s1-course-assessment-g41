@@ -17,6 +17,8 @@ interface MyAppProps extends AppProps {
   authProvider: AuthProvider;
 }
 
+// karwi: add a 404 page
+
 export default function MyApp(props: MyAppProps) {
   const { Component, pageProps, authProvider } = props;
 
@@ -32,7 +34,6 @@ export default function MyApp(props: MyAppProps) {
 }
 
 MyApp.getInitialProps = async (appContext: AppContext) => {
-  // calls page's `getInitialProps` and fills `appProps.pageProps`
   const { Component, ctx } = appContext;
 
   let pageProps = {};

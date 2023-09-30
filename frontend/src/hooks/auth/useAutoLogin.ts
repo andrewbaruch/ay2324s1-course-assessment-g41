@@ -3,6 +3,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from 'src/utils/jwt';
 import { useToast } from '@chakra-ui/react';
 import useLogin from './useLogin';
 import { PATH_QUESTIONS } from '@/routes/paths';
+import { useRouter } from 'next/router';
 
 /**
  * Tries to login using the session tokens found in the URL params.
@@ -10,15 +11,14 @@ import { PATH_QUESTIONS } from '@/routes/paths';
 const useAutoLogin = () => {
   const login = useLogin();
   const toast = useToast();
-  //   const { redirectPath, clearRedirectPath } = useRedirectPath();
-  const searchParams = new URLSearchParams(window.location.search);
+  const router = useRouter();
 
   useEffect(() => {
     const callLogin = async () => {
-      const accessToken = searchParams.get(ACCESS_TOKEN);
-      const refreshToken = searchParams.get(REFRESH_TOKEN);
+      const accessToken = router.query[ACCESS_TOKEN] as string;
+      const refreshToken = router.query[REFRESH_TOKEN] as string;
 
-      if (accessToken === null || refreshToken === null) {
+      if (accessToken === undefined || refreshToken === undefined) {
         return;
       }
 
@@ -44,7 +44,7 @@ const useAutoLogin = () => {
     };
 
     callLogin();
-  }, [toast, login, searchParams]);
+  }, [toast, login, router.query]);
 };
 
 export default useAutoLogin;

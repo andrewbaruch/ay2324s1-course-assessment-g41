@@ -4,6 +4,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from 'src/utils/jwt';
 import useAuthProvider from '../auth/useAuthProvider';
 import { useToast } from '@chakra-ui/react';
 import useLogout from '../auth/useLogout';
+import { useRouter } from 'next/router';
 
 type CheckAuth = (params: {
   logoutOnError?: boolean;
@@ -49,8 +50,7 @@ const useCheckAuth = (): CheckAuth => {
   const authProvider = useAuthProvider();
   const toast = useToast();
   const logout = useLogout();
-
-  const searchParams = new URLSearchParams(window.location.search);
+  const router = useRouter();
 
   const checkAuth = useCallback(
     async ({
@@ -77,10 +77,10 @@ const useCheckAuth = (): CheckAuth => {
       try {
         await authProvider.checkAuth();
       } catch (error) {
-        const accessToken = searchParams.get(ACCESS_TOKEN);
-        const refreshToken = searchParams.get(REFRESH_TOKEN);
+        const accessToken = router.query[ACCESS_TOKEN] as string;
+        const refreshToken = router.query[REFRESH_TOKEN] as string;
 
-        if (accessToken === null || refreshToken === null) {
+        if (accessToken === undefined || refreshToken === undefined) {
           callLogout();
           throw error;
         }
@@ -97,7 +97,7 @@ const useCheckAuth = (): CheckAuth => {
       }
     },
 
-    [authProvider, toast, logout, searchParams],
+    [authProvider, toast, logout, router.query],
   );
 
   return checkAuth;
