@@ -65,7 +65,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
         me="10px"
         borderRadius="30px"
       />
-      <Flex
+      {/* <Flex
         bg={ethBg}
         display={secondary ? 'flex' : 'none'}
         borderRadius="30px"
@@ -98,9 +98,9 @@ export default function HeaderLinks(props: { secondary: boolean }) {
             ETH
           </Text>
         </Text>
-      </Flex>
+      </Flex> */}
       <SidebarResponsive routes={routes} />
-      <Menu>
+      {/* <Menu>
         <MenuButton p="0px">
           <Icon
             mt="6px"
@@ -157,9 +157,9 @@ export default function HeaderLinks(props: { secondary: boolean }) {
             </MenuItem>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
 
-      <Menu>
+      {/* <Menu>
         <MenuButton p="0px">
           <Icon
             mt="6px"
@@ -219,7 +219,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
             </Link>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
 
       <Button
         variant="no-hover"
