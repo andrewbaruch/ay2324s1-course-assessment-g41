@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "esnext",
+      "moduleResolution": "node",
+      "strict": true,
+      "outDir": "./dist",
+      "baseUrl": "./src",
+        "paths": {
+            "@/*": [
+                "*"
+            ]
+        }
+    },
+    "exclude": ["node_modules"]
+  }
+  
