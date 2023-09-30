@@ -4,9 +4,9 @@ import { AppProps } from 'next/app';
 import { NextPage } from 'next';
 import { ProfileProvider } from '@/contexts/auth/ProfileContext';
 import { jwtAuthProvider } from '@/authProviders/jwt';
-import SignIn from './login';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'src/theme/theme';
+import 'src/styles/App.css';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
