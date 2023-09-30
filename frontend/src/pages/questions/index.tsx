@@ -1,6 +1,3 @@
-// `app/page.tsx` is the UI for the `/` URL
-'use client';
-
 import {
   QuestionsList,
   QuestionDetails,
@@ -18,15 +15,15 @@ const Questions = () => {
   const { hasSelectedQuestion, question } = useQuestion();
   const { currentTab } = useHeaderTab();
 
-  return currentTab === HeaderTabs.QUESTION_LIST ? (
-    !hasSelectedQuestion || !question ? (
-      <QuestionsList questions={questions} />
-    ) : (
-      <QuestionDetails {...question} />
-    )
-  ) : (
-    <QuestionForm question={null} />
-  );
+  if (currentTab === HeaderTabs.QUESTION_FORM) {
+    return <QuestionForm question={null} />;
+  }
+
+  if (!hasSelectedQuestion || !question) {
+    return <QuestionsList questions={questions} />;
+  } else {
+    return <QuestionDetails {...question} />;
+  }
 };
 
 export default Questions;

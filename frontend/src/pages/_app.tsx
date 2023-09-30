@@ -1,6 +1,3 @@
-// pages/_app.js or pages/_app.tsx
-
-import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { store } from 'src/store';
 import { AppProps } from 'next/app';
@@ -18,6 +15,7 @@ interface MyAppProps extends AppProps {
 }
 
 // karwi: add a 404 page
+// karwi: fix css flicker when refresh
 
 export default function MyApp(props: MyAppProps) {
   const { Component, pageProps, authProvider } = props;
