@@ -8,10 +8,12 @@ import SignIn from './login';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'src/theme/theme';
 
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: React.ReactElement) => React.ReactNode;
+};
+
 interface MyAppProps extends AppProps {
-  Component: NextPage;
-  // karwi: use dynamic import
-  // authProvider: AuthProvider;
+  Component: NextPageWithLayout;
 }
 
 // karwi: add a 404 page
@@ -20,11 +22,13 @@ interface MyAppProps extends AppProps {
 export default function MyApp(props: MyAppProps) {
   const { Component, pageProps } = props;
 
+  const getLayout = Component.getLayout ?? ((page) => page);
+
   return (
     <ChakraProvider theme={theme}>
       <Provider store={store}>
         <ProfileProvider authProvider={jwtAuthProvider}>
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </ProfileProvider>
       </Provider>
     </ChakraProvider>
