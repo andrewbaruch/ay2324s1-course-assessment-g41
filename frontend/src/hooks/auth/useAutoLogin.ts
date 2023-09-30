@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from 'src/utils/jwt';
 import { useToast } from '@chakra-ui/react';
 import useLogin from './useLogin';
-import { PATH_QUESTIONS } from '@/routes/paths';
-import { useRouter } from 'next/router';
+import { PATH_ADMIN } from '@/routes/paths';
+import { useSearchParams } from 'next/navigation';
 
 /**
  * Tries to login using the session tokens found in the URL params.
@@ -11,14 +11,14 @@ import { useRouter } from 'next/router';
 const useAutoLogin = () => {
   const login = useLogin();
   const toast = useToast();
-  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const callLogin = async () => {
-      const accessToken = router.query[ACCESS_TOKEN] as string;
-      const refreshToken = router.query[REFRESH_TOKEN] as string;
+      const accessToken = searchParams.get(ACCESS_TOKEN);
+      const refreshToken = searchParams.get(REFRESH_TOKEN);
 
-      if (accessToken === undefined || refreshToken === undefined) {
+      if (accessToken === null || refreshToken === null) {
         return;
       }
 
@@ -30,7 +30,7 @@ const useAutoLogin = () => {
           },
           // karwi: use dynamic redirect path
           //   redirectPath?.to,
-          PATH_QUESTIONS.root,
+          PATH_ADMIN.general.dashboard,
         );
       } catch {
         toast({

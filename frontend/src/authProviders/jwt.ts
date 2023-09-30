@@ -13,7 +13,7 @@ interface Session {
   refreshToken: string;
 }
 
-const isPublicUrl = (url: string) => [PATH_AUTH.root].includes(url);
+const isPublicUrl = (url: string) => [PATH_AUTH.general.login].includes(url);
 const isTokenExpired = (accessToken: string, offset = 0) =>
   Date.now() >= JSON.parse(atob(accessToken.split('.')[1])).exp * 1000 + offset;
 const getSession = (): Session | null => {

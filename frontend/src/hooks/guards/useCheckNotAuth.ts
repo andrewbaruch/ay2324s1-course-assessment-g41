@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useRouter } from 'next/router';
-import { PATH_DASHBOARD } from 'src/routes/paths';
+import { useRouter } from 'next/navigation';
+import { PATH_ADMIN } from 'src/routes/paths';
 import useAuthProvider from '../auth/useAuthProvider';
 
 type CheckNotAuth = (params: { redirectTo?: string }) => Promise<any>;
@@ -22,7 +22,7 @@ const useCheckNotAuth = (): CheckNotAuth => {
   const router = useRouter();
 
   const checkNotAuth = useCallback(
-    async ({ redirectTo = PATH_DASHBOARD.root }) => {
+    async ({ redirectTo = PATH_ADMIN.general.dashboard }) => {
       await authProvider.checkAuth();
       router.push(redirectTo);
     },

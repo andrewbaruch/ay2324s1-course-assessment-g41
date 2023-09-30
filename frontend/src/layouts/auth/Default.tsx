@@ -1,72 +1,90 @@
 // Chakra imports
-import { Box, Flex, Icon, Text } from '@chakra-ui/react';
-import PropTypes from 'prop-types';
+import { Box, Flex, Icon, useColorModeValue, Text } from '@chakra-ui/react';
 import Footer from 'src/components/footer/FooterAuth';
 import FixedPlugin from 'src/components/fixedPlugin/FixedPlugin';
-// Custom components
-import Link from 'next/link';
 // Assets
 import { FaChevronLeft } from 'react-icons/fa';
+import Link from 'next/link';
+import { ReactNode } from 'react';
+import { Video } from 'react-video';
 
 function AuthIllustration(props: {
-  children: JSX.Element | string;
+  children: ReactNode;
   illustrationBackground: string;
 }) {
+  const authBg = useColorModeValue('white', 'navy.900');
   const { children, illustrationBackground } = props;
   // Chakra color mode
   return (
-    <Flex position="relative" h="max-content">
+    <Flex minW="100vh" w="100%" bg={authBg} position="relative" h="max-content">
       <Flex
         h={{
           sm: 'initial',
           md: 'unset',
           lg: '100vh',
-          xl: '97vh',
+          xl: '100vh',
         }}
-        w="100%"
+        w={{ base: '100vw', md: '100%' }}
         maxW={{ md: '66%', lg: '1313px' }}
-        mx="auto"
+        mx={{ md: 'auto' }}
         pt={{ sm: '50px', md: '0px' }}
         px={{ lg: '30px', xl: '0px' }}
         ps={{ xl: '70px' }}
         justifyContent="start"
         direction="column"
       >
+        {/* <Link
+          href="/admin"
+          style={{
+            width: 'fit-content',
+            marginTop: '40px',
+          }}
+        >
+          <Flex
+            align="center"
+            ps={{ base: '25px', lg: '0px' }}
+            pt={{ lg: '0px', xl: '0px' }}
+            w="fit-content"
+          >
+            <Icon
+              as={FaChevronLeft}
+              me="12px"
+              h="13px"
+              w="8px"
+              color="secondaryGray.600"
+            />
+            <Text ms="0px" fontSize="sm" color="secondaryGray.600">
+              Back to Simmmple
+            </Text>
+          </Flex>
+        </Link> */}
         {children}
         <Box
-          display="block"
+          display={{ base: 'none', md: 'block' }}
           h="100%"
           minH="100vh"
           w={{ lg: '50vw', '2xl': '44vw' }}
           position="absolute"
           right="0px"
-          borderBottomLeftRadius={{ lg: '120px', xl: '200px' }}
-          overflow={'hidden'}
         >
           <video
             src={illustrationBackground}
+            autoPlay
+            muted
             style={{
+              position: 'absolute',
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              position: 'absolute',
+              borderRadius: '0 0 0 100px',
             }}
-            autoPlay
-            muted
-            loop
           />
         </Box>
-        <Footer />
+        <Footer mb={{ xl: '3vh' }} />
       </Flex>
       <FixedPlugin />
     </Flex>
   );
 }
-// PROPS
-
-AuthIllustration.propTypes = {
-  illustrationBackground: PropTypes.string,
-  image: PropTypes.any,
-};
 
 export default AuthIllustration;

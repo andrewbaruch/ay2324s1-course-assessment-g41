@@ -1,7 +1,7 @@
-import { useHeaderTab } from "@/hooks/useHeaderTabs";
-import { useQuestion } from "@/hooks/useQuestion";
-import { HeaderTabs } from "@/@types/header";
-import { Question } from "@/@types/models/question";
+import { useHeaderTab } from '@/hooks/useHeaderTabs';
+import { useQuestion } from '@/hooks/useQuestion';
+import { HeaderTabs } from '@/@types/header';
+import { Question } from '@/@types/models/question';
 import {
   Alert,
   AlertDescription,
@@ -15,9 +15,9 @@ import {
   Stack,
   Text,
   Tooltip,
-} from "@chakra-ui/react";
-import { BsCodeSquare } from "react-icons/bs";
-import { ComplexityBadge } from "../complexity";
+} from '@chakra-ui/react';
+import { BsCodeSquare } from 'react-icons/bs';
+import { ComplexityBadge } from '../complexity';
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   const { setQuestion } = useQuestion();
@@ -25,8 +25,6 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
 
   return (
     <Stack spacing={4}>
-      <Heading fontWeight="bold">Coding Questions</Heading>
-
       {questions.length > 0 ? (
         <>
           <Tooltip
@@ -54,7 +52,7 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
               index !== questions.length - 1 ? (
                 <Box
                   key={`q-${index}`}
-                  _hover={{ background: "gray.100", cursor: "pointer" }}
+                  _hover={{ background: 'gray.100', cursor: 'pointer' }}
                   onClick={() => setQuestion({ ...q })}
                 >
                   <Box p={4}>
@@ -66,12 +64,12 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
                 <Box
                   p={4}
                   key={`q-${index}`}
-                  _hover={{ background: "gray.100", cursor: "pointer" }}
+                  _hover={{ background: 'gray.100', cursor: 'pointer' }}
                   onClick={() => setQuestion({ ...q })}
                 >
                   <QuestionCard {...q} />
                 </Box>
-              )
+              ),
             )}
           </Stack>
         </>
@@ -110,11 +108,11 @@ const QuestionCard = ({
     <Stack spacing={4}>
       <Text fontWeight={600}>{title}</Text>
 
-      <Text color={"gray.500"} noOfLines={1}>
+      <Text color={'gray.500'} noOfLines={1}>
         {description}
       </Text>
 
-      <HStack spacing={4} overflowX={"auto"}>
+      <HStack spacing={4} overflowX={'auto'}>
         <ComplexityBadge>{complexity}</ComplexityBadge>
 
         <HStack spacing={1}>

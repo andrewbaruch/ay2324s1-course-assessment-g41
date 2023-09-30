@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import useAuthProvider from './useAuthProvider';
 import { JwtTokenSet } from 'src/@types/token';
-import { PATH_QUESTIONS } from '../../routes/paths';
+import { PATH_ADMIN } from '../../routes/paths';
 
 type Login = (tokens: JwtTokenSet, redirectTo?: string) => Promise<any>;
 
@@ -19,7 +19,7 @@ const useLogin = (): Login => {
   const { push } = useRouter();
 
   const callLogin: Login = useCallback(
-    async (tokens, redirectTo = PATH_QUESTIONS.root) => {
+    async (tokens, redirectTo = PATH_ADMIN.general.dashboard) => {
       await authProvider.login(tokens);
 
       push(redirectTo);
