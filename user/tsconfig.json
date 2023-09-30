@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
-      "target": "es6",
-      "module": "esnext",
-      "moduleResolution": "node",
-      "strict": true,
-      "outDir": "./dist",
-      "baseUrl": "./src",
+        "target": "es6",
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "strict": true,
+        "baseUrl": "./src",
+        "outDir": "./dist",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
         "paths": {
             "@/*": [
                 "*"

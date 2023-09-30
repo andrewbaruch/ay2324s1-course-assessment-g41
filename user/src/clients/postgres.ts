@@ -16,7 +16,7 @@ class PostgresClient {
         values?: any[]
     ): Promise<QueryResult<T>> {
         const client = await this.pool.connect();
-        
+
         try {
             return await client.query(sql, values);
         } finally {
@@ -29,6 +29,8 @@ class PostgresClient {
     }
 }
 
-export const postgresClient = new PostgresClient(
+const postgresClient = new PostgresClient(
     process.env.POSTGRES || "NA"
 );
+
+export default postgresClient
