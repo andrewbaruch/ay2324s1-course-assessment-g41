@@ -29,20 +29,36 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
 
       {questions.length > 0 ? (
         <>
-          <Tooltip
-            label="Design your own question, or save a question you encountered from a technical interview here!"
-            hasArrow
-            placement="right"
-          >
-            <Button
-              w="fit-content"
-              onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
-              leftIcon={<BsCodeSquare />}
-              size="sm"
+          <HStack>
+            <Tooltip
+              label="Design your own question, or save a question you encountered from a technical interview here!"
+              hasArrow
+              placement="right"
             >
-              Craft Question
-            </Button>
-          </Tooltip>
+              <Button
+                w="fit-content"
+                onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
+                leftIcon={<BsCodeSquare />}
+                size="sm"
+              >
+                Craft Question
+              </Button>
+            </Tooltip>
+            <Tooltip
+              label="Match with a peer to tackle questions together!"
+              hasArrow
+              placement="right"
+            >
+              <Button
+                w="fit-content"
+                onClick={() => setTab(HeaderTabs.MATCHING_FORM)}
+                leftIcon={<BsCodeSquare />}
+                size="sm"
+              >
+                Match a peer
+              </Button>
+            </Tooltip>
+          </HStack>
 
           <Stack
             borderWidth={1}
@@ -84,14 +100,24 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
               encountered from past interviews! You can also design and save
               your own question!
             </AlertDescription>
-            <Button
-              w="fit-content"
-              onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
-              leftIcon={<BsCodeSquare />}
-              size="sm"
-            >
-              Craft Question
-            </Button>
+            <HStack>
+              <Button
+                w="fit-content"
+                onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
+                leftIcon={<BsCodeSquare />}
+                size="sm"
+              >
+                Craft Question
+              </Button>
+              <Button
+                w="fit-content"
+                onClick={() => setTab(HeaderTabs.MATCHING_FORM)}
+                leftIcon={<BsCodeSquare />}
+                size="sm"
+              >
+                Match a peer
+              </Button>
+            </HStack>
           </Stack>
         </Alert>
       )}
