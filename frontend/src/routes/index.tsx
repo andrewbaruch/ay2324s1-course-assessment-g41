@@ -30,14 +30,7 @@ const routes: IRoute[] = [
     name: 'Coding Questions',
     layout: '/admin',
     path: '/questions',
-    icon: (
-      <Icon
-        as={MdOutlineShoppingCart}
-        width="20px"
-        height="20px"
-        color="inherit"
-      />
-    ),
+    icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
     // component: NFTMarketplace,
     secondary: true,
   },
