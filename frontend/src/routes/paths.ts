@@ -2,7 +2,7 @@ function path(root: string, sublink: string) {
   return `${root}${sublink}`;
 }
 
-const ROOTS_AUTH = '/login';
+const ROOTS_AUTH = '/';
 const ROOTS_QUESTIONS = '/questions';
 const ROOTS_USER = '/user';
 

@@ -13,19 +13,6 @@ type Login = (tokens: JwtTokenSet, redirectTo?: string) => Promise<any>;
  * @see useAuthProvider
  *
  * @returns {Function} login callback
- *
- * @example
- *
- * const LoginButton = () => {
- *     const [loading, setLoading] = useState(false);
- *     const login = useLogin();
- *     const handleClick = {
- *         setLoading(true);
- *         login({ username: 'john', password: 'p@ssw0rd' }, '/posts')
- *             .then(() => setLoading(false));
- *     }
- *     return <button onClick={handleClick}>Login</button>;
- * }
  */
 const useLogin = (): Login => {
   const authProvider = useAuthProvider();

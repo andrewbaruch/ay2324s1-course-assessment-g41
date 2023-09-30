@@ -17,6 +17,10 @@ class QuestionService {
     complexity: QuestionComplexity;
     categories: string[];
   }) {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     try {
       QuestionService.validateAddQuestion({
         title,
@@ -42,12 +46,20 @@ class QuestionService {
   }
 
   static removeQuestion({ id }: { id: number }) {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     const questions = this.getQuestions();
     const filteredQuestions = questions.filter((q) => q.id !== id);
     localStorage?.setItem(PEER_PREP_A1_KEY, JSON.stringify(filteredQuestions));
   }
 
   static editQuestion(questionData: Question) {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     try {
       QuestionService.validateAddQuestion(questionData);
     } catch (err) {
@@ -71,6 +83,10 @@ class QuestionService {
   }
 
   static getQuestions() {
+    if (typeof window === 'undefined') {
+      return [];
+    }
+
     const storage = localStorage?.getItem(PEER_PREP_A1_KEY);
     if (!storage) {
       return [];

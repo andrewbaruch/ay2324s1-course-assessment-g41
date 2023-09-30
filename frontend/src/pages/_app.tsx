@@ -8,21 +8,24 @@ import { authProviderFactory } from '../authProviders';
 import { DEFAULT_AUTH_PROVIDER } from '../config';
 import { AuthProvider } from 'src/@types/auth';
 import { AppContext } from 'next/app';
+import { useEffect } from 'react';
+import { jwtAuthProvider } from '@/authProviders/jwt';
 
 interface MyAppProps extends AppProps {
   Component: NextPage;
-  authProvider: AuthProvider;
+  // karwi: use dynamic import
+  // authProvider: AuthProvider;
 }
 
 // karwi: add a 404 page
 // karwi: fix css flicker when refresh
 
 export default function MyApp(props: MyAppProps) {
-  const { Component, pageProps, authProvider } = props;
+  const { Component, pageProps } = props;
 
   return (
     <Provider store={store}>
-      <ProfileProvider authProvider={authProvider}>
+      <ProfileProvider authProvider={jwtAuthProvider}>
         <ThemeProvider>
           <Component {...pageProps} />
         </ThemeProvider>
@@ -30,17 +33,3 @@ export default function MyApp(props: MyAppProps) {
     </Provider>
   );
 }
-
-MyApp.getInitialProps = async (appContext: AppContext) => {
-  const { Component, ctx } = appContext;
-
-  let pageProps = {};
-
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
-  }
-
-  const authProvider = await authProviderFactory(DEFAULT_AUTH_PROVIDER);
-
-  return { pageProps, authProvider };
-};
