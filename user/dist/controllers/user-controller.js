@@ -30,8 +30,6 @@ exports.createUser = createUser;
 function getCurrentUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = req.params.userId;
-        res.status(200).json("success");
-        return;
         try {
             const user = yield user_service_1.default.read(userId);
             if (user) {

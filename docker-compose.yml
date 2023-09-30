@@ -1,0 +1,60 @@
+version: '3.8'
+
+x-common-variables: &common-variables
+  SERVER_PORT: 8080
+  POSTGRES: postgresql://postgres:postgres@postgres:5432/mydb?schema=public
+  MONGO: mongodb://user:pass@mongodb
+  EXE_ENV: DEV
+
+network:
+  frontend:
+  backend:
+
+services:
+  user:
+    container_name: user
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./user
+    volumes:
+      - 3219User:/home/node/app/
+    ports:
+      - 3000:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment: *common-variables
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+  mongo:
+    container_name: mongodb
+    image: mongo:6
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - backend
+
+volumes:
+  postgres:
+  mongodb:
+
+

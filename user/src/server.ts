@@ -7,15 +7,15 @@ class Server {
     private port
 
     constructor() {
-        this.port = process.env.PORT ?? 3000
+        this.port = process.env.SERVER_PORT
         this.app = express();
         this.configMiddleware();
         this.configRouter()
     }
 
     private configMiddleware() {
-        // this.app.use(bodyParser.urlencoded({ extended:true }));
-        // this.app.use(bodyParser.json({ limit: '1mb' })); 
+        this.app.use(bodyParser.urlencoded({ extended:true }));
+        this.app.use(bodyParser.json({ limit: '1mb' })); 
     }
 
     private configRouter() {

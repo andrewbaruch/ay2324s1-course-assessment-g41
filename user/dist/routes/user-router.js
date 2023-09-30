@@ -25,9 +25,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const UserController = __importStar(require("../controllers/user-controller"));
+const UIDMiddleware = __importStar(require("../middlewares/uid-middleware"));
 const router = (0, express_1.Router)();
 // TODO: update for session/middleware
-// router.use(UIDMiddleware.getUserInfoJWT);
+router.use(UIDMiddleware.getUserInfoJWT);
 router.post('/', UserController.createUser);
 router.get('/:id', UserController.getUserById);
 router.get('/', UserController.getCurrentUser);

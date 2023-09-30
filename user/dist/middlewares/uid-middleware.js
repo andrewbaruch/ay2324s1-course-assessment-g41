@@ -11,7 +11,6 @@ function getUserInfoJWT(req, res, next) {
     // TODO: Remove after auth server
     if (true || process.env.EXE_ENV === "DEV") {
         req.params.userId = "uid";
-        console.log("jwt next");
         next();
     }
     const token = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
