@@ -31,7 +31,7 @@ node_modules
 .DS_Store
 
 # Ignore built ts files
-target/**/*
+dist/**/*
 
 # ignore yarn.lock
 yarn.lock
