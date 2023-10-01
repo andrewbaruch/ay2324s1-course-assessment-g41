@@ -25,6 +25,20 @@ services:
       - backend
     environment: *common-variables
 
+  question:
+    container_name: question
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./user
+    volumes:
+      - 3219User:/home/node/app/
+    ports:
+      - 3000:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment: *common-variables
+
   postgres:
     container_name: postgres
     image: postgres:latest
