@@ -15,8 +15,12 @@ import Upload from 'src/views/admin/profile/components/Upload';
 // Assets
 import banner from 'src/img/auth/banner.png';
 import avatar from 'src/img/avatars/avatar4.png';
+import useAuthenticated from '@/hooks/guards/useAuthenticated';
 
 export default function ProfileOverview() {
+  // karwi: uncomment later
+  // useAuthenticated();
+
   return (
     <Box pt={{ base: '130px', md: '80px', xl: '80px' }}>
       {/* Main Fields */}

@@ -26,9 +26,14 @@ import { FaEthereum } from 'react-icons/fa';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { MdInfoOutline, MdNotificationsNone } from 'react-icons/md';
 import routes from '@/routes';
+import useLogout from '@/hooks/auth/useLogout';
+import { useRouter } from 'next/navigation';
+import { PATH_ADMIN } from '@/routes/paths';
 export default function HeaderLinks(props: { secondary: boolean }) {
   const { secondary } = props;
   const { colorMode, toggleColorMode } = useColorMode();
+  const logout = useLogout();
+  const router = useRouter();
   // Chakra Color Mode
   const navbarIcon = useColorModeValue('gray.400', 'white');
   let menuBg = useColorModeValue('white', 'navy.800');
@@ -285,6 +290,8 @@ export default function HeaderLinks(props: { secondary: boolean }) {
               borderRadius="8px"
               px="14px"
               bg={menuBg}
+              // karwi: refactor later
+              onClick={() => router.push(PATH_ADMIN.general.profile)}
             >
               <Text fontSize="sm">Profile Settings</Text>
             </MenuItem>
@@ -295,6 +302,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
               borderRadius="8px"
               px="14px"
               bg={menuBg}
+              onClick={() => logout()}
             >
               <Text fontSize="sm">Log out</Text>
             </MenuItem>

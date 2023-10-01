@@ -18,6 +18,7 @@ export const PATH_ADMIN = {
   general: {
     dashboard: path(ROOTS_ADMIN, '/dashboard'),
     questions: path(ROOTS_ADMIN, '/questions'),
+    profile: path(ROOTS_ADMIN, '/profile'),
   },
 };
 
