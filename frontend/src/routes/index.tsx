@@ -41,6 +41,13 @@ const routes: IRoute[] = [
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
     // component: SignInCentered,
   },
+  {
+    name: 'Profile',
+    layout: '/admin',
+    path: '/profile',
+    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
+    // component: SignInCentered,
+  },
 ];
 
 export default routes;

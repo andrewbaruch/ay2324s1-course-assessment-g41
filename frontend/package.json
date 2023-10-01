@@ -37,6 +37,7 @@
     "react-icons": "^4.11.0",
     "react-markdown": "^8.0.7",
     "react-redux": "^8.1.2",
+    "react-select": "^5.7.5",
     "react-video": "^1.5.3",
     "typescript": "5.2.2",
     "xregexp": "^5.1.1"
