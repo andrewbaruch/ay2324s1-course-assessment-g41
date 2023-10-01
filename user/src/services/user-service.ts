@@ -24,13 +24,28 @@ class UserService {
     }
   }
 
-  async read(userId: string): Promise<User> {
+  async read(userId: string): Promise<User | null> {
     try {
       const query = 'SELECT * FROM users WHERE id = $1';
       const result = await postgresClient.query<User>(query, [userId]);
       
       if (!result.rows) {
-        throw Error;
+        return null;
+      }
+
+      return result.rows[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async readByEmail(email: string): Promise<User | null> {
+    try {
+      const query = 'SELECT * FROM users WHERE email = $1';
+      const result = await postgresClient.query<User>(query, [email]);
+      
+      if (!result.rows) {
+        return null;
       }
 
       return result.rows[0];

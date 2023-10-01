@@ -9,7 +9,13 @@ class Server {
     private port
 
     constructor() {
-        this.port = process.env.SERVER_PORT
+        const port = process.env.SERVER_PORT
+        if (!port) {
+            console.log("Missing SERVER_PORT")
+            process.exit()
+        }
+
+        this.port = port
         this.app = express();
         this.configMiddleware();
         this.configRouter()

@@ -6,10 +6,11 @@ const userRouter = Router();
 
 userRouter.use(AuthMiddleware.authJWT);
 
-userRouter.post('/', UserController.createUser);
+// NOTE: No need to expose creating, should be done in registration steps?
+// userRouter.post('/', UserController.createUser);
 userRouter.get('/:id', UserController.getUserById);
 userRouter.get('/', UserController.getCurrentUser);
-userRouter.put('/', UserController.updateUser);
+userRouter.patch('/', UserController.updateUser);
 userRouter.delete('/', UserController.deleteUser);
 
 export default userRouter;

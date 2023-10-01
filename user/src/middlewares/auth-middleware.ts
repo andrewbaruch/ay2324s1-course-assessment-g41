@@ -12,10 +12,20 @@ export function authJWT(req: Request, res: Response, next: Function) {
       console.log("Token verification failed", err)
 
       // TODO: login path
-      res.redirect('/login');
+      if (process.env.LOGIN_URL) {
+        res.redirect(process.env.LOGIN_URL);
+      } else {
+        console.log("Missing LOGIN_URL")
+        res.redirect(req.hostname)
+      }
     }
   } else {
-    res.redirect('/login');
+    if (process.env.LOGIN_URL) {
+      res.redirect(process.env.LOGIN_URL);
+    } else {
+      console.log("Missing LOGIN_URL")
+      res.redirect(req.hostname)
+    }
   }
 }
   

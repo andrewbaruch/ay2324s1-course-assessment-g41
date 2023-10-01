@@ -4,11 +4,11 @@ class PostgresClient {
     private readonly pool: Pool;
 
     constructor(connectionString: string) {
-    this.pool = new Pool({
-        max: 10,
-        connectionString: connectionString,
-        idleTimeoutMillis: 30000
-    });
+        this.pool = new Pool({
+            max: process.env.POSTGRES_CONN_COUNT ? parseInt(process.env.POSTGRES_CONN_COUNT) : undefined,
+            connectionString: connectionString,
+            idleTimeoutMillis: process.env.POSTGRES_TIMEOUT ? parseInt(process.env.POSTGRES_TIMEOUT) : undefined
+        });
     }
 
     public async query<T extends QueryResultRow>(
@@ -25,12 +25,20 @@ class PostgresClient {
     }
 
     public async disconnect(): Promise<void> {
-    await this.pool.end();
+        await this.pool.end();
+    }
+
+    public async getConnection() {
+        return this.pool.connect()
     }
 }
 
-const postgresClient = new PostgresClient(
-    process.env.POSTGRES || "NA"
-);
+const connString = process.env.POSTGRES
+if (!connString) {
+    console.log("Missing conn string for postgres")
+    process.exit()
+}
+
+const postgresClient = new PostgresClient(connString);
 
 export default postgresClient
