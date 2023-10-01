@@ -2,7 +2,7 @@ version: '3.8'
 
 x-common-variables: &common-variables
   SERVER_PORT: 8080
-  POSTGRES: postgresql://postgres:postgres@postgres:5432/mydb?schema=public
+  POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
   MONGO: mongodb://user:pass@mongodb
   EXE_ENV: DEV
 
