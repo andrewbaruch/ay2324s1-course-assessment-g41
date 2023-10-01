@@ -85,7 +85,10 @@ export default function GeneralInformation(props: { [x: string]: any }) {
         <SimpleGrid columns={2} gap="20px">
           <FormControl id="username">
             <FormLabel>Username</FormLabel>
-            <Input {...register('username', { required: true })} />
+            <Input
+              {...register('username', { required: true })}
+              color={textColorPrimary}
+            />
           </FormControl>
           <FormControl id="language">
             <FormLabel>Preferred Language</FormLabel>
