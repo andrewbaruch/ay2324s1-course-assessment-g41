@@ -17,7 +17,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { BsCodeSquare } from 'react-icons/bs';
-import { ComplexityBadge } from '../complexity';
+import { ComplexityBadge } from '../../components/complexity';
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   const { setQuestion } = useQuestion();

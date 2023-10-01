@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { PATH_AUTH } from 'src/routes/paths';
-import { clearState } from 'src/store/actions/clearActions';
 import useAuthProvider from './useAuthProvider';
 
 type Logout = (redirectTo?: string) => Promise<any>;
@@ -24,17 +22,15 @@ type Logout = (redirectTo?: string) => Promise<any>;
  * }
  */
 const useLogout = (): Logout => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const authProvider = useAuthProvider();
 
   const callLogout = useCallback(
     async (redirectTo = PATH_AUTH.general.login) => {
       await authProvider.logout();
-      dispatch(clearState());
       router.push(redirectTo);
     },
-    [authProvider, dispatch, router],
+    [authProvider, router],
   );
 
   return callLogout;

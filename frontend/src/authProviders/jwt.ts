@@ -33,7 +33,7 @@ const setSession = ({ accessToken, refreshToken }: Session) => {
   localStorage.setItem(REFRESH_TOKEN, refreshToken);
 };
 const deleteSession = () => {
-  // TODO: use redux persist
+  // TODO: use jotai sessionStorage
   localStorage.removeItem(ACCESS_TOKEN);
   localStorage.removeItem(REFRESH_TOKEN);
 };

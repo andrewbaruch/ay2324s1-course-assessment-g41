@@ -21,7 +21,7 @@ import {
 import { useState } from "react";
 import { BsPencilSquare, BsTrash2 } from "react-icons/bs";
 import { QuestionForm } from "./QuestionForm";
-import { ComplexityBadge } from "../complexity";
+import { ComplexityBadge } from "../../components/complexity";
 
 export const QuestionDetails = ({
   title,

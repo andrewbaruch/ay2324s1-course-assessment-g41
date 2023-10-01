@@ -4,7 +4,7 @@ import {
   QuestionsList,
   QuestionDetails,
   QuestionForm,
-} from '@/components/question';
+} from '@/views/question';
 import { useHeaderTab } from '@/hooks/useHeaderTabs';
 import { useQuestion } from '@/hooks/useQuestion';
 import { useQuestionList } from '@/hooks/useQuestionList';
