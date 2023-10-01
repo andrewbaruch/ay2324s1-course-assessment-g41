@@ -1,16 +1,15 @@
 import { Router } from 'express';
 import * as UserController from '@/controllers/user-controller';
-import * as UIDMiddleware from '@/middlewares/uid-middleware';
+import * as AuthMiddleware from '@/middlewares/auth-middleware';
 
-const router = Router();
+const userRouter = Router();
 
-// TODO: update for session/middleware
-router.use(UIDMiddleware.getUserInfoJWT);
+userRouter.use(AuthMiddleware.authJWT);
 
-router.post('/', UserController.createUser);
-router.get('/:id', UserController.getUserById);
-router.get('/', UserController.getCurrentUser);
-router.put('/', UserController.updateUser);
-router.delete('/', UserController.deleteUser);
+userRouter.post('/', UserController.createUser);
+userRouter.get('/:id', UserController.getUserById);
+userRouter.get('/', UserController.getCurrentUser);
+userRouter.put('/', UserController.updateUser);
+userRouter.delete('/', UserController.deleteUser);
 
-export default router;
+export default userRouter;

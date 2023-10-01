@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "@types/cors": "^2.8.14",
+    "@types/passport": "^1.0.13",
+    "@types/passport-facebook": "^3.0.1",
+    "@types/passport-google-oauth20": "^2.0.12",
+    "@types/passport-local": "^1.0.36",
+    "cors": "^2.8.5",
+    "googleapis": "^126.0.1",
+    "passport": "^0.6.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0"
+  }
+}

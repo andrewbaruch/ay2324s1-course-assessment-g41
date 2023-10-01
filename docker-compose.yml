@@ -6,7 +6,7 @@ x-common-variables: &common-variables
   MONGO: mongodb://user:pass@mongodb
   EXE_ENV: DEV
 
-network:
+networks:
   frontend:
   backend:
 
@@ -52,6 +52,7 @@ services:
       - 27017:27017
     networks:
       - backend
+
   nginx:
     restart: always
     build:
@@ -59,6 +60,7 @@ services:
       context: ./nginx
     ports:
       - '3000:80'
+      
   client:
     build:
       dockerfile: Dockerfile.dev
@@ -69,3 +71,4 @@ services:
 volumes:
   postgres:
   mongodb:
+  3219User:

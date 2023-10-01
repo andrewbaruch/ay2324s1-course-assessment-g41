@@ -1,6 +1,8 @@
-import express, { Application, Router } from 'express';
+import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
-import router from '@/routes/user-router'
+import userRouter from '@/routes/user-router'
+import authRouter from '@/routes/auth-router'
 
 class Server {
     private app
@@ -16,11 +18,16 @@ class Server {
     private configMiddleware() {
         this.app.use(bodyParser.urlencoded({ extended:true }));
         this.app.use(bodyParser.json({ limit: '1mb' })); 
+       this.app.use(cors({
+            origin: '*',
+        }));
+
     }
 
     private configRouter() {
         // NOTE: Central router if necessary
-        this.app.use('/user', router);
+        this.app.use('/user', userRouter);
+        this.app.use('/auth', authRouter);
     }
 
     public start() {
