@@ -3,6 +3,9 @@ import { useQuestion } from "@/hooks/useQuestion";
 import { HeaderTabs } from "@/types/header";
 import { Question } from "@/types/models/question";
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Badge,
   Box,
   Button,
@@ -23,45 +26,75 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   return (
     <Stack spacing={4}>
       <Heading fontWeight="bold">Coding Questions</Heading>
-      <Tooltip
-        label="Design your own question, or save a question you encountered from a technical interview here!"
-        hasArrow
-        placement="right"
-      >
-        <Button
-          w="fit-content"
-          onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
-          leftIcon={<BsCodeSquare />}
-          size="sm"
-        >
-          Craft Question
-        </Button>
-      </Tooltip>
-      <Stack borderWidth={1} borderRadius={4} spacing={0} background="white">
-        {questions.map((q, index) =>
-          index !== questions.length - 1 ? (
-            <Box
-              key={`q-${index}`}
-              _hover={{ background: "gray.100", cursor: "pointer" }}
-              onClick={() => setQuestion({ ...q })}
+
+      {questions.length > 0 ? (
+        <>
+          <Tooltip
+            label="Design your own question, or save a question you encountered from a technical interview here!"
+            hasArrow
+            placement="right"
+          >
+            <Button
+              w="fit-content"
+              onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
+              leftIcon={<BsCodeSquare />}
+              size="sm"
             >
-              <Box p={4}>
-                <QuestionCard {...q} />
-              </Box>
-              <Divider />
-            </Box>
-          ) : (
-            <Box
-              p={4}
-              key={`q-${index}`}
-              _hover={{ background: "gray.100", cursor: "pointer" }}
-              onClick={() => setQuestion({ ...q })}
+              Craft Question
+            </Button>
+          </Tooltip>
+
+          <Stack
+            borderWidth={1}
+            borderRadius={4}
+            spacing={0}
+            background="white"
+          >
+            {questions.map((q, index) =>
+              index !== questions.length - 1 ? (
+                <Box
+                  key={`q-${index}`}
+                  _hover={{ background: "gray.100", cursor: "pointer" }}
+                  onClick={() => setQuestion({ ...q })}
+                >
+                  <Box p={4}>
+                    <QuestionCard {...q} />
+                  </Box>
+                  <Divider />
+                </Box>
+              ) : (
+                <Box
+                  p={4}
+                  key={`q-${index}`}
+                  _hover={{ background: "gray.100", cursor: "pointer" }}
+                  onClick={() => setQuestion({ ...q })}
+                >
+                  <QuestionCard {...q} />
+                </Box>
+              )
+            )}
+          </Stack>
+        </>
+      ) : (
+        <Alert borderRadius={16}>
+          <Stack>
+            <AlertTitle>Looks like you have not saved a question!</AlertTitle>
+            <AlertDescription>
+              This question repository helps you save questions you have
+              encountered from past interviews! You can also design and save
+              your own question!
+            </AlertDescription>
+            <Button
+              w="fit-content"
+              onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
+              leftIcon={<BsCodeSquare />}
+              size="sm"
             >
-              <QuestionCard {...q} />
-            </Box>
-          )
-        )}
-      </Stack>
+              Craft Question
+            </Button>
+          </Stack>
+        </Alert>
+      )}
     </Stack>
   );
 };

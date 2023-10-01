@@ -52,9 +52,20 @@ services:
       - 27017:27017
     networks:
       - backend
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3000:80'
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend
+    volumes:
+      - ./frontend:/app
 
 volumes:
   postgres:
   mongodb:
-
-
