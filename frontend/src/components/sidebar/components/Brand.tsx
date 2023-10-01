@@ -1,4 +1,5 @@
 // Chakra imports
+import { PATH_ADMIN } from '@/routes/paths';
 import { Link } from '@chakra-ui/next-js';
 import { Flex, useColorModeValue } from '@chakra-ui/react';
 
@@ -13,7 +14,9 @@ export function SidebarBrand() {
 
   return (
     <Flex alignItems="center" flexDirection="column">
-      <PeerPrepLogo h="130px" w="875px" color={logoColor} />
+      <Link href={PATH_ADMIN.general.dashboard}>
+        <PeerPrepLogo h="130px" w="875px" color={logoColor} />
+      </Link>
       {/* <Link
         // karwi: change logo
         color={logoColor}

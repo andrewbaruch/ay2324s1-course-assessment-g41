@@ -236,7 +236,7 @@ export default function NftMarketplace() {
               py="18px"
             >
               <Text color={textColor} fontSize="xl" fontWeight="600">
-                History
+                My Attempts
               </Text>
               <Button variant="action">See all</Button>
             </Flex>
