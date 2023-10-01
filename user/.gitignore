@@ -36,5 +36,5 @@ dist
 # ignore yarn.lock
 yarn.lock
 
-# # ignore package.lock
+# ignore package.lock
 package.lock
