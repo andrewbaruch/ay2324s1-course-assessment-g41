@@ -60,7 +60,7 @@ export class AuthService {
             const accessToken = credentials.access_token
             const res =  await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token${accessToken}`)
             const data = await res.json();
-            
+
             return data
         } catch(err) {
             console.log("Google callback failed")
