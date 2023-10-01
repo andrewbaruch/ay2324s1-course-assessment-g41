@@ -23,7 +23,7 @@ coverage
 .env
 
 # # Dependency directory
-# node_modules
+node_modules
 
 # Editors
 
@@ -37,4 +37,4 @@ dist
 yarn.lock
 
 # # ignore package.lock
-# package.lock
+package.lock
