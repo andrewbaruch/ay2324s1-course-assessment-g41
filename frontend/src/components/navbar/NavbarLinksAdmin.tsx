@@ -284,6 +284,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
               _focus={{ bg: 'none' }}
               borderRadius="8px"
               px="14px"
+              bg={menuBg}
             >
               <Text fontSize="sm">Profile Settings</Text>
             </MenuItem>
@@ -292,6 +293,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
               _focus={{ bg: 'none' }}
               borderRadius="8px"
               px="14px"
+              bg={menuBg}
             >
               <Text fontSize="sm">Newsletter Settings</Text>
             </MenuItem>
@@ -301,6 +303,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
               color="red.400"
               borderRadius="8px"
               px="14px"
+              bg={menuBg}
             >
               <Text fontSize="sm">Log out</Text>
             </MenuItem>
