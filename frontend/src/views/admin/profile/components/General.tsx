@@ -11,10 +11,9 @@ import {
 } from '@chakra-ui/react';
 import { useForm, Controller } from 'react-hook-form';
 import Card from 'src/components/card/Card';
-import Select from 'react-select';
-// import { OptionsType, ValueType } from 'react-select/src/types';
+import { GroupBase, OptionBase, Select } from 'chakra-react-select';
 
-// karwi: refactor later
+// karwi: refactor later, change to chakra style
 interface IFormInput {
   username: string;
   language: string;
@@ -22,7 +21,7 @@ interface IFormInput {
   difficulty: string;
 }
 
-interface OptionType {
+interface OptionType extends OptionBase {
   value: string;
   label: string;
 }
@@ -58,6 +57,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   // React hook form setup
   const { handleSubmit, register, setValue, control } = useForm<IFormInput>();
 
+  // karwi: put in services/
   const onSubmit = (data: IFormInput) =>
     fetch('https://api.example.com', {
       method: 'POST',
@@ -95,16 +95,10 @@ export default function GeneralInformation(props: { [x: string]: any }) {
               rules={{ required: true }}
               defaultValue=""
               render={({ field }) => (
-                <Select
-                  {...field}
-                  value={languageOptions.find(
-                    (option) => option.value === field.value,
-                  )}
+                <Select<OptionType, true, GroupBase<OptionType>>
+                  name="languge"
                   options={languageOptions}
-                  isClearable
-                  onChange={(option: OptionType | null) =>
-                    setValue('language', option?.value || '')
-                  }
+                  placeholder="Select option"
                 />
               )}
             />
@@ -117,20 +111,11 @@ export default function GeneralInformation(props: { [x: string]: any }) {
               rules={{ required: true }}
               defaultValue={[]}
               render={({ field }) => (
-                <Select
-                  {...field}
-                  value={topicOptions.filter((option) =>
-                    field.value.includes(option.value),
-                  )}
-                  options={topicOptions}
+                <Select<OptionType, true, GroupBase<OptionType>>
                   isMulti
-                  isClearable
-                  onChange={(option) =>
-                    setValue(
-                      'topics',
-                      option ? [...option.map((item) => item.value)] : [],
-                    )
-                  }
+                  name="topics"
+                  options={topicOptions}
+                  placeholder="Select option"
                 />
               )}
             />
@@ -143,16 +128,10 @@ export default function GeneralInformation(props: { [x: string]: any }) {
               rules={{ required: true }}
               defaultValue=""
               render={({ field }) => (
-                <Select
-                  {...field}
-                  value={difficultyOptions.find(
-                    (option) => option.value === field.value,
-                  )}
+                <Select<OptionType, true, GroupBase<OptionType>>
+                  name="difficulty"
                   options={difficultyOptions}
-                  isClearable
-                  onChange={(option: OptionType | null) =>
-                    setValue('difficulty', option?.value || '')
-                  }
+                  placeholder="Select option"
                 />
               )}
             />

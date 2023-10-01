@@ -35,16 +35,16 @@ const routes: IRoute[] = [
     secondary: true,
   },
   {
-    name: 'Sign In',
-    layout: '/auth',
-    path: '/sign-in',
-    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
-    // component: SignInCentered,
-  },
-  {
     name: 'Profile',
     layout: '/admin',
     path: '/profile',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    // component: SignInCentered,
+  },
+  {
+    name: 'Sign In',
+    layout: '/auth',
+    path: '/sign-in',
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
     // component: SignInCentered,
   },

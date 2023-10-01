@@ -23,6 +23,7 @@
     "apexcharts": "^3.43.0",
     "async-mutex": "^0.4.0",
     "axios": "0.27.2",
+    "chakra-react-select": "^4.7.2",
     "chakra-ui-markdown-renderer": "^4.1.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
