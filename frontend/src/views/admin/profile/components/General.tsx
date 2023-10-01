@@ -157,7 +157,16 @@ export default function GeneralInformation(props: { [x: string]: any }) {
               )}
             />
           </FormControl>
-          <Button type="submit" colorScheme="teal" mt={5}>
+          <Button
+            type="submit"
+            me="100%"
+            mb="50px"
+            w="140px"
+            minW="140px"
+            mt={{ base: '20px', '2xl': 'auto' }}
+            variant="brand"
+            fontWeight="500"
+          >
             Submit
           </Button>
         </SimpleGrid>
