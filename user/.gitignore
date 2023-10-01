@@ -22,8 +22,8 @@ coverage
 # API keys and secrets
 .env
 
-# Dependency directory
-node_modules
+# # Dependency directory
+# node_modules
 
 # Editors
 
@@ -35,3 +35,6 @@ dist
 
 # ignore yarn.lock
 yarn.lock
+
+# # ignore package.lock
+# package.lock
