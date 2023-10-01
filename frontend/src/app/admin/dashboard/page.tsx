@@ -69,39 +69,39 @@ export default function NftMarketplace() {
                 ms={{ base: '24px', md: '0px' }}
                 mt={{ base: '20px', md: '0px' }}
               >
-                <Link
+                {/* <Link
                   href="#art"
                   color={textColorBrand}
                   fontWeight="500"
                   me={{ base: '34px', md: '44px' }}
                 >
                   Art
-                </Link>
+                </Link> */}
                 <Link
-                  href="#music"
+                  href="#easy"
                   color={textColorBrand}
                   fontWeight="500"
                   me={{ base: '34px', md: '44px' }}
                 >
-                  Music
+                  Easy
                 </Link>
                 <Link
-                  href="#collectibles"
+                  href="#medium"
                   color={textColorBrand}
                   fontWeight="500"
                   me={{ base: '34px', md: '44px' }}
                 >
-                  Collectibles
+                  Medium
                 </Link>
-                <Link href="#sports" color={textColorBrand} fontWeight="500">
-                  Sports
+                <Link href="#hard" color={textColorBrand} fontWeight="500">
+                  Hard
                 </Link>
               </Flex>
             </Flex>
             <SimpleGrid columns={{ base: 1, md: 3 }} gap="20px">
               <NFT
-                name="Abstract Colors"
-                author="By Esthera Jackson"
+                name="Contains Duplicate"
+                author="By Kar Wi"
                 bidders={[
                   Avatar1,
                   Avatar2,
@@ -113,12 +113,12 @@ export default function NftMarketplace() {
                   Avatar1,
                 ]}
                 image={Nft1}
-                currentbid="0.91 ETH"
+                currentbid="Medium"
                 download="#"
               />
               <NFT
-                name="ETH AI Brain"
-                author="By Nick Wilson"
+                name="Valid Anagram"
+                author="By Didymus Ne"
                 bidders={[
                   Avatar1,
                   Avatar2,
@@ -130,12 +130,12 @@ export default function NftMarketplace() {
                   Avatar1,
                 ]}
                 image={Nft2}
-                currentbid="0.91 ETH"
+                currentbid="Medium"
                 download="#"
               />
               <NFT
-                name="Mesh Gradients "
-                author="By Will Smith"
+                name="Two Sum "
+                author="By Hong Po"
                 bidders={[
                   Avatar1,
                   Avatar2,
@@ -147,7 +147,7 @@ export default function NftMarketplace() {
                   Avatar1,
                 ]}
                 image={Nft3}
-                currentbid="0.91 ETH"
+                currentbid="Medium"
                 download="#"
               />
             </SimpleGrid>
@@ -167,8 +167,8 @@ export default function NftMarketplace() {
               mb={{ base: '20px', xl: '0px' }}
             >
               <NFT
-                name="Swipe Circles"
-                author="By Peter Will"
+                name="Group Anagrams"
+                author="By Yong Ler"
                 bidders={[
                   Avatar1,
                   Avatar2,
@@ -180,12 +180,12 @@ export default function NftMarketplace() {
                   Avatar1,
                 ]}
                 image={Nft4}
-                currentbid="0.91 ETH"
+                currentbid="Medium"
                 download="#"
               />
               <NFT
-                name="Colorful Heaven"
-                author="By Mark Benjamin"
+                name="Top K Frequent Elements"
+                author="By Andrew"
                 bidders={[
                   Avatar1,
                   Avatar2,
@@ -197,11 +197,11 @@ export default function NftMarketplace() {
                   Avatar1,
                 ]}
                 image={Nft5}
-                currentbid="0.91 ETH"
+                currentbid="Medium"
                 download="#"
               />
               <NFT
-                name="3D Cubes Art"
+                name="Product of Array Except Self"
                 author="By Manny Gates"
                 bidders={[
                   Avatar1,
@@ -214,7 +214,7 @@ export default function NftMarketplace() {
                   Avatar1,
                 ]}
                 image={Nft6}
-                currentbid="0.91 ETH"
+                currentbid="Medium"
                 download="#"
               />
             </SimpleGrid>
@@ -242,46 +242,46 @@ export default function NftMarketplace() {
             </Flex>
 
             <HistoryItem
-              name="Colorful Heaven"
-              author="By Mark Benjamin"
+              name="Top K Frequent Elements"
+              author="By Andrew"
               date="30s ago"
               image={Nft5}
-              price="0.91 ETH"
+              // price="0.91 ETH"
             />
             <HistoryItem
-              name="Abstract Colors"
-              author="By Esthera Jackson"
+              name="Contains Duplicate"
+              author="By Kar Wi"
               date="58s ago"
               image={Nft1}
-              price="0.91 ETH"
+              // price="0.91 ETH"
             />
             <HistoryItem
-              name="ETH AI Brain"
-              author="By Nick Wilson"
+              name="Valid Anagram"
+              author="By Didymus Ne"
               date="1m ago"
               image={Nft2}
-              price="0.91 ETH"
+              // price="0.91 ETH"
             />
             <HistoryItem
-              name="Swipe Circles"
-              author="By Peter Will"
+              name="Group Anagrams"
+              author="By Yong Ler"
               date="1m ago"
               image={Nft4}
-              price="0.91 ETH"
+              // price="0.91 ETH"
             />
             <HistoryItem
-              name="Mesh Gradients "
-              author="By Will Smith"
+              name="Two Sum "
+              author="By Hong Po"
               date="2m ago"
               image={Nft3}
-              price="0.91 ETH"
+              // price="0.91 ETH"
             />
             <HistoryItem
-              name="3D Cubes Art"
+              name="Product of Array Except Self"
               author="By Manny Gates"
               date="3m ago"
               image={Nft6}
-              price="0.91 ETH"
+              // price="0.91 ETH"
             />
           </Card>
         </Flex>

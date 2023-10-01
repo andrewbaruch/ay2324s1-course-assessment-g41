@@ -72,7 +72,7 @@ export default function TopCreatorTable(props: { tableData: any }) {
           fontSize={{ sm: '10px', lg: '12px' }}
           color="gray.400"
         >
-          ARTWORKS
+          Interviews
         </Text>
       ),
       cell: (info) => (

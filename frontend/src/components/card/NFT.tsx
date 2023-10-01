@@ -141,7 +141,7 @@ export default function NFT(props: {
             mt="25px"
           >
             <Text fontWeight="700" fontSize="sm" color={textColorBid}>
-              Current Bid: {currentbid}
+              Difficulty: {currentbid}
             </Text>
             <Link
               href={download}

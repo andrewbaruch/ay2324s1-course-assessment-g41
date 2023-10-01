@@ -12,9 +12,9 @@ export default function NFT(props: {
   name: string;
   author: string;
   date: string;
-  price: string | number;
+  // price: string | number;
 }) {
-  const { image, name, author, date, price } = props;
+  const { image, name, author, date } = props;
   // Chakra Color Mode
   const textColor = useColorModeValue('brands.900', 'white');
   const bgItem = useColorModeValue(
@@ -70,7 +70,7 @@ export default function NFT(props: {
               {author}
             </Text>
           </Flex>
-          <Flex
+          {/* <Flex
             w="max-content"
             me={{ base: '4px', md: '32px', xl: '10px', '3xl': '32px' }}
             align="center"
@@ -84,7 +84,7 @@ export default function NFT(props: {
             >
               {price}
             </Text>
-          </Flex>
+          </Flex> */}
           <Text ms="auto" fontWeight="700" fontSize="sm" color={textColorDate}>
             {date}
           </Text>
