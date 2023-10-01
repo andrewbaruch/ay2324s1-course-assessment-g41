@@ -11,15 +11,6 @@ import { useQuestionList } from '@/hooks/useQuestionList';
 import { HeaderTabs } from '@/@types/header';
 import useAuthenticated from '@/hooks/guards/useAuthenticated';
 import { Box } from '@chakra-ui/react';
-// import AdminLayout from '@/layouts';
-
-// ----------------------------------------------------------------------
-
-// Questions.getLayout = (page: React.ReactElement) => (
-//   <AdminLayout>{page}</AdminLayout>
-// );
-
-// ----------------------------------------------------------------------
 
 // karwi: better name?
 export default function Questions() {

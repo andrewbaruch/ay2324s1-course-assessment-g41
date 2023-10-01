@@ -6,7 +6,6 @@ import FixedPlugin from 'src/components/fixedPlugin/FixedPlugin';
 import { FaChevronLeft } from 'react-icons/fa';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-import { Video } from 'react-video';
 
 function AuthIllustration(props: {
   children: ReactNode;
@@ -54,7 +53,7 @@ function AuthIllustration(props: {
               color="secondaryGray.600"
             />
             <Text ms="0px" fontSize="sm" color="secondaryGray.600">
-              Back to Simmmple
+              Back to Group41
             </Text>
           </Flex>
         </Link> */}
