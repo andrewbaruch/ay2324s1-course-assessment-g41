@@ -79,7 +79,6 @@ export default function AdminNavbar(props: {
       display={secondary ? 'block' : 'flex'}
       minH="75px"
       position={navbarPosition}
-      // position={navbarPosition}
       justifyContent={{ xl: 'center' }}
       lineHeight="25.6px"
       mx="auto"
@@ -115,9 +114,9 @@ export default function AdminNavbar(props: {
         <Box mb={{ sm: '8px', md: '0px' }}>
           <Breadcrumb>
             <BreadcrumbItem color={secondaryText} fontSize="sm" mb="5px">
-              <BreadcrumbLink href="#" color={secondaryText}>
+              {/* <BreadcrumbLink href="#" color={secondaryText}>
                 Pages
-              </BreadcrumbLink>
+              </BreadcrumbLink> */}
             </BreadcrumbItem>
 
             <BreadcrumbItem color={secondaryText} fontSize="sm">

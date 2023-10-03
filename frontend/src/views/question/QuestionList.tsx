@@ -1,6 +1,5 @@
-import { useHeaderTab } from '@/hooks/useHeaderTabs';
-import { useQuestion } from '@/hooks/useQuestion';
-import { HeaderTabs } from '@/@types/header';
+"use client"
+import { useQuestion } from '@/hooks/questions/useQuestion';
 import { Question } from '@/@types/models/question';
 import {
   Alert,
@@ -10,7 +9,6 @@ import {
   Box,
   Button,
   Divider,
-  Heading,
   HStack,
   Stack,
   Text,
@@ -18,10 +16,10 @@ import {
 } from '@chakra-ui/react';
 import { BsCodeSquare } from 'react-icons/bs';
 import { ComplexityBadge } from '../../components/complexity';
+import Link from 'next/link';
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   const { setQuestion } = useQuestion();
-  const { setTab } = useHeaderTab();
 
   return (
     <Stack spacing={4}>
@@ -32,14 +30,15 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
             hasArrow
             placement="right"
           >
-            <Button
-              w="fit-content"
-              onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
-              leftIcon={<BsCodeSquare />}
-              size="sm"
-            >
-              Craft Question
-            </Button>
+            <Link href={'/questions/add-question'}>
+              <Button
+                w="fit-content"
+                leftIcon={<BsCodeSquare />}
+                size="sm"
+              >
+                Craft Question
+              </Button>
+            </Link>
           </Tooltip>
 
           <Stack
@@ -50,49 +49,52 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
           >
             {questions.map((q, index) =>
               index !== questions.length - 1 ? (
-                <Box
-                  key={`q-${index}`}
-                  _hover={{ background: 'gray.100', cursor: 'pointer' }}
-                  onClick={() => setQuestion({ ...q })}
-                >
-                  <Box p={4}>
+                <Link href={`questions/${q.id}`}>
+                  <Box
+                    key={`q-${index}`}
+                    _hover={{ background: 'gray.100', cursor: 'pointer' }}
+                  // onClick={() => setQuestion({ ...q })}
+                  >
+                    <Box p={4}>
+                      <QuestionCard {...q} />
+                    </Box>
+                    <Divider />
+                  </Box>
+                </Link>
+              ) : (
+                  <Box
+                    p={4}
+                    key={`q-${index}`}
+                    _hover={{ background: 'gray.100', cursor: 'pointer' }}
+                    onClick={() => setQuestion({ ...q })}
+                  >
                     <QuestionCard {...q} />
                   </Box>
-                  <Divider />
-                </Box>
-              ) : (
-                <Box
-                  p={4}
-                  key={`q-${index}`}
-                  _hover={{ background: 'gray.100', cursor: 'pointer' }}
-                  onClick={() => setQuestion({ ...q })}
-                >
-                  <QuestionCard {...q} />
-                </Box>
-              ),
+                ),
             )}
           </Stack>
         </>
       ) : (
-        <Alert borderRadius={16}>
-          <Stack>
-            <AlertTitle>Looks like you have not saved a question!</AlertTitle>
-            <AlertDescription>
-              This question repository helps you save questions you have
-              encountered from past interviews! You can also design and save
-              your own question!
+          <Alert borderRadius={16}>
+            <Stack>
+              <AlertTitle>Looks like you have not saved a question!</AlertTitle>
+              <AlertDescription>
+                This question repository helps you save questions you have
+                encountered from past interviews! You can also design and save
+                your own question!
             </AlertDescription>
-            <Button
-              w="fit-content"
-              onClick={() => setTab(HeaderTabs.QUESTION_FORM)}
-              leftIcon={<BsCodeSquare />}
-              size="sm"
-            >
-              Craft Question
-            </Button>
-          </Stack>
-        </Alert>
-      )}
+              <Link href={'/questions/add-question'}>
+                <Button
+                  w="fit-content"
+                  leftIcon={<BsCodeSquare />}
+                  size="sm"
+                >
+                  Craft Question
+              </Button>
+              </Link>
+            </Stack>
+          </Alert>
+        )}
     </Stack>
   );
 };

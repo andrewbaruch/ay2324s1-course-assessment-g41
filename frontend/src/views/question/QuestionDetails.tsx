@@ -1,5 +1,5 @@
-import { useHeaderTab } from "@/hooks/useHeaderTabs";
-import { useQuestionList } from "@/hooks/useQuestionList";
+"use client";
+import { useQuestionList } from "@/hooks/questions/useQuestionList";
 import { Question } from "@/@types/models/question";
 import ReactMarkdown from "react-markdown";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
@@ -22,6 +22,7 @@ import { useState } from "react";
 import { BsPencilSquare, BsTrash2 } from "react-icons/bs";
 import { QuestionForm } from "./QuestionForm";
 import { ComplexityBadge } from "../../components/complexity";
+import Link from "next/link";
 
 export const QuestionDetails = ({
   title,
@@ -32,7 +33,7 @@ export const QuestionDetails = ({
 
   isPreview = false,
 }: Question & { isPreview?: boolean }) => {
-  const { goToBrowsePage } = useHeaderTab();
+
   const { removeQuestion } = useQuestionList();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -96,28 +97,29 @@ export const QuestionDetails = ({
           >
             Edit
           </Button>
-          <Button
-            size="sm"
-            leftIcon={<BsTrash2 />}
-            onClick={() => {
-              removeQuestion({ id });
-              goToBrowsePage();
-            }}
-          >
-            Delete
-          </Button>
+          <Link href={'/questions'}>
+            <Button
+              size="sm"
+              leftIcon={<BsTrash2 />}
+              onClick={() => {
+                removeQuestion({ id });
+              }}
+            >
+              Delete
+            </Button>
+          </Link>
         </HStack>
       )}
     </Flex>
   ) : (
-    <QuestionForm
-      question={{
-        title,
-        complexity,
-        description,
-        id,
-        categories,
-      }}
-    />
-  );
+      <QuestionForm
+        question={{
+          title,
+          complexity,
+          description,
+          id,
+          categories,
+        }}
+      />
+    );
 };

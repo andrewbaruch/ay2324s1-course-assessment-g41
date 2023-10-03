@@ -22,7 +22,7 @@ authorizedAxios.interceptors.request.use(
   },
   async (error) => {
     throw error;
-  }
+  },
 );
 
 authorizedAxios.interceptors.response.use(
@@ -52,7 +52,7 @@ authorizedAxios.interceptors.response.use(
       }
 
       throw error;
-    })
+    }),
 );
 
 export default authorizedAxios;

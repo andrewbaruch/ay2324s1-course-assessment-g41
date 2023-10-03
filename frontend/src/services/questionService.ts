@@ -94,6 +94,12 @@ class QuestionService {
     const questions: Question[] = JSON.parse(storage);
     return questions;
   }
+  static getQuestion(id: number) {
+    const questions: Question[] = QuestionService.getQuestions();
+    const filteredQuestions = questions.filter(q => q.id === id)
+    return filteredQuestions.length > 0 ? filteredQuestions[0] : null;
+
+  }
 
   private static validateAddQuestion({
     title,

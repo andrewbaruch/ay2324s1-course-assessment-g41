@@ -21,14 +21,14 @@ import { IRoute } from 'src/@types/navigation';
 const routes: IRoute[] = [
   {
     name: 'Dashboard',
-    layout: '/admin',
+    layout: '',
     path: '/dashboard',
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     // component: MainDashboard,
   },
   {
     name: 'Coding Questions',
-    layout: '/admin',
+    layout: '',
     path: '/questions',
     icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
     // component: NFTMarketplace,
@@ -36,7 +36,7 @@ const routes: IRoute[] = [
   },
   {
     name: 'Profile',
-    layout: '/admin',
+    layout: '',
     path: '/profile',
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     // component: SignInCentered,
@@ -47,7 +47,7 @@ const routes: IRoute[] = [
     path: '/sign-in',
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
     // component: SignInCentered,
-  },
+  }
 ];
 
 export default routes;

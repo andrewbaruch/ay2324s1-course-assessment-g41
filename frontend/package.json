@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -37,7 +39,6 @@
     "react-hook-form": "^7.46.2",
     "react-icons": "^4.11.0",
     "react-markdown": "^8.0.7",
-    "react-redux": "^8.1.2",
     "react-select": "^5.7.5",
     "react-video": "^1.5.3",
     "typescript": "5.2.2",

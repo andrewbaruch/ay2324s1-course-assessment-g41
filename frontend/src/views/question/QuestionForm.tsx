@@ -1,3 +1,4 @@
+"use client"
 import {
   Heading,
   FormControl,
@@ -26,9 +27,9 @@ import {
   QuestionComplexity,
 } from "@/@types/models/question";
 import { useForm } from "react-hook-form";
-import { useQuestionList } from "@/hooks/useQuestionList";
+import { useQuestionList } from "@/hooks/questions/useQuestionList";
 import { QuestionDetails } from "./QuestionDetails";
-import { useHeaderTab } from "@/hooks/useHeaderTabs";
+import { useRouter } from "next/navigation";
 
 export const QuestionForm = ({
   question = null,
@@ -46,8 +47,8 @@ export const QuestionForm = ({
     defaultValues: question ? { ...question } : undefined,
   });
   const { addQuestion, editQuestion } = useQuestionList();
-  const { goToBrowsePage } = useHeaderTab();
   const toast = useToast();
+  const router = useRouter()
 
   register("categories", {
     required: "At least one category must be selected.",
@@ -191,19 +192,19 @@ export const QuestionForm = ({
           try {
             question
               ? editQuestion({
-                  id: question.id,
-                  categories: data.categories ? data.categories : [],
-                  title: data.title,
-                  description: data.description,
-                  complexity: data.complexity,
-                })
+                id: question.id,
+                categories: data.categories ? data.categories : [],
+                title: data.title,
+                description: data.description,
+                complexity: data.complexity,
+              })
               : addQuestion({
-                  categories: data.categories ? data.categories : [],
-                  title: data.title,
-                  description: data.description,
-                  complexity: data.complexity,
-                });
-            goToBrowsePage();
+                categories: data.categories ? data.categories : [],
+                title: data.title,
+                description: data.description,
+                complexity: data.complexity,
+              });
+            router.push('/questions')
           } catch (err) {
             toast({
               status: "error",
