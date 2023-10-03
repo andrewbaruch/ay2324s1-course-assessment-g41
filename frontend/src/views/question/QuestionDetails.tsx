@@ -1,5 +1,5 @@
 "use client";
-import { useQuestionList } from "@/hooks/questions/useQuestionList";
+import { useQuestions } from "@/hooks/questions/useQuestionList";
 import { Question } from "@/@types/models/question";
 import ReactMarkdown from "react-markdown";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
@@ -17,6 +17,7 @@ import {
   Heading,
   HStack,
   Stack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { BsPencilSquare, BsTrash2 } from "react-icons/bs";
@@ -34,15 +35,16 @@ export const QuestionDetails = ({
   isPreview = false,
 }: Question & { isPreview?: boolean }) => {
 
-  const { removeQuestion } = useQuestionList();
+  const { removeQuestion } = useQuestions();
   const [isEdit, setIsEdit] = useState(false);
+  const bgColor = useColorModeValue('white', 'navy.800');
 
   return !isEdit ? (
     <Flex
       direction="column"
       px={isPreview ? 0 : 6}
       py={isPreview ? 0 : 8}
-      bgColor={isPreview ? "transparent" : "white"}
+      bgColor={bgColor}
       borderRadius={12}
       borderColor="gray.100"
       borderWidth={isPreview ? 0 : 1}

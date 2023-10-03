@@ -1,5 +1,4 @@
-"use client"
-import { useQuestion } from '@/hooks/questions/useQuestion';
+"use client";
 import { Question } from '@/@types/models/question';
 import {
   Alert,
@@ -13,13 +12,15 @@ import {
   Stack,
   Text,
   Tooltip,
+  useColorModeValue
 } from '@chakra-ui/react';
 import { BsCodeSquare } from 'react-icons/bs';
 import { ComplexityBadge } from '../../components/complexity';
 import Link from 'next/link';
 
 export const QuestionsList = ({ questions }: { questions: Question[] }) => {
-  const { setQuestion } = useQuestion();
+  const bgColor = useColorModeValue('white', 'navy.800');
+  const hoverColor = useColorModeValue('gray.100', 'navy.900');
 
   return (
     <Stack spacing={4}>
@@ -45,15 +46,14 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
             borderWidth={1}
             borderRadius={4}
             spacing={0}
-            background="white"
+            background={bgColor}
           >
             {questions.map((q, index) =>
               index !== questions.length - 1 ? (
                 <Link href={`questions/${q.id}`}>
                   <Box
                     key={`q-${index}`}
-                    _hover={{ background: 'gray.100', cursor: 'pointer' }}
-                  // onClick={() => setQuestion({ ...q })}
+                    _hover={{ background: hoverColor, cursor: 'pointer' }}
                   >
                     <Box p={4}>
                       <QuestionCard {...q} />
@@ -62,14 +62,15 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
                   </Box>
                 </Link>
               ) : (
-                  <Box
-                    p={4}
-                    key={`q-${index}`}
-                    _hover={{ background: 'gray.100', cursor: 'pointer' }}
-                    onClick={() => setQuestion({ ...q })}
-                  >
-                    <QuestionCard {...q} />
-                  </Box>
+                  <Link href={`questions/${q.id}`}>
+                    <Box
+                      p={4}
+                      key={`q-${index}`}
+                      _hover={{ background: hoverColor, cursor: 'pointer' }}
+                    >
+                      <QuestionCard {...q} />
+                    </Box>
+                  </Link>
                 ),
             )}
           </Stack>

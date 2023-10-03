@@ -19,6 +19,7 @@ import {
   SimpleGrid,
   FormErrorMessage,
   useToast,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import {
@@ -27,7 +28,7 @@ import {
   QuestionComplexity,
 } from "@/@types/models/question";
 import { useForm } from "react-hook-form";
-import { useQuestionList } from "@/hooks/questions/useQuestionList";
+import { useQuestions } from "@/hooks/questions/useQuestionList";
 import { QuestionDetails } from "./QuestionDetails";
 import { useRouter } from "next/navigation";
 
@@ -46,9 +47,10 @@ export const QuestionForm = ({
   } = useForm({
     defaultValues: question ? { ...question } : undefined,
   });
-  const { addQuestion, editQuestion } = useQuestionList();
+  const { addQuestion, editQuestion } = useQuestions();
   const toast = useToast();
   const router = useRouter()
+  const bgColor = useColorModeValue('white', 'navy.800');
 
   register("categories", {
     required: "At least one category must be selected.",
@@ -58,7 +60,7 @@ export const QuestionForm = ({
     <Stack
       px={6}
       py={8}
-      bgColor="white"
+      bgColor={bgColor}
       borderRadius={12}
       borderColor="gray.100"
       borderWidth={1}

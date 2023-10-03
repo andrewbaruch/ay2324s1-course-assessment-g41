@@ -3,13 +3,13 @@
 import {
   QuestionsList,
 } from '@/views/question';
-import { useQuestionList } from '@/hooks/questions/useQuestionList';
+import { useQuestions } from '@/hooks/questions/useQuestionList';
 import useAuthenticated from '@/hooks/guards/useAuthenticated';
 
 // karwi: better name?
 export default function Questions() {
   // useAuthenticated();
-  const { questions } = useQuestionList();
+  const { questions } = useQuestions();
   return (
     <QuestionsList questions={questions} />
   );

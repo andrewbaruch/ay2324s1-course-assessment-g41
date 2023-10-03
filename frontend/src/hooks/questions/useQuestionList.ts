@@ -10,7 +10,7 @@ const questionListAtom = atom<QuestionListAtom>({
   questions: QuestionService.getQuestions(),
 });
 
-export const useQuestionList = () => {
+export const useQuestions = () => {
   const [questionListWrapper, setQuestionListWrapper] =
     useAtom(questionListAtom);
 
