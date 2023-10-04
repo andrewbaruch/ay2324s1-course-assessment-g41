@@ -51,6 +51,7 @@ export const QuestionForm = ({
   const toast = useToast();
   const router = useRouter()
   const bgColor = useColorModeValue('white', 'navy.800');
+  const textColor = useColorModeValue("black", "white")
 
   register("categories", {
     required: "At least one category must be selected.",
@@ -80,8 +81,8 @@ export const QuestionForm = ({
 
       <Tabs variant="soft-rounded" flex={1}>
         <TabList px={0}>
-          <Tab>Input</Tab>
-          <Tab>Preview</Tab>
+          <Tab color={textColor}>Input</Tab>
+          <Tab color={textColor}>Preview</Tab>
         </TabList>
 
         <TabPanels>
@@ -95,6 +96,7 @@ export const QuestionForm = ({
                   shadow="sm"
                   size="sm"
                   w="full"
+                  color={textColor}
                   rounded="md"
                   focusBorderColor="gray.500"
                   {...register("title", { required: "Title is required." })}
@@ -113,6 +115,7 @@ export const QuestionForm = ({
                   shadow="sm"
                   size="sm"
                   w="full"
+                  color={textColor}
                   rounded="md"
                   focusBorderColor="gray.500"
                   {...register("complexity", {
@@ -141,6 +144,7 @@ export const QuestionForm = ({
                     required: "Description is required.",
                   })}
                   h="20vh"
+                  color={textColor}
                 />
                 {errors.description ? (
                   <FormErrorMessage>
@@ -165,7 +169,7 @@ export const QuestionForm = ({
                 >
                   <SimpleGrid gap={1} columns={{ sm: 2, md: 3, lg: 5, xl: 6 }}>
                     {Object.values(QuestionCategories).map((val) => (
-                      <Checkbox value={val} size="sm">
+                      <Checkbox value={val} size="sm" color={textColor}>
                         {val}
                       </Checkbox>
                     ))}
