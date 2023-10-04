@@ -21,7 +21,6 @@ import { ItemContent } from 'src/components/menu/ItemContent';
 import { SearchBar } from 'src/components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from 'src/components/sidebar/Sidebar';
 // Assets
-import navImage from '/public/img/layout/Navbar.png';
 import { FaEthereum } from 'react-icons/fa';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { MdInfoOutline, MdNotificationsNone } from 'react-icons/md';
