@@ -1,22 +1,12 @@
-import ThemeProvider from "./ThemeProvider";
+import { Box } from '@chakra-ui/react';
+import React, { ReactNode } from 'react';
+import AppWrappers from './AppWrappers';
 
-export const metadata = {
-  title: "PeerPrep",
-  description: "CS3219 Group 41",
-};
-
-/**
- * Required RootLayout for Next to generate HTML
- */
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body id={'root'}>
+        <AppWrappers>{children}</AppWrappers>
       </body>
     </html>
   );
