@@ -33,7 +33,7 @@ export const MatchingForm = () => {
     trigger,
     formState: { errors },
   } = useForm({});
-  const { goToBrowsePage } = useHeaderTab();
+  const { goToCodingPage } = useHeaderTab();
   const toast = useToast();
 
   return (
@@ -83,26 +83,26 @@ export const MatchingForm = () => {
       <Button
         type="submit"
         onClick={handleSubmit((data) => {
-          // try {
-          //   match({
-          //     id: question.id,
-          //     categories: data.categories ? data.categories : [],
-          //     title: data.title,
-          //     description: data.description,
-          //     complexity: data.complexity,
-          //   });
-          //   goToBrowsePage();
-          // } catch (err) {
-          //   toast({
-          //     status: "error",
-          //     description:
-          //       err?.message ||
-          //       "Unknown error encountered. Please try again later.",
-          //     isClosable: true,
-          //     duration: 3000,
-          //     position: "bottom",
-          //   });
-          // }
+          try {
+            //   match({
+            //     id: question.id,
+            //     categories: data.categories ? data.categories : [],
+            //     title: data.title,
+            //     description: data.description,
+            //     complexity: data.complexity,
+            //   });
+            goToCodingPage();
+          } catch (err) {
+            toast({
+              status: "error",
+              description:
+                err?.message ||
+                "Unknown error encountered. Please try again later.",
+              isClosable: true,
+              duration: 3000,
+              position: "bottom",
+            });
+          }
         })}
         w="fit-content"
         py={2}
