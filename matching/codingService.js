@@ -1,3 +1,15 @@
+const EASY_MATCHING_TOPIC = "EASY_MATCHING_TOPIC";
+const MEDIUM_MATCHING_TOPIC = "MEDIUM_MATCHING_TOPIC";
+const HARD_MATCHING_TOPIC = "HARD_MATCHING_TOPIC";
+const MATCHING_FOUND_TOPIC = "MATCHING_FOUND_TOPIC";
+
+const EASY_MATCHING_SUBSCRIPTION = "EASY_MATCHING_TOPIC-sub";
+const MEDIUM_MATCHING_SUBSCRIPTION = "MEDIUM_MATCHING_TOPIC-sub";
+const HARD_MATCHING_SUBSCRIPTION = "HARD_MATCHING_TOPIC-sub";
+const MATCHING_FOUND_SUBSCRIPTION = "MATCHING_FOUND_TOPIC-sub";
+
+const STATUS_REQUEST = "STATUS_REQUEST";
+
 // Imports the Google Cloud client library
 const { PubSub } = require("@google-cloud/pubsub");
 
@@ -10,9 +22,12 @@ function listenForMessages(subscriptionId) {
 
   // Create an event handler to handle messages
   const messageHandler = (message) => {
+    const parsedData = JSON.parse(message.data);
+    // if (parsedData.status === STATUS_REQUEST) {
     console.log(`Received message ${message.id}:`);
     console.log(`\tData: ${message.data}`);
     console.log(`\tAttributes: ${message.attributes}`);
+    // }
 
     // "Ack" (acknowledge receipt of) the message
     message.ack();
@@ -21,16 +36,5 @@ function listenForMessages(subscriptionId) {
   // Listen for new messages until timeout is hit
   subscription.on("message", messageHandler);
 }
-
-const EASY_MATCHING_TOPIC = "EASY_MATCHING_TOPIC";
-const MEDIUM_MATCHING_TOPIC = "MEDIUM_MATCHING_TOPIC";
-const HARD_MATCHING_TOPIC = "HARD_MATCHING_TOPIC";
-const MATCHING_FOUND_TOPIC = "MATCHING_FOUND_TOPIC";
-
-const EASY_MATCHING_SUBSCRIPTION = "EASY_MATCHING_TOPIC-sub";
-const MEDIUM_MATCHING_SUBSCRIPTION = "MEDIUM_MATCHING_TOPIC-sub";
-const HARD_MATCHING_SUBSCRIPTION = "HARD_MATCHING_TOPIC-sub";
-const MATCHING_FOUND_SUBSCRIPTION = "MATCHING_FOUND_TOPIC-sub";
-
 
 listenForMessages(MATCHING_FOUND_SUBSCRIPTION);

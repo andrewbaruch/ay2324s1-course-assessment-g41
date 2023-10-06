@@ -10,6 +10,7 @@ const EASY_MATCHING_SUBSCRIPTION = "EASY_MATCHING_TOPIC-sub";
 const MEDIUM_MATCHING_SUBSCRIPTION = "MEDIUM_MATCHING_TOPIC-sub";
 const HARD_MATCHING_SUBSCRIPTION = "HARD_MATCHING_TOPIC-sub";
 const MATCHING_FOUND_SUBSCRIPTION = "MATCHING_FOUND_TOPIC-sub";
+const MATCHING_REQUEST_VALID_DURATION_IN_SECONDS = 30;
 
 // Imports the Google Cloud client library
 const { PubSub } = require("@google-cloud/pubsub");
@@ -50,6 +51,20 @@ function processMatching(subscriptionId) {
 
     dequeuedPairs.push(JSON.parse(message.data));
 
+    // remove expired requests
+    const currentTime = new Date().getTime();
+    while (true) {
+      console.log(`time ${(currentTime - dequeuedPairs[0].time) / 1000}`);
+      if (
+        (currentTime - dequeuedPairs[0].time) / 1000 <=
+        MATCHING_REQUEST_VALID_DURATION_IN_SECONDS
+      ) {
+        break;
+      }
+      dequeuedPairs.shift();
+    }
+
+    console.log(dequeuedPairs);
     // If more than 2 messages already
     if (dequeuedPairs.length >= 2) {
       // get 2 users
@@ -75,7 +90,7 @@ function processMatching(subscriptionId) {
   subscription.on("message", messageHandler);
 }
 
-processMatching(EASY_MATCHING_SUBSCRIPTION);
+processMatching(MEDIUM_MATCHING_SUBSCRIPTION);
 
 // /**
 //  * TODO(developer): Uncomment these variables before running the sample.
