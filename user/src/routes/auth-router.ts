@@ -4,9 +4,7 @@ import * as AuthController from '@/controllers/auth-controller';
 const authRouter = Router();
 
 authRouter.get('/google', AuthController.googleAuth);
-authRouter.post('/username', AuthController.usernameAuth);
-authRouter.post('/register', AuthController.usernameAuth);
+authRouter.post('/refresh', AuthController.refresh);
 authRouter.get('/googleRedirect', AuthController.googleRedirect);
-authRouter.get('/logout', AuthController.logout);
 
 export default authRouter;

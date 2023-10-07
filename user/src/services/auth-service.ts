@@ -1,10 +1,13 @@
 import jwt from 'jsonwebtoken';
-import { google } from 'googleapis';
 import postgresClient from '@/clients/postgres'; 
-import { User } from '@/models/user'
-import { PoolClient } from 'pg';
+import { RefreshToken } from '@/models/auth'
+import { google } from 'googleapis';
 
-interface Payload extends jwt.JwtPayload {
+interface AccessPayload extends jwt.JwtPayload {
+    userId: string
+}
+
+interface RefreshPayload extends jwt.JwtPayload {
     userId: string
 }
 
@@ -28,13 +31,29 @@ export class AuthService {
         this.jwtSecret = secret
     }
 
-    generateToken(userId: string): string {
+    generateAccessToken(userId: string): string {
         const payload = { userId };
-        return jwt.sign({ data: payload }, this.jwtSecret, { expiresIn: '3d' });
+        return jwt.sign({ data: payload }, this.jwtSecret, { expiresIn: '1h' });
     }
 
-    verifyToken(token: string): Payload {
-        const decoded = jwt.verify(token, this.jwtSecret) as Payload; 
+    async generateRefreshToken(userId: string): Promise<string> {
+        const currentTimestampSeconds = Math.floor(Date.now() / 1000);
+
+        const thirtyDaysSeconds = 30 * 24 * 60 * 60;
+        const thirtyDaysTimestamp = currentTimestampSeconds + thirtyDaysSeconds;
+
+        const token = await authService.createRefreshToken(userId, thirtyDaysTimestamp)
+        const payload = { userId , tokenId: token.id};
+        return jwt.sign({ data: payload }, this.jwtSecret, { expiresIn: '30d' });
+    }
+
+    verifyAccessToken(token: string): AccessPayload {
+        const decoded = jwt.verify(token, this.jwtSecret) as AccessPayload; 
+        return decoded;
+    }
+
+    verifyRefreshToken(token: string): RefreshPayload {
+        const decoded = jwt.verify(token, this.jwtSecret) as AccessPayload; 
         return decoded;
     }
 
@@ -66,59 +85,43 @@ export class AuthService {
             console.log("Google callback failed")
         }
     }
-    
-    async registerUsername(username: string, password: string, partialUser: Partial<User>): Promise<string> {
-        var conn: PoolClient = await postgresClient.getConnection()
 
+    async createRefreshToken(user_id: string, expiry: number): Promise<RefreshToken> {
         try {
-            await conn.query('BEGIN');
-        
-            const userQuery = 'INSERT INTO users (username, name, email, image) VALUES ($1, $2, $3, $4) RETURNING user_id';
-            const userValues = [username, partialUser.name, partialUser.email, partialUser.image];
-            const userResult = await conn.query(userQuery, userValues);
-        
-            const userId = userResult.rows[0].user_id;
-        
-            const credentialQuery = 'INSERT INTO credentials (username, password, user_id) VALUES ($1, $2, $3)';
-            const credentialValues = [username, password, userId];
-            await conn.query(credentialQuery, credentialValues);
-        
-            await conn.query('COMMIT');
-        
-            conn.release();
-        
-            return userId; 
-        } catch (error) {
-            // TODO: handle rollback fail
-            await conn.query('ROLLBACK');
-            console.error('Error registering username:', error);
-            return "null"; 
-        }
-    }
-    
-    async checkCredentials(username:string, password: string) {
-        try {
-            const query = 'SELECT user_id FROM credentials WHERE username = $1 AND password = $2';
-            const res = await postgresClient.query(query, [username, password]);
+            const query = `
+                INSERT INTO refresh_tokens (user_id, revoked, expiry)
+                VALUES ($1, FALSE, to_timestamp($2))
+                RETURNING *;
+            `;
 
-            if (res.rows.length === 1) {
-            return res.rows[0].user_id; 
-            } else {
-            return ""; 
-            }
+            const result = await postgresClient.query<RefreshToken>(query, [
+                user_id,
+                expiry,
+            ]);
+
+            return result.rows[0];
         } catch (error) {
             throw error;
         }
     }
-    
-    async deleteCredential(userId: string) {
-        try {  
-            const query = 'DELETE FROM credentials WHERE user_id = $1';
-            await postgresClient.query(query, [ userId ]);
-        
-            return true;
+
+    async readRefreshToken(id: string): Promise<RefreshToken | null> {
+        try {
+            const query = 'SELECT * FROM refresh_tokens WHERE id = $1';
+            const result = await postgresClient.query<RefreshToken>(query, [id]);
+
+            return result.rows[0] || null;
         } catch (error) {
-            return false;
+            throw error;
+        }
+    }
+
+    async deleteRefreshToken(id: string): Promise<void> {
+        try {
+            const query = 'DELETE FROM refresh_tokens WHERE id = $1';
+            await postgresClient.query(query, [id]);
+        } catch (error) {
+            throw error;
         }
     }
 }

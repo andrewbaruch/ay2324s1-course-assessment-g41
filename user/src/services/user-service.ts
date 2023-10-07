@@ -2,16 +2,14 @@ import postgresClient from '@/clients/postgres';
 import { User } from '@/models/user'
 
 class UserService {
-  async create(user: User): Promise<User> {
+  async create(email: string, image: string): Promise<User> {
     try {
         const query =
-          'INSERT INTO users (id, name, email, image) VALUES ($1, $2, $3, $4)';
+          'INSERT INTO users (email, image) VALUES ($1, $2) RETURNING *;';
 
         const result = await postgresClient.query<User>(query, [
-            user.id,
-            user.name,
-            user.email,
-            user.image,
+          email,
+          image,
         ]);
 
         if (!result.rows) {
@@ -79,18 +77,22 @@ class UserService {
   async update(userId: string, updatedUser: Partial<User>): Promise<void> {
     try {
       const query =
-        // 'UPDATE users SET name = $1, email = $2, image = $3 WHERE id = $4';
-
-        'UPDATE users SET \
-          name = COALESCE($1, name), \
-          email = COALESCE($2, email), \
-          image = COALESCE($3, image), \
-        WHERE id = $4';
+        `UPDATE users SET 
+          name = COALESCE($1, name), 
+          email = COALESCE($2, email), 
+          image = COALESCE($3, image), 
+          preferred_language = COALESCE($4, preferred_language), 
+          preferred_difficult = COALESCE($5, preferred_difficult), 
+          preferred_topics = COALESCE($6, preferred_topics)
+        WHERE id = $7`;
         
       await postgresClient.query(query, [
         updatedUser.name ?? null,
         updatedUser.email ?? null,
         updatedUser.image ?? null,
+        updatedUser.preferred_language ?? null,
+        updatedUser.preferred_difficult ?? null,
+        updatedUser.preferred_topics ?? null,
         userId,
       ]);
     } catch (error) {
