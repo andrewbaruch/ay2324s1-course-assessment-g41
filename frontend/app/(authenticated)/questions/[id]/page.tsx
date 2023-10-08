@@ -1,6 +1,6 @@
 "use client"
 // TODO: turn to server component - using client component for now to access localStorage
-import QuestionService from "@/services/questionService";
+import QuestionService from "@/services/question";
 import { QuestionDetails } from "@/views/question";
 
 const QuestionDetailsPage = ({ params }: { params: { id?: string } }) => {
