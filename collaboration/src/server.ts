@@ -4,8 +4,9 @@ import { SQLite } from '@hocuspocus/extension-sqlite'
 
 const server = Server.configure({
   port: 1234,
+  // TODO: revamp the address
   address: '127.0.0.1',
-  name: 'test',
+  name: 'PeerPrep Collaboration WebSocket Server',
   extensions: [
     new Logger(),
     new SQLite(),
