@@ -2,6 +2,11 @@ import { Server } from '@hocuspocus/server'
 import { Logger } from '@hocuspocus/extension-logger'
 import { SQLite } from '@hocuspocus/extension-sqlite'
 
+/**
+ * Reference: https://tiptap.dev/hocuspocus/server/configuration
+ * 
+ * The Hocuspocus Server is a websocket backend that integrates Yjs.
+ */
 const server = Server.configure({
   port: 1234,
   // TODO: revamp the address
@@ -12,6 +17,7 @@ const server = Server.configure({
     new SQLite(),
   ],
 
+  // TOOD: add optional configurations for auth checks
   // async onAuthenticate(data) {
   //   if (data.token !== 'my-access-token') {
   //     throw new Error('Incorrect access token')
@@ -51,7 +57,5 @@ const server = Server.configure({
   //   })
   // },
 })
-
-// server.enableMessageLogging()
 
 server.listen()
