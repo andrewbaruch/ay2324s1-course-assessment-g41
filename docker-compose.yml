@@ -1,6 +1,57 @@
-version: '3'
+version: '3.8'
+
+x-common-variables: &common-variables
+  POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
+  MONGO: mongodb://user:pass@mongodb
+  EXE_ENV: DEV
+
+networks:
+  frontend:
+  backend:
+
 services:
-  # only used for development:
+  user:
+    container_name: user
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./user
+    volumes:
+      - 3219User:/home/node/app/
+    ports:
+      - 8080:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment: *common-variables
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+  mongo:
+    container_name: mongodb
+    image: mongo:6
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - backend
+
   nginx:
     restart: always
     build:
@@ -8,9 +59,15 @@ services:
       context: ./nginx
     ports:
       - '3000:80'
+      
   client:
     build:
       dockerfile: Dockerfile.dev
       context: ./frontend
     volumes:
       - ./frontend:/app
+
+volumes:
+  postgres:
+  mongodb:
+  3219User:
