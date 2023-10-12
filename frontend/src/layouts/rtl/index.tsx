@@ -53,7 +53,7 @@ export default function RTLLayout(props: RTLLayoutProps) {
             transitionProperty="top, bottom, width"
             transitionTimingFunction="linear, linear, ease"
           >
-            <Portal>
+            {/* <Portal> */}
               <Box>
                 <Navbar
                   onOpen={onOpen}
@@ -65,7 +65,7 @@ export default function RTLLayout(props: RTLLayoutProps) {
                   {...rest}
                 />
               </Box>
-            </Portal>
+            {/* </Portal> */}
 
             <Box
               mx="auto"

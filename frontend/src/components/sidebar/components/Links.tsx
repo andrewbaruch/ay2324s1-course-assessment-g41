@@ -39,9 +39,10 @@ export function SidebarLinks(props: SidebarLinksProps) {
   const createLinks = (routes: IRoute[]) => {
     return routes.map((route, index: number) => {
       if (
-        route.layout === '/admin' ||
-        route.layout === '/auth' ||
-        route.layout === '/rtl'
+        route.layout === '' ||
+        route.layout === '/auth' 
+        // ||
+        // route.layout === '/rtl'
       ) {
         return (
           <Link key={index} href={route.layout + route.path}>
@@ -127,5 +128,3 @@ export function SidebarLinks(props: SidebarLinksProps) {
   //  BRAND
   return <>{createLinks(routes)}</>;
 }
-
-export default SidebarLinks;
