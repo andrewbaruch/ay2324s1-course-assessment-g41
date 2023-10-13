@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import authService from '@/services/auth-service';
 import userService from '@/services/user-service';
 
+const testEmail = "example@email.com"
+
 const accessTokenHeader = process.env.ACCESS_HEADER
 if (!accessTokenHeader) {
     console.log("Missing ACCESS_HEADER")
@@ -9,12 +11,28 @@ if (!accessTokenHeader) {
 }
 
 const refreshTokenHeader = process.env.REFRESH_HEADER
-if (!accessTokenHeader) {
+if (!refreshTokenHeader) {
     console.log("Missing REFRESH_HEADER")
     process.exit()
 }
 
-export function googleAuth(req: Request, res: Response): void {
+console.log("auth controller")
+console.log(process.env.EXE_ENV)
+console.log(process.env.SKIP_AUTH)
+
+export async function googleAuth(req: Request, res: Response): Promise<void> {
+  if (process.env.EXE_ENV === 'DEV' && process.env.SKIP_AUTH === 'TRUE') {
+    let user = await userService.readByEmail(testEmail)
+
+    if (!user) {
+      user = await userService.create(testEmail, "")
+    }
+    
+    const accessToken = await authService.generateAccessToken(user!.id);
+    const refreshToken = await authService.generateRefreshToken(user!.id);
+
+    res.status(200).json({ access_token: accessToken, refresh_token: refreshToken })
+  }
   const authUrl = authService.getGoogleAuthURL();
   res.redirect(authUrl);
 }
@@ -37,8 +55,8 @@ export async function googleRedirect(req: Request, res: Response): Promise<void>
       // }
     }
     
-    const accessToken = authService.generateAccessToken(user!.id);
-    const refreshToken = authService.generateRefreshToken(user!.id);
+    const accessToken = await authService.generateAccessToken(user!.id);
+    const refreshToken = await authService.generateRefreshToken(user!.id);
 
     res.status(200).json({ access_token: accessToken, refresh_token: refreshToken })
   } catch (error) {

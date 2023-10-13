@@ -3,13 +3,16 @@ import { User } from '@/models/user'
 import userService from '@/services/user-service'; 
 
 export async function getCurrentUser(req: Request, res: Response) {
-    const userId = req.params.userId;
+    const userId = res.locals.userId;
+    console.log("getCurrentUser: " + userId)
 
     try {
         const user = await userService.read(userId);
         if (user) {
-        res.status(200).json(user);
+            res.status(200).json(user);
         } 
+
+        res.status(500).send();
     } catch (error) {
         res.status(500).send();
     }
@@ -17,19 +20,21 @@ export async function getCurrentUser(req: Request, res: Response) {
 
 export async function getUserById(req: Request, res: Response) {
     const userId = req.params.id;
+
     try {
-        res.status(200).json('hi')
         const user = await userService.read(userId);
         if (user) {
             res.status(200).json(user);
         } 
+
+        res.status(500).send();
     } catch (error) {
         res.status(500).send();
     }
 }
 
 export async function updateUser(req: Request, res: Response) {
-    const userId = req.params.userId;
+    const userId = res.locals.userId;
     const updatedUser = req.body as Partial<User>; // Partial to allow updating only specific fields
     try {
         await userService.update(userId, updatedUser);
