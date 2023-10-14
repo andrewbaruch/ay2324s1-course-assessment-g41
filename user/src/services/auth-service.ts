@@ -33,7 +33,7 @@ export class AuthService {
 
     generateAccessToken(userId: string): string {
         const payload = { userId };
-        return jwt.sign({ data: payload }, this.jwtSecret, { expiresIn: '1h' });
+        return jwt.sign({ userId }, this.jwtSecret, { expiresIn: '1h' });
     }
 
     async generateRefreshToken(userId: string): Promise<string> {
@@ -43,8 +43,7 @@ export class AuthService {
         const thirtyDaysTimestamp = currentTimestampSeconds + thirtyDaysSeconds;
 
         const token = await authService.createRefreshToken(userId, thirtyDaysTimestamp)
-        const payload = { userId , tokenId: token.id};
-        return jwt.sign({ data: payload }, this.jwtSecret, { expiresIn: '30d' });
+        return jwt.sign({ userId , tokenId: token.id }, this.jwtSecret, { expiresIn: '30d' });
     }
 
     verifyAccessToken(token: string): AccessPayload {

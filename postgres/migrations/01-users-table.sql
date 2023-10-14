@@ -7,5 +7,5 @@ CREATE TABLE users (
     name VARCHAR(255),
     preferred_language VARCHAR(255),
     preferred_difficulty VARCHAR(255),
-    preferred_topics TEXT[] NOT NULL
+    preferred_topics TEXT[] NOT NULL DEFAULT '{}'
 );
