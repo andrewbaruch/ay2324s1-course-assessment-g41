@@ -20,9 +20,9 @@ export function authJWT(req: Request, res: Response, next: Function) {
       next();
     } catch(err) {
       console.log("Token verification failed", err)
-      res.status(500).send()
+      res.status(401).send()
     }
   } else {
-      res.status(500).send()
+      res.status(401).send()
   }
 }

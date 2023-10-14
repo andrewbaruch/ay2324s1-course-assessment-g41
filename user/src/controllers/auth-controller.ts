@@ -86,7 +86,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
       res.status(200).json({ access_token: accessToken, refresh_token: refreshToken })
     } catch(err) {
       console.log("Token verification failed", err)
-      res.status(500).send()
+      res.status(401).send()
     }
   } else {
     res.status(401).send()
