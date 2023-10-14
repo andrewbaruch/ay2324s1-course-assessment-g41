@@ -26,7 +26,9 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:latest
+    build: 
+      context: ./postgres
+      dockerfile: Dockerfile
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -38,17 +40,44 @@ services:
     networks:
       - backend
 
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - backend
+
   mongo:
-    container_name: mongodb
-    image: mongo:6
+    container_name: mongo
+    build: 
+      context: ./mongo
+      dockerfile: Dockerfile
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=user
-      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=admin
     volumes:
-      - mongodb:/data/db
+      - mongo:/data/db
     ports:
       - 27017:27017
+    networks:
+      - backend
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL="mongo://user:password@mongo:27017/"
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=user
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
     networks:
       - backend
 
@@ -69,5 +98,5 @@ services:
 
 volumes:
   postgres:
-  mongodb:
+  mongo:
   3219User:
