@@ -12,7 +12,7 @@ export async function getCurrentUser(req: Request, res: Response) {
             res.status(200).json(user);
         } 
 
-        res.status(500).send();
+        res.status(404).send();
     } catch (error) {
         res.status(500).send();
     }
@@ -27,7 +27,7 @@ export async function getUserById(req: Request, res: Response) {
             res.status(200).json(user);
         } 
 
-        res.status(500).send();
+        res.status(404).send();
     } catch (error) {
         res.status(500).send();
     }
@@ -45,7 +45,8 @@ export async function updateUser(req: Request, res: Response) {
 }
 
 export async function deleteUser(req: Request, res: Response) {
-    const userId = req.params.userId;
+    const userId = res.locals.userId;
+
     try {
         await userService.delete(userId);
         res.status(200).send();
