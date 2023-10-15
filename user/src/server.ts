@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import userRouter from '@/routes/user-router'
-import authRouter from '@/routes/auth-router'
+import routes from '@/routes/router';
+import cookieParser from "cookie-parser";
+
 
 class Server {
     private app
@@ -24,7 +25,9 @@ class Server {
     private configMiddleware() {
         this.app.use(bodyParser.urlencoded({ extended:true }));
         this.app.use(bodyParser.json({ limit: '1mb' })); 
-       this.app.use(cors({
+        this.app.use(cookieParser()); 
+
+        this.app.use(cors({
             origin: '*',
         }));
 
@@ -32,8 +35,7 @@ class Server {
 
     private configRouter() {
         // NOTE: Central router if necessary
-        this.app.use('/user', userRouter);
-        this.app.use('/auth', authRouter);
+        this.app.use('/', routes);
     }
 
     public start() {

@@ -12,4 +12,8 @@ userRouter.get('/', UserController.getCurrentUser);
 userRouter.patch('/', UserController.updateUser);
 userRouter.delete('/', UserController.deleteUser);
 
+userRouter.get('/topics', UserController.readCurrentTopics);
+userRouter.post('/topics', UserController.addTopics);
+userRouter.delete('/topics', UserController.deleteTopics);
+
 export default userRouter;

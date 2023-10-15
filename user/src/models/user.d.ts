@@ -4,8 +4,28 @@ export interface User {
     image: string;
     name?: string;
     preferred_language?: string;
-    preferred_difficult?: string;
-    preferred_topics: string[];
+    preferred_difficulty?: Difficulty;
+    preferred_topics: Topic[];
+}
+
+export enum Difficulty {
+    Easy = 1,
+    Medium,
+    Hard,
+  }
+
+export interface Language {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+}
+
+export interface Topic {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
 }
 
 export default User;
