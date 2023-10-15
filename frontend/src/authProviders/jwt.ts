@@ -1,12 +1,8 @@
-import { AuthProvider } from 'src/@types/auth';
-import { CacheName } from 'src/@types/cache';
-import { PATH_AUTH } from 'src/routes/paths';
-import {
-  refreshAccessToken,
-  checkValidity as refreshSessionTokens,
-} from 'src/services/token';
-import { getUser } from 'src/services/users';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from 'src/utils/jwt';
+import { AuthProvider } from "src/@types/auth";
+import { CacheName } from "src/@types/cache";
+import { PATH_AUTH } from "src/routes/paths";
+import { getUser } from "src/services/users";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "src/utils/jwt";
 
 interface Session {
   accessToken: string;
@@ -15,7 +11,7 @@ interface Session {
 
 const isPublicUrl = (url: string) => [PATH_AUTH.general.login].includes(url);
 const isTokenExpired = (accessToken: string, offset = 0) =>
-  Date.now() >= JSON.parse(atob(accessToken.split('.')[1])).exp * 1000 + offset;
+  Date.now() >= JSON.parse(atob(accessToken.split(".")[1])).exp * 1000 + offset;
 const getSession = (): Session | null => {
   const accessToken = localStorage.getItem(ACCESS_TOKEN);
   const refreshToken = localStorage.getItem(REFRESH_TOKEN);
@@ -40,12 +36,9 @@ const deleteSession = () => {
 const deleteCache = (name: CacheName) =>
   caches
     .open(name)
-    .then((cache) =>
-      cache.keys().then((requests) => requests.map((req) => cache.delete(req))),
-    );
+    .then((cache) => cache.keys().then((requests) => requests.map((req) => cache.delete(req))));
 
 export const jwtAuthProvider: AuthProvider = {
-  // karwi: login with github, then server redirects to url injected with tokens
   login: async (params) => {
     const { refreshToken, accessToken } = params as Session;
 
