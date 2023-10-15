@@ -1,10 +1,9 @@
-import { useCallback } from 'react';
-import { PATH_AUTH } from 'src/routes/paths';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from 'src/utils/jwt';
-import useAuthProvider from '../auth/useAuthProvider';
-import { useToast } from '@chakra-ui/react';
-import useLogout from '../auth/useLogout';
-import { useSearchParams } from 'next/navigation';
+import { useCallback } from "react";
+import { PATH_AUTH } from "src/routes/paths";
+import useAuthProvider from "../auth/useAuthProvider";
+import { useToast } from "@chakra-ui/react";
+import useLogout from "../auth/useLogout";
+import { useSearchParams } from "next/navigation";
 
 type CheckAuth = (params: {
   logoutOnError?: boolean;
@@ -64,9 +63,9 @@ const useCheckAuth = (): CheckAuth => {
 
           if (!disableNotification) {
             toast({
-              title: 'Notification',
-              description: 'Please log in to continue',
-              status: 'error',
+              title: "Notification",
+              description: "Please log in to continue",
+              status: "error",
               duration: 5000,
               isClosable: true,
             });
@@ -77,23 +76,8 @@ const useCheckAuth = (): CheckAuth => {
       try {
         await authProvider.checkAuth();
       } catch (error) {
-        const accessToken = searchParams.get(ACCESS_TOKEN);
-        const refreshToken = searchParams.get(REFRESH_TOKEN);
-
-        if (accessToken === null || refreshToken === null) {
-          callLogout();
-          throw error;
-        }
-
-        try {
-          await authProvider.login({
-            accessToken,
-            refreshToken,
-          });
-        } catch {
-          callLogout();
-          throw error;
-        }
+        callLogout();
+        throw error;
       }
     },
 

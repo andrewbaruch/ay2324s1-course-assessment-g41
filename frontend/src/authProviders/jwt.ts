@@ -1,7 +1,6 @@
 import { AuthProvider } from "src/@types/auth";
 import { CacheName } from "src/@types/cache";
 import { PATH_AUTH } from "src/routes/paths";
-import { refreshAccessToken, checkValidity as refreshSessionTokens } from "src/services/token";
 import { getUser } from "src/services/users";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "src/utils/jwt";
 

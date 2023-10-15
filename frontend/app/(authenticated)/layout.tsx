@@ -10,14 +10,15 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { getActiveNavbar, getActiveNavbarText, getActiveRoute } from "src/utils/navigation";
 import routes from "@/routes";
 import { usePathname } from "next/navigation";
+import useAuthenticated from "@/hooks/guards/useAuthenticated";
 
 interface DashboardLayoutProps extends PropsWithChildren {
   [x: string]: any;
 }
 
-// karwiapi: check authenticated?
 // Custom Chakra theme
 export default function AuthenticatedLayout(props: DashboardLayoutProps) {
+  useAuthenticated();
   const { children, ...rest } = props;
   // states and functions
   const [fixed] = useState(false);

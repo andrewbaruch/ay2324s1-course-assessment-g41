@@ -27,7 +27,6 @@ interface OptionType extends OptionBase {
 }
 
 // karwiapi: fetch choices from api
-// karwiapi: use get user identity
 // Define the options for the selects
 const languageOptions: OptionType[] = [
   { value: "Javascript", label: "Javascript" },

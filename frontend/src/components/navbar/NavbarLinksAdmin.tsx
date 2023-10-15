@@ -1,4 +1,4 @@
-'use client';
+"use client";
 // Chakra Imports
 import {
   Box,
@@ -14,47 +14,47 @@ import {
   Text,
   useColorMode,
   useColorModeValue,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 // Custom Components
-import { Image } from 'src/components/image/Image';
-import { ItemContent } from 'src/components/menu/ItemContent';
-import { SearchBar } from 'src/components/navbar/searchBar/SearchBar';
-import { SidebarResponsive } from 'src/components/sidebar/Sidebar';
+import { Image } from "src/components/image/Image";
+import { ItemContent } from "src/components/menu/ItemContent";
+import { SearchBar } from "src/components/navbar/searchBar/SearchBar";
+import { SidebarResponsive } from "src/components/sidebar/Sidebar";
 // Assets
-import { FaEthereum } from 'react-icons/fa';
-import { IoMdMoon, IoMdSunny } from 'react-icons/io';
-import { MdInfoOutline, MdNotificationsNone } from 'react-icons/md';
-import routes from '@/routes';
-import useLogout from '@/hooks/auth/useLogout';
-import { useRouter } from 'next/navigation';
-import { PATH_ADMIN } from '@/routes/paths';
+import { FaEthereum } from "react-icons/fa";
+import { IoMdMoon, IoMdSunny } from "react-icons/io";
+import { MdInfoOutline, MdNotificationsNone } from "react-icons/md";
+import routes from "@/routes";
+import useLogout from "@/hooks/auth/useLogout";
+import { useRouter } from "next/navigation";
+import { PATH_MAIN } from "@/routes/paths";
 export default function HeaderLinks(props: { secondary: boolean }) {
   const { secondary } = props;
   const { colorMode, toggleColorMode } = useColorMode();
   const logout = useLogout();
   const router = useRouter();
   // Chakra Color Mode
-  const navbarIcon = useColorModeValue('gray.400', 'white');
-  let menuBg = useColorModeValue('white', 'navy.800');
-  const textColor = useColorModeValue('secondaryGray.900', 'white');
-  const textColorBrand = useColorModeValue('brand.700', 'brand.400');
-  const ethColor = useColorModeValue('gray.700', 'white');
-  const borderColor = useColorModeValue('#E6ECFA', 'rgba(135, 140, 189, 0.3)');
-  const ethBg = useColorModeValue('secondaryGray.300', 'navy.900');
-  const ethBox = useColorModeValue('white', 'navy.800');
+  const navbarIcon = useColorModeValue("gray.400", "white");
+  let menuBg = useColorModeValue("white", "navy.800");
+  const textColor = useColorModeValue("secondaryGray.900", "white");
+  const textColorBrand = useColorModeValue("brand.700", "brand.400");
+  const ethColor = useColorModeValue("gray.700", "white");
+  const borderColor = useColorModeValue("#E6ECFA", "rgba(135, 140, 189, 0.3)");
+  const ethBg = useColorModeValue("secondaryGray.300", "navy.900");
+  const ethBox = useColorModeValue("white", "navy.800");
   const shadow = useColorModeValue(
-    '14px 17px 40px 4px rgba(112, 144, 176, 0.18)',
-    '14px 17px 40px 4px rgba(112, 144, 176, 0.06)',
+    "14px 17px 40px 4px rgba(112, 144, 176, 0.18)",
+    "14px 17px 40px 4px rgba(112, 144, 176, 0.06)",
   );
-  const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
+  const borderButton = useColorModeValue("secondaryGray.500", "whiteAlpha.200");
 
   return (
     <Flex
-      w={{ sm: '100%', md: 'auto' }}
+      w={{ sm: "100%", md: "auto" }}
       alignItems="center"
       flexDirection="row"
       bg={menuBg}
-      flexWrap={secondary ? { base: 'wrap', md: 'nowrap' } : 'unset'}
+      flexWrap={secondary ? { base: "wrap", md: "nowrap" } : "unset"}
       p="10px"
       borderRadius="30px"
       boxShadow={shadow}
@@ -62,9 +62,9 @@ export default function HeaderLinks(props: { secondary: boolean }) {
       <SearchBar
         mb={() => {
           if (secondary) {
-            return { base: '10px', md: 'unset' };
+            return { base: "10px", md: "unset" };
           }
-          return 'unset';
+          return "unset";
         }}
         me="10px"
         borderRadius="30px"
@@ -240,21 +240,21 @@ export default function HeaderLinks(props: { secondary: boolean }) {
           h="18px"
           w="18px"
           color={navbarIcon}
-          as={colorMode === 'light' ? IoMdMoon : IoMdSunny}
+          as={colorMode === "light" ? IoMdMoon : IoMdSunny}
         />
       </Button>
       <Menu>
-        <MenuButton p="0px" style={{ position: 'relative' }}>
+        <MenuButton p="0px" style={{ position: "relative" }}>
           <Box
-            _hover={{ cursor: 'pointer' }}
+            _hover={{ cursor: "pointer" }}
             color="white"
             bg="#11047A"
             w="40px"
             h="40px"
-            borderRadius={'50%'}
+            borderRadius={"50%"}
           />
-          <Center top={0} left={0} position={'absolute'} w={'100%'} h={'100%'}>
-            <Text fontSize={'xs'} fontWeight="bold" color={'white'}>
+          <Center top={0} left={0} position={"absolute"} w={"100%"} h={"100%"}>
+            <Text fontSize={"xs"} fontWeight="bold" color={"white"}>
               AP
             </Text>
           </Center>
@@ -284,19 +284,19 @@ export default function HeaderLinks(props: { secondary: boolean }) {
           </Flex>
           <Flex flexDirection="column" p="10px">
             <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
+              _hover={{ bg: "none" }}
+              _focus={{ bg: "none" }}
               borderRadius="8px"
               px="14px"
               bg={menuBg}
               // karwi: refactor later
-              onClick={() => router.push(PATH_ADMIN.general.profile)}
+              onClick={() => router.push(PATH_MAIN.general.profile)}
             >
               <Text fontSize="sm">Profile Settings</Text>
             </MenuItem>
             <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
+              _hover={{ bg: "none" }}
+              _focus={{ bg: "none" }}
               color="red.400"
               borderRadius="8px"
               px="14px"

@@ -1,18 +1,14 @@
-import { QuestionComplexity } from './models/question';
+import { QuestionComplexity } from "./models/question";
+import { Topic } from "./topic";
 
 export interface User {
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-  // karwi: why set null ?
+  id: string;
+  email?: string;
+  image?: string | null;
   name?: string | null;
-  hasProfilePicture?: boolean | null;
-  profilePictureUrl?: string | null;
-  bio?: string | null;
-  // karwi: nested
-  preferredDifficulty?: QuestionComplexity | null;
-  // karwi: change to category type
-  preferredTopics?: string[] | null;
+  preferred_language?: string | null;
+  preferred_difficulty?: string | null;
+  preferred_topics?: Topic[] | null;
 }
 
 export type UserRequest = Partial<User>;

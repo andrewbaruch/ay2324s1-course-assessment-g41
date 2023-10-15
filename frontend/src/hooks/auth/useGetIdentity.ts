@@ -3,17 +3,14 @@ import { getUser } from "src/services/users";
 import useSafeRequest from "../services/useSafeRequest";
 import { User } from "src/@types/user";
 
-// karwiapi: change get user properties
 const defaultUser: User = {
-  userId: "",
-  createdAt: "",
-  updatedAt: "",
+  id: "",
+  email: "",
+  image: "",
   name: null,
-  hasProfilePicture: null,
-  profilePictureUrl: null,
-  bio: null,
-  preferredDifficulty: null,
-  preferredTopics: [],
+  preferred_language: null,
+  preferred_difficulty: null,
+  preferred_topics: [],
 };
 
 /**

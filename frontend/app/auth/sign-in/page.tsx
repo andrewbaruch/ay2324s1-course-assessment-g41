@@ -26,6 +26,7 @@ import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
+import useLogin from "@/hooks/auth/useLogin";
 
 export default function SignIn() {
   // Chakra color mode
@@ -40,6 +41,16 @@ export default function SignIn() {
   const googleActive = useColorModeValue({ bg: "secondaryGray.300" }, { bg: "whiteAlpha.200" });
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
+  const login = useLogin();
+
+  const handleGoogleLogin = async () => {
+    try {
+      await login();
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
   return (
     <DefaultAuthLayout illustrationBackground={"/img/auth/auth5.mp4"}>
       <Flex
@@ -87,7 +98,7 @@ export default function SignIn() {
             _hover={googleHover}
             _active={googleActive}
             _focus={googleActive}
-            // karwiapi: login with google; onresponse, login using tokens
+            onClick={handleGoogleLogin}
           >
             <Icon as={FcGoogle} w="20px" h="20px" me="10px" />
             Sign in with Google
