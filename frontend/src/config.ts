@@ -4,7 +4,6 @@ import packageJson from "../package.json";
 
 // API
 
-// karwi: create .env file
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API_KEY || "";
 
 // UTILS
