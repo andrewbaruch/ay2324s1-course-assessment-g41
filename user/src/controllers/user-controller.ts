@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Topic, User } from '@/models/user'
 import userService from '@/services/user-service'; 
+import { UserDao } from '@/db_models/user-dao';
 
 export async function getCurrentUser(req: Request, res: Response) {
     const userId = res.locals.userId;
@@ -34,7 +34,7 @@ export async function getUserById(req: Request, res: Response) {
 
 export async function updateUser(req: Request, res: Response) {
     const userId = res.locals.userId;
-    const updatedUser = req.body as Partial<User>; // Partial to allow updating only specific fields
+    const updatedUser = req.body as Partial<UserDao>; // Partial to allow updating only specific fields
     try {
         await userService.update(userId, updatedUser);
         res.status(200).send();

@@ -1,5 +1,5 @@
 import postgresClient from '@/clients/postgres'; 
-import { User, Topic } from '@/models/user'
+import { User, Topic, Difficulty } from '@/models/user'
 import { UserDao } from '@/db_models/user-dao'
 
 class UserService {
@@ -120,25 +120,30 @@ class UserService {
     }
   }
 
-  async update(userId: string, updatedUser: Partial<User>): Promise<void> {
+  async update(userId: string, fieldsToUpdate: Partial<UserDao>): Promise<void> {
     try {
-      const query =
-        `UPDATE users SET 
-          name = COALESCE($1, name), 
-          email = COALESCE($2, email), 
-          image = COALESCE($3, image), 
-          preferred_language = COALESCE($4, preferred_language), 
-          preferred_difficulty = COALESCE($5, preferred_difficult), 
-          preferred_topics = COALESCE($6, preferred_topics)
-        WHERE id = $7`;
+      const query = `
+        UPDATE users
+        SET
+          name = COALESCE($1, name),
+          email = COALESCE($2, email),
+          image = COALESCE($3, image),
+          preferred_language = COALESCE($4, preferred_language),
+          preferred_difficulty = COALESCE($5, preferred_difficulty)
+        WHERE id = $6;
+      `;
+
+      let preferred_difficulty = null
+      if (fieldsToUpdate.preferred_difficulty && fieldsToUpdate.preferred_difficulty in Difficulty) {
+        preferred_difficulty = fieldsToUpdate.preferred_difficulty
+      }
         
       await postgresClient.query(query, [
-        updatedUser.name ?? null,
-        updatedUser.email ?? null,
-        updatedUser.image ?? null,
-        updatedUser.preferred_language ?? null,
-        updatedUser.preferred_difficulty ?? null,
-        updatedUser.preferred_topics ?? null,
+        fieldsToUpdate.name ?? null,
+        fieldsToUpdate.email ?? null,
+        fieldsToUpdate.image ?? null,
+        fieldsToUpdate.preferred_language ?? null,
+        preferred_difficulty,
         userId,
       ]);
     } catch (error) {
