@@ -16,8 +16,18 @@ const server = Server.configure({
     new Logger(),
     new SQLite(),
   ],
+  onListen: async (data) => {
+    console.log(data)
+    // Output some information
+    console.log(`Server is listening on port "${data.port}"!`);
+  },
+  onConnect: async (data) => {
+    console.log(data.socketId)
+    console.log('connect')
+  }
 
   // TOOD: add optional configurations for auth checks
+  // 
   // async onAuthenticate(data) {
   //   if (data.token !== 'my-access-token') {
   //     throw new Error('Incorrect access token')
