@@ -8,62 +8,70 @@ import {
   SimpleGrid,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
 import Card from "src/components/card/Card";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
+import { useLanguages } from "@/hooks/services/useLanguages";
+import { useTopics } from "@/hooks/services/useTopics";
+import { UserRequest } from "@/@types/user";
+import { useRequest } from "ahooks";
+import { updateUser } from "@/services/users";
 
 // karwi: refactor later, change to chakra style
-interface IFormInput {
-  username: string;
-  language: string;
-  topics: string[];
-  difficulty: string;
-}
+
+type IFormInput = UserRequest;
 
 interface OptionType extends OptionBase {
   value: string;
   label: string;
 }
 
-// karwiapi: fetch choices from api
-// Define the options for the selects
-const languageOptions: OptionType[] = [
-  { value: "Javascript", label: "Javascript" },
-  { value: "Python", label: "Python" },
-  { value: "Java", label: "Java" },
-  /* Add more language options here */
-];
-
-const topicOptions: OptionType[] = [
-  { value: "Dynamic Programming", label: "Dynamic Programming" },
-  { value: "Binary Search", label: "Binary Search" },
-  { value: "Backtracking", label: "Backtracking" },
-  { value: "Greedy Algorithms", label: "Greedy Algorithms" },
-  /* Add more topic options here */
-];
-
 const difficultyOptions: OptionType[] = [
-  { value: "Easy", label: "Easy" },
-  { value: "Medium", label: "Medium" },
-  { value: "Hard", label: "Hard" },
+  { value: "0", label: "Easy" },
+  { value: "1", label: "Medium" },
+  { value: "2", label: "Hard" },
 ];
 
 export default function GeneralInformation(props: { [x: string]: any }) {
   const { ...rest } = props;
+  const { languages } = useLanguages();
+  const { topics } = useTopics();
+  const toast = useToast();
+
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
   const textColorSecondary = "gray.400";
 
   // React hook form setup
   const { handleSubmit, register, setValue, control } = useForm<IFormInput>();
+  const { run: updateUserProfile } = useRequest(updateUser, {
+    manual: true,
+    onSuccess: (result, params) => {
+      toast({
+        title: "Profile Update Success",
+        description: "Your profile has been updated successfully!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+    onError: (error, params) => {
+      toast({
+        title: "Update Failed",
+        description: `Failed to update profile. ${error.message}`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+  });
 
-  // karwi: put in services/
-  const onSubmit = (data: IFormInput) =>
-    fetch("https://api.example.com", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+  const onSubmit = (data: IFormInput) => {
+    data.preferred_difficulty = Number(data.preferred_difficulty);
+    updateUserProfile(data);
+  };
 
   return (
     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
@@ -80,19 +88,24 @@ export default function GeneralInformation(props: { [x: string]: any }) {
         <SimpleGrid columns={2} gap="20px">
           <FormControl id="username">
             <FormLabel>Username</FormLabel>
-            <Input {...register("username", { required: true })} color={textColorPrimary} />
+            <Input {...register("name", { required: true })} color={textColorPrimary} />
           </FormControl>
           <FormControl id="language">
             <FormLabel>Preferred Language</FormLabel>
             <Controller
-              name="language"
+              name="preferred_language"
               control={control}
               rules={{ required: true }}
-              defaultValue=""
+              defaultValue={""}
               render={({ field }) => (
                 <Select<OptionType, true, GroupBase<OptionType>>
                   name="languge"
-                  options={languageOptions}
+                  options={
+                    languages?.data.map((language) => ({
+                      value: language.id,
+                      label: language.name,
+                    })) || []
+                  }
                   placeholder="Select option"
                 />
               )}
@@ -101,7 +114,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
           <FormControl id="topics">
             <FormLabel>Preferred Topics</FormLabel>
             <Controller
-              name="topics"
+              name="preferred_topics"
               control={control}
               rules={{ required: true }}
               defaultValue={[]}
@@ -109,7 +122,9 @@ export default function GeneralInformation(props: { [x: string]: any }) {
                 <Select<OptionType, true, GroupBase<OptionType>>
                   isMulti
                   name="topics"
-                  options={topicOptions}
+                  options={
+                    topics?.data.map((topic) => ({ value: topic.id, label: topic.name })) || []
+                  }
                   placeholder="Select option"
                 />
               )}
@@ -118,10 +133,10 @@ export default function GeneralInformation(props: { [x: string]: any }) {
           <FormControl id="difficulty">
             <FormLabel>Preferred Difficulty</FormLabel>
             <Controller
-              name="difficulty"
+              name="preferred_difficulty"
               control={control}
               rules={{ required: true }}
-              defaultValue=""
+              defaultValue={0}
               render={({ field }) => (
                 <Select<OptionType, true, GroupBase<OptionType>>
                   name="difficulty"

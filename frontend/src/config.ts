@@ -1,18 +1,18 @@
-import XRegExp from 'xregexp';
-import { AuthProviderType } from './@types/auth';
-import packageJson from '../package.json';
+import XRegExp from "xregexp";
+import { AuthProviderType } from "./@types/auth";
+import packageJson from "../package.json";
 
 // API
 
 // karwi: migrate to vite
 // karwi: create .env file
-export const HOST_API = process.env.VITE_HOST_API_KEY || '';
+export const HOST_API = process.env.VITE_HOST_API_KEY || "";
 
 // UTILS
 
 export const isDevelopment = process.env.DEV;
 
-export const isDebug = process.env.VITE_DEBUG === 'true';
+export const isDebug = process.env.VITE_DEBUG === "true";
 
 export const VERSION = packageJson.version;
 
@@ -87,10 +87,12 @@ export const VERSION = packageJson.version;
 // export const USERNAME_LEN_ERROR = `Username must be between ${MIN_USERNAME_LEN} and ${MAX_USERNAME_LEN} characters long`;
 // export const USERNAME_REGEX_ERROR = `Username can only contain alphabets and numbers. It cannot contain blank spaces`;
 
-export const DEFAULT_AUTH_PROVIDER: AuthProviderType = 'jwt';
+export const DEFAULT_AUTH_PROVIDER: AuthProviderType = "jwt";
 
 export enum CacheKey {
-  User = 'User',
+  User = "User",
+  Language = "Language",
+  Topic = "Topic",
 }
 export const OPTIONS_CACHE_TIME = -1;
 export const OPTIONS_STALE_TIME = -1;

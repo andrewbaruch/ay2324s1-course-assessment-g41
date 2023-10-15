@@ -1,5 +1,3 @@
-import { QuestionComplexity } from "./models/question";
-
 export interface Topic {
   id: string;
   name: string;
@@ -9,3 +7,5 @@ export interface Topic {
 
 export type TopicRequest = Partial<Topic>;
 export type TopicResponse = Topic;
+
+export type TopicsResponse = TopicResponse[];

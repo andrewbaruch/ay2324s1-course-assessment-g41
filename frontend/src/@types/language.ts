@@ -1,5 +1,3 @@
-import { QuestionComplexity } from "./models/question";
-
 export interface Language {
   id: string;
   name: string;
@@ -9,3 +7,5 @@ export interface Language {
 
 export type LanguageRequest = Partial<Language>;
 export type LanguageResponse = Language;
+
+export type LanguagesResponse = LanguageResponse[];
