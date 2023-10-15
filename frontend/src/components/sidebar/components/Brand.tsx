@@ -17,27 +17,6 @@ export function SidebarBrand() {
       <Link href={PATH_MAIN.general.dashboard}>
         <PeerPrepLogo h="130px" w="875px" color={logoColor} />
       </Link>
-      {/* <Link
-        // karwi: change logo
-        color={logoColor}
-        href="#"
-        bg="inherit"
-        borderRadius="inherit"
-        fontWeight="bold"
-        fontSize="26px"
-        padding="26px"
-        _hover={{ color: { logoColor } }}
-        _active={{
-          bg: 'inherit',
-          transform: 'none',
-          borderColor: 'transparent',
-        }}
-        _focus={{
-          boxShadow: 'none',
-        }}
-      >
-        PEER PREP
-      </Link> */}
       <HSeparator mb="20px" />
     </Flex>
   );

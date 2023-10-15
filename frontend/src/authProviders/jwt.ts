@@ -39,7 +39,6 @@ const deleteCache = (name: CacheName) =>
     .then((cache) => cache.keys().then((requests) => requests.map((req) => cache.delete(req))));
 
 export const jwtAuthProvider: AuthProvider = {
-  // karwi: login with github, then server redirects to url injected with tokens
   login: async (params) => {
     const { refreshToken, accessToken } = params as Session;
 

@@ -18,8 +18,7 @@ interface DashboardLayoutProps extends PropsWithChildren {
 
 // Custom Chakra theme
 export default function AuthenticatedLayout(props: DashboardLayoutProps) {
-  // karwi: uncomment later
-  // useAuthenticated();
+  useAuthenticated();
   const { children, ...rest } = props;
   // states and functions
   const [fixed] = useState(false);
@@ -40,7 +39,6 @@ export default function AuthenticatedLayout(props: DashboardLayoutProps) {
   }, [usePathname()]);
 
   useEffect(() => {
-    console.log("karwi: rerender admin layout");
     window.document.documentElement.dir = "ltr";
   });
 

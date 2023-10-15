@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
-import useCheckAuth from './useCheckAuth';
+import { useEffect } from "react";
+import useCheckAuth from "./useCheckAuth";
+import { isDebug } from "@/config";
 
 /**
  * Restrict access to authenticated users.
@@ -20,7 +21,11 @@ const useAuthenticated = () => {
   useEffect(() => {
     const callCheckAuth = async () => {
       try {
-        await checkAuth({});
+        if (!isDebug) {
+          await checkAuth({});
+        } else {
+          console.log("[useAuthenticated] isDebug is true, skipping authentication...");
+        }
       } catch (error) {
         // Error has been handled by the guard
       }

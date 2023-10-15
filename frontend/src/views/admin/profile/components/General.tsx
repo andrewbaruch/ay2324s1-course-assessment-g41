@@ -19,8 +19,6 @@ import { UserRequest } from "@/@types/user";
 import { useRequest } from "ahooks";
 import { updateUser } from "@/services/users";
 
-// karwi: refactor later, change to chakra style
-
 type IFormInput = UserRequest;
 
 interface OptionType extends OptionBase {
