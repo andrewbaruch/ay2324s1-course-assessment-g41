@@ -1,12 +1,13 @@
-import { CacheKey } from 'src/config';
-import { getUser } from 'src/services/users';
-import useSafeRequest from '../services/useSafeRequest';
-import { User } from 'src/@types/user';
+import { CacheKey } from "src/config";
+import { getUser } from "src/services/users";
+import useSafeRequest from "../services/useSafeRequest";
+import { User } from "src/@types/user";
 
+// karwiapi: change get user properties
 const defaultUser: User = {
-  userId: '',
-  createdAt: '',
-  updatedAt: '',
+  userId: "",
+  createdAt: "",
+  updatedAt: "",
   name: null,
   hasProfilePicture: null,
   profilePictureUrl: null,

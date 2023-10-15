@@ -1,14 +1,15 @@
 // BE_API contains api endpoints we use to query our host backend
 // karwi: change api
 export const BE_API = {
+  // karwiapi: change apis
   auth: {
-    google: '/v1/auth/google',
-    refresh: '/v1/auth/refresh',
-    telegramRedirect: '/v1/auth/telegram/redirect',
+    google: "/v1/auth/google",
+    refresh: "/v1/auth/refresh",
+    telegramRedirect: "/v1/auth/telegram/redirect",
   },
   user: {
-    root: '/v1/user',
-    uploadImageUrl: '/v1/user/uploadImageUrl',
+    root: "/v1/user",
+    uploadImageUrl: "/v1/user/uploadImageUrl",
   },
   // boulderingGrades: '/v1/boulderingGrades',
   // topRopeGrades: '/v1/topRopeGrades',
