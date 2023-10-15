@@ -9,6 +9,7 @@ interface AccessPayload extends jwt.JwtPayload {
 
 interface RefreshPayload extends jwt.JwtPayload {
     userId: string
+    tokenId: string
 }
 
 export class AuthService {
@@ -32,7 +33,6 @@ export class AuthService {
     }
 
     generateAccessToken(userId: string): string {
-        const payload = { userId };
         return jwt.sign({ userId }, this.jwtSecret, { expiresIn: '1h' });
     }
 
@@ -52,7 +52,7 @@ export class AuthService {
     }
 
     verifyRefreshToken(token: string): RefreshPayload {
-        const decoded = jwt.verify(token, this.jwtSecret) as AccessPayload; 
+        const decoded = jwt.verify(token, this.jwtSecret) as RefreshPayload; 
         return decoded;
     }
 

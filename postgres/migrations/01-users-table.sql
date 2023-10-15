@@ -5,7 +5,6 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,
     image TEXT NOT NULL,
     name VARCHAR(255),
-    preferred_language VARCHAR(255),
-    preferred_difficulty VARCHAR(255),
-    preferred_topics TEXT[] NOT NULL DEFAULT '{}'
+    preferred_language UUID,
+    preferred_difficulty INTEGER
 );
