@@ -1,46 +1,39 @@
-import { Question } from "@/types/models/question";
+import { QuestionComplexity } from "@/@types/models/question";
+import { User } from "@/@types/user";
 
-import { QuestionComplexity } from "@/types/models/question";
-import { useQuestionList } from "@/hooks/useQuestionList";
-import QuestionService from "@/services/questionService";
+// Imports the Google Cloud client library
+import { PubSub } from "@google-cloud/pubsub";
 
-const PEER_PREP_A5_KEY = "PEER_PREP_A5_KEY";
+// Creates a client; cache this for further use
+const pubSubClient = new PubSub();
 
-const questions = QuestionService.getQuestions();
+const MATCHING_QUEUE = "EASY_MATCHING_TOPIC";
+// const MATCHING_QUEUE = "MATCHING_QUEUE";
 
 class MatchingService {
-  static setUpPairCoding(complexity: QuestionComplexity) {
-    MatchingService.pairWithPeer();
-
-    // get random question based on complexity
-    const codingQuestion = MatchingService.getRandomQuestion(complexity);
-
-    // send to other peer
-
-    // store coding question in local storage
-    localStorage?.setItem(PEER_PREP_A5_KEY, JSON.stringify(codingQuestion));
+  static setUpPairCoding(user: String, questionComplexity: QuestionComplexity) {
+    MatchingService.pairWithPeer(user, questionComplexity);
   }
 
-  static getCodingQuestion() {
-    const storage = localStorage?.getItem(PEER_PREP_A5_KEY);
-    if (!storage) {
-      return [];
-    }
-    const codingQuestion: Question = JSON.parse(storage);
-    return codingQuestion;
+  private static pairWithPeer(user: String, questionComplexity: QuestionComplexity) {
+    const data = JSON.stringify({
+      userId: user,
+      questionComplexity: questionComplexity,
+      time: new Date().getTime(),
+    });
+    MatchingService.publishMessage(MATCHING_QUEUE, data);
   }
 
-  private static pairWithPeer() {
-    // TODO: call pairing service container to get peer
-  }
-
-  private static getRandomQuestion(complexity: QuestionComplexity) {
-    const filteredQuestions = questions.filter(
-      (q) => q.complexity === complexity
-    );
-    const randomIndex = Math.floor(Math.random() * filteredQuestions.length);
-
-    return filteredQuestions[randomIndex];
+  // TODO: check how to fix type
+  private static async publishMessage(topicName: String, data: any) {
+    // const dataBuffer = Buffer.from(data);
+    // try {
+    //   const messageId = await pubSubClient.topic(topicName).publishMessage({ data: dataBuffer });
+    //   console.log(`Message ${messageId} published.`);
+    // } catch (error: any) {
+    //   console.error(`Received error while publishing: ${error.message}`);
+    //   process.exitCode = 1;
+    // }
   }
 }
 

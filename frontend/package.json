@@ -8,7 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
-
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -16,6 +15,7 @@
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@google-cloud/pubsub": "^4.0.6",
     "@reduxjs/toolkit": "^1.8.3",
     "@tanstack/react-table": "^8.10.3",
     "@types/node": "20.6.2",
@@ -47,5 +47,8 @@
   "devDependencies": {
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0"
+  },
+  "browser": {
+    "fs": false
   }
 }
