@@ -100,7 +100,7 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
-            sendMatchingRequest("1hello", QuestionComplexity.EASY);
+            sendMatchingRequest("2hello", QuestionComplexity.MEDIUM);
 
             <Spinner />;
             setIsLoading(true);
