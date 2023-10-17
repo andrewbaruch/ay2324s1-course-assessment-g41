@@ -4,14 +4,14 @@ CREATE TABLE topics (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name VARCHAR(255),
     slug VARCHAR(255) UNIQUE,
-    description TEXT,
+    description TEXT
 );
 
 CREATE TABLE languages (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name VARCHAR(255),
     slug VARCHAR(255) UNIQUE,
-    description TEXT,
+    description TEXT
 );
 
 CREATE TABLE user_topic (

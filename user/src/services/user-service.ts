@@ -216,6 +216,7 @@ class UserService {
         FROM topics
         WHERE slug IN (${slugs.map((_, i) => `$${i + 1}`).join(', ')})
       `;
+      
       const result = await postgresClient.query<{ id: string }>(query, slugs);
 
       return result.rows.map((row) => row.id);

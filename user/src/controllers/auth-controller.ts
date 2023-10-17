@@ -11,7 +11,7 @@ const cookieConfig = {
   httpOnly: true, 
   //secure: true, 
   maxAge: 60 * 60 * 24 * 30,
-  signed: true // if you use the secret with cookieParser
+  // signed: true // if you use the secret with cookieParser
 };
 
 export async function googleAuth(req: Request, res: Response): Promise<void> {
