@@ -16,7 +16,7 @@ export const findCurrentRoute = (routes: IRoute[]): IRoute | undefined => {
 
 export const getActiveRoute = (routes: IRoute[]): string => {
   const route = findCurrentRoute(routes);
-  console.log('karwi: active route:', window.location.href, route?.name);
+  // console.log('karwi: active route:', window.location.href, route?.name);
   return route?.name || 'Default Brand Text';
 };
 

@@ -49,7 +49,7 @@ export const MatchingForm = () => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
-  const { sendMatchingRequest } = useMatching();
+  const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -100,11 +100,12 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
-            sendMatchingRequest("2hello", QuestionComplexity.MEDIUM);
+            // sendMatchingRequest("2hello", QuestionComplexity.MEDIUM);
 
-            <Spinner />;
-            setIsLoading(true);
-            onOpen();
+            // <Spinner />;
+            // setIsLoading(true);
+            // onOpen();
+            getMatchingStatus("2hello")
             console.log("hi");
           } catch (err) {
             toast({

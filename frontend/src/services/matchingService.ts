@@ -12,6 +12,17 @@ class MatchingService {
       console.error("Error while sending matching request:", error);
     }
   }
+
+  static async getMatchingStatus(user: String) {
+    try {
+      const data = { user };
+      await axios.post("/matching", data).then((response) => {
+        console.log(response);
+      });
+    } catch (error) {
+      console.error("Error while sending matching request:", error);
+    }
+  }
 }
 
 export default MatchingService;

@@ -1,14 +1,15 @@
 import { QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
 import MatchingService from "@/services/matchingService";
+import { use } from "react";
 
 export const useMatching = () => {
   // function startPolling(callApiFn, testFn, doFn, time) {
   //   let intervalId = setInterval(() => {
-  //     callApiFn() 
+  //     callApiFn()
   //       .then((data) => {
   //         if (intervalId && testFn(data)) {
-            
+
   //           stopPolling();
   //           doFn(data);
   //         }
@@ -29,14 +30,19 @@ export const useMatching = () => {
   //     }
   //   }
 
-  //   return stopPolling; 
+  //   return stopPolling;
   // }
 
   const sendMatchingRequest = (user: String, complexity: QuestionComplexity) => {
     MatchingService.setUpPairCoding(user, complexity);
   };
 
+  const getMatchingStatus = (user: String) => {
+    MatchingService.getMatchingStatus(user);
+  };
+
   return {
     sendMatchingRequest,
+    getMatchingStatus,
   };
 };
