@@ -1,13 +1,22 @@
-import express, { Application, Router } from 'express';
+import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
-import router from '@/routes/user-router'
+import routes from '@/routes/router';
+import cookieParser from "cookie-parser";
+
 
 class Server {
     private app
     private port
 
     constructor() {
-        this.port = process.env.SERVER_PORT
+        const port = process.env.SERVER_PORT
+        if (!port) {
+            console.log("Missing SERVER_PORT")
+            process.exit()
+        }
+
+        this.port = port
         this.app = express();
         this.configMiddleware();
         this.configRouter()
@@ -16,11 +25,17 @@ class Server {
     private configMiddleware() {
         this.app.use(bodyParser.urlencoded({ extended:true }));
         this.app.use(bodyParser.json({ limit: '1mb' })); 
+        this.app.use(cookieParser()); 
+
+        this.app.use(cors({
+            origin: '*',
+        }));
+
     }
 
     private configRouter() {
         // NOTE: Central router if necessary
-        this.app.use('/user', router);
+        this.app.use('/', routes);
     }
 
     public start() {

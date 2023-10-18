@@ -1,16 +1,21 @@
 import { Router } from 'express';
 import * as UserController from '@/controllers/user-controller';
-import * as UIDMiddleware from '@/middlewares/uid-middleware';
+import * as AuthMiddleware from '@/middlewares/auth-middleware';
 
-const router = Router();
+const userRouter = Router();
 
-// TODO: update for session/middleware
-router.use(UIDMiddleware.getUserInfoJWT);
+userRouter.use(AuthMiddleware.authJWT);
 
-router.post('/', UserController.createUser);
-router.get('/:id', UserController.getUserById);
-router.get('/', UserController.getCurrentUser);
-router.put('/', UserController.updateUser);
-router.delete('/', UserController.deleteUser);
+// NOTE: No need to expose creating, should be done in registration steps?
+userRouter.get('/topics', UserController.readCurrentTopics);
+userRouter.post('/topics', UserController.addTopics);
+userRouter.delete('/topics', UserController.deleteTopics);
 
-export default router;
+userRouter.get('/:id', UserController.getUserById);
+userRouter.get('/', UserController.getCurrentUser);
+userRouter.patch('/', UserController.updateUser);
+userRouter.delete('/', UserController.deleteUser);
+
+
+
+export default userRouter;

@@ -28,6 +28,7 @@ The frontend codebase follows a layered architecture approach, as depicted in th
                       |    Layer        |
                       +-----------------+
                       |   /components   |
+                      |   /views        |
                       +--------+--------+
                                |
                                |
