@@ -94,7 +94,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./frontend
     volumes:
-      - ./frontend:/app
+      - frontend:/app
 
 volumes:
   postgres:
