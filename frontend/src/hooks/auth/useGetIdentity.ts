@@ -1,18 +1,16 @@
-import { CacheKey } from 'src/config';
-import { getUser } from 'src/services/users';
-import useSafeRequest from '../services/useSafeRequest';
-import { User } from 'src/@types/user';
+import { CacheKey } from "src/config";
+import { getUser } from "src/services/users";
+import useSafeRequest from "../services/useSafeRequest";
+import { User } from "src/@types/user";
 
 const defaultUser: User = {
-  userId: '',
-  createdAt: '',
-  updatedAt: '',
+  id: "",
+  email: "",
+  image: "",
   name: null,
-  hasProfilePicture: null,
-  profilePictureUrl: null,
-  bio: null,
-  preferredDifficulty: null,
-  preferredTopics: [],
+  preferred_language: null,
+  preferred_difficulty: null,
+  preferred_topics: [],
 };
 
 /**

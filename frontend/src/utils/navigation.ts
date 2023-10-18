@@ -1,7 +1,7 @@
-import { IRoute } from 'src/@types/navigation';
+import { IRoute } from "src/@types/navigation";
 
 // NextJS Requirement
-export const isWindowAvailable = () => typeof window !== 'undefined';
+export const isWindowAvailable = () => typeof window !== "undefined";
 
 export const findCurrentRoute = (routes: IRoute[]): IRoute | undefined => {
   const foundRoute = routes.find(
@@ -16,8 +16,7 @@ export const findCurrentRoute = (routes: IRoute[]): IRoute | undefined => {
 
 export const getActiveRoute = (routes: IRoute[]): string => {
   const route = findCurrentRoute(routes);
-  // console.log('karwi: active route:', window.location.href, route?.name);
-  return route?.name || 'Default Brand Text';
+  return route?.name || "Default Brand Text";
 };
 
 export const getActiveNavbar = (routes: IRoute[]): boolean => {
