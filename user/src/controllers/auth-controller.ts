@@ -14,6 +14,18 @@ const cookieConfig = {
   // signed: true // if you use the secret with cookieParser
 };
 
+const loginRedirectURL = process.env.LOGIN_REDIRECT_URL
+if (!loginRedirectURL) {
+  console.log("Missing LOGIN_REDIRECT_URL")
+  process.exit()
+}
+
+const logoutRedirectURL = process.env.LOGOUT_REDIRECT_URL
+if (!logoutRedirectURL) {
+  console.log("Missing LOGOUT_REDIRECT_URL")
+  process.exit()
+}
+
 export async function googleAuth(req: Request, res: Response): Promise<void> {
   if (process.env.EXE_ENV === 'DEV' && process.env.SKIP_AUTH === 'TRUE') {
     let user = await userService.readByEmail(testEmail)
@@ -44,12 +56,6 @@ export async function googleRedirect(req: Request, res: Response): Promise<void>
 
     if (!user) {
       user = await userService.create(userInfo.email, userInfo.image)
-      // if (process.env.REGISTRATION_URL) {
-      //   res.redirect(process.env.REGISTRATION_URL);
-      // } else {
-      //   console.log("Missing REGISTRATION_URL")
-      //   res.status(500).send()
-      // }
     }
     
     const accessToken = await authService.generateAccessToken(user!.id);
@@ -58,7 +64,7 @@ export async function googleRedirect(req: Request, res: Response): Promise<void>
     res.cookie(accessTokenKey, accessToken, cookieConfig)
     res.cookie(refreshTokenKey, refreshToken, cookieConfig)
 
-    res.status(200).json(user)
+    res.redirect(loginRedirectURL!)
   } catch (error) {
     console.error('Google OAuth callback error:', error);
     res.status(500).json({ message: 'Google Auth failed' });
