@@ -12,7 +12,7 @@ export async function getMatchingStatus(
     res.status(200).json(roomId);
   } else if (status == 2) {
     res.status(202).send();
-  } else {
+  } else if (status == 0) {
     res.status(404).send();
   }
 }

@@ -1,6 +1,8 @@
 import express from "express";
 import routes from "@/routes/router";
 
+import { processMatching } from "./myindex";
+
 class Server {
   private app;
   private port;
@@ -15,6 +17,7 @@ class Server {
     this.port = port;
     this.app = express();
     this.configRouter();
+    this.runOnStart();
   }
 
   private configRouter() {
@@ -26,6 +29,11 @@ class Server {
     this.app.listen(this.port, () => {
       console.log("listening to port", this.port);
     });
+  }
+
+  private runOnStart() {
+    console.log("Running pubsub subscriber on server start");
+    processMatching();
   }
 }
 

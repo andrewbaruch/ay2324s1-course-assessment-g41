@@ -36,6 +36,8 @@ import { QuestionComplexity } from "@/@types/models/question";
 import { useForm } from "react-hook-form";
 import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
+import useGetIdentity from "@/hooks/auth/useGetIdentity";
+
 export const MatchingForm = () => {
   const {
     register,
@@ -100,12 +102,15 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
-            // sendMatchingRequest("2hello", QuestionComplexity.MEDIUM);
+            // TODO: if matched redirect to collab room
 
-            // <Spinner />;
-            // setIsLoading(true);
+            // const userData = useGetIdentity();
+            sendMatchingRequest("2431431hello", data.complexity);
+
             // onOpen();
-            getMatchingStatus("2hello")
+            // setIsLoading(true);
+            
+            // getMatchingStatus("2hello");
             console.log("hi");
           } catch (err) {
             toast({
