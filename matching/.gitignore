@@ -21,6 +21,7 @@ coverage
 
 # API keys and secrets
 .env
+key.json
 
 # # Dependency directory
 /node_modules

@@ -1,42 +1,97 @@
+# FROM node:lts
+
+# # Set working directory
+# WORKDIR /home/node/app
+
+# # Copy package.json and package-lock.json
+# COPY package*.json ./
+
+# # Copy all files from the current directory to the working directory
+# COPY . .
+
+# # Copy the service account key file into the container
+# COPY key.json /home/node/app/key.json
+
+# # Set the GOOGLE_APPLICATION_CREDENTIALS environment variable to point to the key file
+# ENV GOOGLE_APPLICATION_CREDENTIALS="/home/node/app/key.json"
+# ENV GOOGLE_PROJECT_ID="operating-ally-401008"
+
+# # Install the gcloud SDK
+# # RUN apt-get update && \
+# #     apt-get install -y curl && \
+# #     apt-get install -y gnupg && \
+# #     apt-get install -y lsb-release && \
+# #     export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
+# #     echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+# #     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
+# #     apt-get update -y && apt-get install -y google-cloud-sdk
+
+# # Activate the service account
+# # RUN gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
+
+# # Install dependencies
+# RUN npm install
+
+# # Set the project ID
+# RUN gcloud init
+# RUN gcloud config set project GOOGLE_PROJECT_ID
+# RUN gcloud auth application-default login
+
+
+# # Start the application
+# CMD [ "npm", "start"]
+
+# --------------------------
+
 FROM node:lts
 
-# Set working directory
 WORKDIR /home/node/app
 
-# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Copy all files from the current directory to the working directory
-COPY . .
-
-# Copy the service account key file into the container
-COPY key.json /home/node/app/key.json
-
-# Set the GOOGLE_APPLICATION_CREDENTIALS environment variable to point to the key file
-ENV GOOGLE_APPLICATION_CREDENTIALS="/home/node/app/key.json"
-ENV GOOGLE_PROJECT_ID="operating-ally-401008"
-
-# Install the gcloud SDK
-# RUN apt-get update && \
-#     apt-get install -y curl && \
-#     apt-get install -y gnupg && \
-#     apt-get install -y lsb-release && \
-#     export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
-#     echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
-#     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
-#     apt-get update -y && apt-get install -y google-cloud-sdk
-
-# Activate the service account
-# RUN gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
-
-# Install dependencies
 RUN npm install
 
-# Set the project ID
-RUN gcloud init
-RUN gcloud config set project GOOGLE_PROJECT_ID
-RUN gcloud auth application-default login
+COPY . .
 
-
-# Start the application
 CMD [ "npm", "start"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# --------------------------
+# FROM node:lts
+
+# # Set working directory
+# WORKDIR /home/node/app
+
+# # Copy package.json and package-lock.json
+# COPY package*.json ./
+
+# # Install dependencies
+# RUN npm install
+
+# # Copy all files from the current directory to the working directory
+# COPY . .
+
+# # Copy the service account key file into the container
+# COPY key.json /home/node/app/key.json
+
+# # Set the GOOGLE_APPLICATION_CREDENTIALS environment variable to point to the key file
+# ENV GOOGLE_APPLICATION_CREDENTIALS="/home/node/app/key.json"
+
+# # Start the application
+# CMD [ "npm", "start"]

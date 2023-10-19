@@ -30,12 +30,15 @@ services:
       dockerfile: Dockerfile.dev
       context: ./matching
     volumes:
+      - "./matching/key.json:/home/node/app/key.json"
       - 3219Matching:/home/node/app/
     ports:
       - 8000:3000
     restart: on-failure
     networks:
       - backend
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/node/app/key.json
 
   # postgres:
   #   container_name: postgres
