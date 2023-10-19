@@ -1,5 +1,7 @@
-import express, { Application, Router } from 'express';
+import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from "cookie-parser";
 import router from '@/routes/question-router'
 
 class Server {
@@ -16,6 +18,11 @@ class Server {
     private configMiddleware() {
         this.app.use(bodyParser.urlencoded({ extended:true }));
         this.app.use(bodyParser.json({ limit: '1mb' })); 
+        this.app.use(cookieParser()); 
+
+        this.app.use(cors({
+            origin: '*',
+        }));
     }
 
     private configRouter() {

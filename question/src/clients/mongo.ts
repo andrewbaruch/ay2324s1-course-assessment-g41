@@ -1,6 +1,6 @@
 import { MongoClient, Db, Document, Collection, ObjectId, Filter, UpdateFilter, WithId, DeleteResult } from 'mongodb';
 
-class MongoDBClient {
+export class MongoDBClient {
   private client: MongoClient;
   private db?: Db;
   private collections: Record<string, Collection> = {};
@@ -68,5 +68,3 @@ class MongoDBClient {
     return collection.deleteOne(filter);
   }
 }
-
-export default MongoDBClient;

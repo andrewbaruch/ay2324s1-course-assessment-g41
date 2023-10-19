@@ -1,6 +1,6 @@
-import MongoDBClient from '@/clients/mongo';
+import { MongoDBClient } from '@/clients/mongo';
 import { ObjectId } from 'mongodb';
-import { Question, Complexity } from '@/models/question'
+import { Question, Difficulty } from '@/models/question'
 
 // interface QuestionSchema {
 //   _id: ObjectId;
@@ -16,11 +16,11 @@ class QuestionService {
 
   constructor() {
     this.dbClient = new MongoDBClient();
+    this.dbClient.connect()
   }
 
   async createQuestion(question: Question): Promise<Question> {
     const insertedQuestion = await this.dbClient.insertOne(this.collectionName, question);
-    await this.dbClient.disconnect();
 
     return insertedQuestion as Question;
   }
@@ -32,14 +32,14 @@ class QuestionService {
     return question as Question;
   }
 
-  async getFilteredQuestions(difficulties: Complexity[], sorting: 'asc' | 'desc' | 'nil'): Promise<Question[]> {
+  async getFilteredQuestions(difficulties: Difficulty[], sorting: 'asc' | 'desc' | 'nil'): Promise<Question[]> {
     const filter = { complexity: { $in: difficulties } };
-    const questions = await this.dbClient.find(this.collectionName, filter);
+    const questions = await this.dbClient.find(this.collectionName, filter) as Question[];
   
     if (sorting === 'asc') {
-      questions.sort((a, b) => a.complexity - b.complexity);
+      questions.sort((a, b) => a.difficulty - b.difficulty);
     } else if (sorting === 'desc') {
-      questions.sort((a, b) => b.complexity - a.complexity);
+      questions.sort((a, b) => b.difficulty - a.difficulty);
     }
   
     return questions as Question[];
