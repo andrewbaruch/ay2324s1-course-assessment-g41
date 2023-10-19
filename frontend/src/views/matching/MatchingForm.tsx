@@ -38,6 +38,39 @@ import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
 import useGetIdentity from "@/hooks/auth/useGetIdentity";
 
+// function startPolling(
+//   callApiFn: () => Promise<any>,
+//   testFn: (data: any) => boolean,
+//   time: number,
+// ): void {
+//   let intervalId: NodeJS.Timeout | null = setInterval(() => {
+//     callApiFn()
+//       .then((data) => {
+//         if (intervalId && testFn(data)) {
+//           stopPolling();
+//           return data;
+//           // doFn(data);
+//         }
+//       })
+//       .catch((e) => {
+//         stopPolling();
+//         throw new Error("Polling cancelled due to API error");
+//       });
+//   }, time);
+
+//   function stopPolling() {
+//     if (intervalId) {
+//       console.log(new Date(), "Stopping polling...");
+//       clearInterval(intervalId);
+//       intervalId = null;
+//     } else {
+//       console.log(new Date(), "Polling was already stopped...");
+//     }
+//   }
+
+//   stopPolling();
+// }
+
 export const MatchingForm = () => {
   const {
     register,
@@ -109,7 +142,22 @@ export const MatchingForm = () => {
 
             // onOpen();
             // setIsLoading(true);
-            
+
+            // let intervalId: NodeJS.Timeout | null = setInterval(() => {
+            //   getMatchingStatus("2hello")
+            //     .then((data) => {
+            //       if (intervalId && testFn(data)) {
+            //         stopPolling();
+            //         return data;
+            //         // doFn(data);
+            //       }
+            //     })
+            //     .catch((e) => {
+            //       stopPolling();
+            //       throw new Error("Polling cancelled due to API error");
+            //     });
+            // }, time);
+
             // getMatchingStatus("2hello");
             console.log("hi");
           } catch (err) {

@@ -1,7 +1,7 @@
 import express from "express";
 import routes from "@/routes/router";
 
-import { processMatching } from "./myindex";
+import { processMatching } from "./matchingSubscriber";
 
 class Server {
   private app;

@@ -13,12 +13,11 @@ class MatchingService {
     }
   }
 
-  static async getMatchingStatus(user: String) {
+  static async getMatchingStatus(userId: String) {
     try {
-      const data = { user };
-      await axios.post("/matching", data).then((response) => {
-        console.log(response);
-      });
+      const response = await axios.get(`/matching?user=${userId}`);
+      console.log(response.data);
+      return response.data;
     } catch (error) {
       console.error("Error while sending matching request:", error);
     }
