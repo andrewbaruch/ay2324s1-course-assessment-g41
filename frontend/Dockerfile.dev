@@ -2,10 +2,7 @@
 # built in localhost
 FROM node:alpine
 WORKDIR '/app'
-# COPY ./package.json ./
-# RUN yarn install
-# copy is not needed since we make use of 
-# volumes in docker compose
-# to copy the references over
-# COPY . .
+COPY ./package.json ./
+RUN yarn install
+COPY . .
 CMD ["yarn", "run", "dev"]
