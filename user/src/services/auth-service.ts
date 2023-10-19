@@ -20,7 +20,7 @@ export class AuthService {
         this.googleClient = new google.auth.OAuth2(
             process.env.OAUTH_GOOGLE_CLIENT,
             process.env.OAUTH_GOOGLE_SECRET,
-            process.env.AUTH_DOMAIN + '/auth/google/callback' 
+            process.env.AUTH_DOMAIN + '/auth/googleRedirect' 
         );
 
         const secret = process.env.JWT_SECRET
