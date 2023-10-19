@@ -86,6 +86,7 @@ export const MatchingForm = () => {
   const cancelRef = React.useRef();
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
+  const { identity, loading, loaded, error } = useGetIdentity();
 
   return (
     <Stack
@@ -137,8 +138,9 @@ export const MatchingForm = () => {
           try {
             // TODO: if matched redirect to collab room
 
-            // const userData = useGetIdentity();
-            sendMatchingRequest("2431431hello", data.complexity);
+            console.log(identity, loading, loaded, error);
+            console.log("hello walao");
+            // sendMatchingRequest("2431431hello", data.complexity);
 
             // onOpen();
             // setIsLoading(true);

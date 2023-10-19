@@ -3,6 +3,7 @@ const MEDIUM_MATCHING_SUBSCRIPTION: string = "MEDIUM_MATCHING_TOPIC-sub";
 const HARD_MATCHING_SUBSCRIPTION: string = "HARD_MATCHING_TOPIC-sub";
 const MATCHING_REQUEST_VALID_DURATION_IN_SECONDS: number = 30;
 
+const projectId = "operating-ally-401008";
 const STATUS_REQUEST: string = "STATUS_REQUEST";
 const STATUS_DONE: string = "STATUS_DONE";
 
@@ -10,7 +11,10 @@ const STATUS_DONE: string = "STATUS_DONE";
 import { PubSub } from "@google-cloud/pubsub";
 
 // Creates a client; cache this for further use
-const pubSubClient: PubSub = new PubSub();
+const pubSubClient: PubSub = new PubSub({
+  projectId,
+  keyFilename: "./key.json",
+});
 
 // data structures
 let matchingPairs: Record<string, string> = {};
@@ -78,9 +82,15 @@ const messageHandler = (message: any): void => {
 };
 
 const processMatching = (): void => {
-  const easySubscription = pubSubClient.subscription(EASY_MATCHING_SUBSCRIPTION);
-  const mediumSubscription = pubSubClient.subscription(MEDIUM_MATCHING_SUBSCRIPTION);
-  const hardSubscription = pubSubClient.subscription(HARD_MATCHING_SUBSCRIPTION);
+  const easySubscription = pubSubClient.subscription(
+    EASY_MATCHING_SUBSCRIPTION
+  );
+  const mediumSubscription = pubSubClient.subscription(
+    MEDIUM_MATCHING_SUBSCRIPTION
+  );
+  const hardSubscription = pubSubClient.subscription(
+    HARD_MATCHING_SUBSCRIPTION
+  );
 
   // Listen for new messages until timeout is hit
   easySubscription.on("message", messageHandler);

@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router_1 = __importDefault(require("./routes/router"));
-const myindex_1 = require("./myindex");
+const matchingSubscriber_1 = require("./matchingSubscriber");
 class Server {
     constructor() {
         const port = process.env.SERVER_PORT;
@@ -28,8 +28,8 @@ class Server {
         });
     }
     runOnStart() {
-        console.log("Running custom code on server start");
-        (0, myindex_1.processMatching)();
+        console.log("Running pubsub subscriber on server start");
+        (0, matchingSubscriber_1.processMatching)();
     }
 }
 exports.default = Server;
