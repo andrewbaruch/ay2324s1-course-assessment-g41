@@ -1,22 +1,24 @@
-'use client';
-import { PropsWithChildren, useState } from 'react';
+"use client";
+import { PropsWithChildren, useState } from "react";
 
 // Chakra imports
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Box, useColorModeValue } from "@chakra-ui/react";
 
 // Layout components
-import { SidebarContext } from 'src/contexts/SidebarContext';
-import { isWindowAvailable } from 'src/utils/navigation';
+import { SidebarContext } from "src/contexts/SidebarContext";
+import { isWindowAvailable } from "src/utils/navigation";
+import useNotAuthenticated from "@/hooks/guards/useNotAuthenticated";
 
 // Custom Chakra theme
 
 interface AuthProps extends PropsWithChildren {}
 
 export default function AuthLayout({ children }: AuthProps) {
+  useNotAuthenticated();
   // states and functions
   const [toggleSidebar, setToggleSidebar] = useState(false);
-  const authBg = useColorModeValue('white', 'navy.900');
-  if (isWindowAvailable()) document.documentElement.dir = 'ltr';
+  const authBg = useColorModeValue("white", "navy.900");
+  if (isWindowAvailable()) document.documentElement.dir = "ltr";
   return (
     <Box>
       <SidebarContext.Provider
