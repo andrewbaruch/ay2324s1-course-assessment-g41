@@ -38,7 +38,7 @@ const routes: IRoute[] = [
   {
     name: "Peer Coding",
     layout: "",
-    path: "/matching",
+    path: "/peercoding",
     icon: <Icon as={MdLink} width="20px" height="20px" color="inherit" />,
     // component: NFTMarketplace,
     secondary: true,

@@ -101,6 +101,7 @@ services:
     depends_on:
       - client
       # - user
+      - matching
     restart: always
     build:
       dockerfile: Dockerfile.dev

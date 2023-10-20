@@ -38,7 +38,7 @@ export const useMatching = () => {
   };
 
   const getMatchingStatus = (user: String) => {
-    MatchingService.getMatchingStatus(user);
+    return MatchingService.getMatchingStatus(user);
   };
 
   return {

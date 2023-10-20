@@ -32,7 +32,10 @@ class Server {
   }
 
   private runOnStart() {
-    console.log("Running pubsub subscriber on server start");
+    console.log(
+      "Running pubsub similanjiao kukujiao subscriber on server start"
+    );
+    console.log("haiya wtf----======-=-=-=-===--------");
     processMatching();
   }
 }

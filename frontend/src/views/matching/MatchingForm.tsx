@@ -30,6 +30,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import React from "react";
 import { QuestionComplexity } from "@/@types/models/question";
@@ -86,7 +87,7 @@ export const MatchingForm = () => {
   const cancelRef = React.useRef();
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
-  const { identity, loading, loaded, error } = useGetIdentity();
+  // const { identity, loading, loaded, error } = useGetIdentity();
 
   return (
     <Stack
@@ -100,7 +101,7 @@ export const MatchingForm = () => {
       height="100%"
       display="flex"
     >
-      <Heading fontWeight="bold">Peer Coding</Heading>
+      <Heading fontWeight="bold">Peer Coding oicb wtfasjhdasd </Heading>
 
       <Text color="gray.500">
         Match with a peer to tackle problems together! Feel free to choose the complexity of the
@@ -137,31 +138,30 @@ export const MatchingForm = () => {
         onClick={handleSubmit((data) => {
           try {
             // TODO: if matched redirect to collab room
+            // redirect('/collabroom')
 
-            console.log(identity, loading, loaded, error);
+            // console.log(identity, loading, loaded, error);
             console.log("hello walao");
-            sendMatchingRequest("blesme", data.complexity);
+            sendMatchingRequest("ok lo", data.complexity);
 
-            // onOpen();
-            // setIsLoading(true);
+            onOpen();
+            setIsLoading(true);
 
-            // let intervalId: NodeJS.Timeout | null = setInterval(() => {
-            //   getMatchingStatus("2hello")
-            //     .then((data) => {
-            //       if (intervalId && testFn(data)) {
-            //         stopPolling();
-            //         return data;
-            //         // doFn(data);
-            //       }
-            //     })
-            //     .catch((e) => {
-            //       stopPolling();
-            //       throw new Error("Polling cancelled due to API error");
-            //     });
-            // }, time);
+            let intervalId: NodeJS.Timeout | null = setInterval(() => {
+              getMatchingStatus("2hello")
+                // .then((data) => {
+                //   if (intervalId && testFn(data)) {
+                //     stopPolling();
+                //     return data;
+                //     // doFn(data);
+                //   }
+                // })
+                .catch((e) => {
+                  throw new Error("Polling cancelled due to API error");
+                });
+            }, 1000);
 
             // getMatchingStatus("2hello");
-            console.log("hi");
           } catch (err) {
             toast({
               status: "error",

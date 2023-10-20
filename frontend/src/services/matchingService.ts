@@ -13,9 +13,10 @@ class MatchingService {
     }
   }
 
-  static async getMatchingStatus(userId: String) {
+  static async getMatchingStatus(id: String) {
     try {
-      const response = await axios.get(`/matching?user=${userId}`);
+      const response = await axios.get(`/matching/status/${id}`);
+      console.log("in get status frontend");
       console.log(response.data);
       return response.data;
     } catch (error) {

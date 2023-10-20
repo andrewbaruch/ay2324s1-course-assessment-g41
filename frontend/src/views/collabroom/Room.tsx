@@ -60,7 +60,7 @@ export const Room = () => {
       height="100%"
       display="flex"
     >
-      <Text color="gray.500">This is a test collab room.</Text>
+      <Text color="gray.500">This is a test collab room aksjdbaksfjbakfn.</Text>
     </Stack>
   );
 };

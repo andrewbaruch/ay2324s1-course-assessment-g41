@@ -74,7 +74,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   return (
     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
       <Text color={textColorPrimary} fontWeight="bold" fontSize="2xl" mt="10px" mb="4px">
-        Complete Your Profile asdfsadgfsdg
+        Complete Your Profile
       </Text>
       <Text color={textColorSecondary} fontSize="md" me="26px" mb="40px">
         Please provide detailed information about yourself to improve the compatibility with
