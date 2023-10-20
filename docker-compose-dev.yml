@@ -13,10 +13,11 @@ services:
   user:
     container_name: user
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.local
       context: ./user
     volumes:
       - ./user:/home/node/app/
+      - /home/node/app/node_modules
     ports:
       - 8080:3000
     restart: on-failure
@@ -97,7 +98,7 @@ services:
 
   client:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.local
       context: ./frontend
     volumes:
       - ./frontend:/app

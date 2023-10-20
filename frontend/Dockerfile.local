@@ -1,0 +1,6 @@
+# only used for development
+# built in localhost
+FROM node:alpine
+WORKDIR '/app'
+
+CMD ["yarn", "run", "dev"]
