@@ -1,48 +1,34 @@
-import { editor } from 'monaco-editor'
 import { Editor } from "@monaco-editor/react";
 import { Cursor } from "../../components/editor";
 import { useRoom } from "@/hooks/room/useRoom";
+import { useDocument } from '@/hooks/room/useCodeEditor';
+import { Select } from 'chakra-react-select';
+import { Box, Stack, useColorMode } from '@chakra-ui/react';
+import { codeEditorOptions, themifyCodeEditor } from "@/utils/codeEditor";
 
-
-// TODO: @didy refactor
-const options: editor.IStandaloneEditorConstructionOptions = {
-  autoIndent: 'full',
-  contextmenu: true,
-  fontFamily: 'monospace',
-  fontSize: 13,
-  lineHeight: 24,
-  hideCursorInOverviewRuler: true,
-  matchBrackets: 'always',
-  minimap: {
-    enabled: false,
-  },
-  scrollbar: {
-    horizontalSliderSize: 4,
-    verticalSliderSize: 4,
-  },
-  selectOnLineNumbers: false,
-  roundedSelection: false,
-  readOnly: false,
-  cursorStyle: 'line',
-  automaticLayout: true,
-};
 
 /**
  * Reference: https://liveblocks.io/examples/collaborative-code-editor/nextjs-yjs-monaco
  */
 export const CodeEditor = () => {
   const { handleEditorMount, provider } = useRoom()
+  const { language, changeLanguage, supportedLanguages } = useDocument()
+  const { colorMode } = useColorMode()
 
   return (
-    <>
+    <Stack>
+      <Box w="fit-content" minW="300px">
+        <Select value={language} options={supportedLanguages} onChange={(newValue) => changeLanguage(newValue as { label: string, value: string })} />
+      </Box>
       {provider ? < Cursor yProvider={provider} /> : null}
       <Editor
         height="60vh"
         defaultValue={'// your code here'}
         onMount={handleEditorMount}
-        language={'python'}
-        options={options}
+        language={language.value}
+        options={codeEditorOptions}
+        theme={themifyCodeEditor(colorMode)}
       />
-    </>
+    </Stack>
   )
 }

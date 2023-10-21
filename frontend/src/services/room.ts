@@ -4,7 +4,7 @@ import { editor } from 'monaco-editor'
 import { MonacoBinding } from 'y-monaco';
 
 // TODO: @didy move to env
-const SERVER_WS_URL = "ws://localhost:1234"
+const SERVER_WS_URL = "ws://localhost:1234/broadcast"
 
 export class RoomService {
   readonly document: Y.Doc | undefined;
