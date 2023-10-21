@@ -8,32 +8,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMatchingStatusWithoutParams = exports.getMatchingStatus = void 0;
 // import matchingService from "../services/matching-service";
+const matchingRequestCache_1 = __importDefault(require("../matchingRequestCache"));
+const matchingPairCache_1 = __importDefault(require("../matchingPairCache"));
 function getMatchingStatus(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // TODO: pull data from db
         const userId = req.params.id;
-        console.log("in be get matching wohoo, userid=", userId);
-        // const status = 1;
+        console.log("in be get matching wohooasdasd, userid=", userId);
+        const matchingPair = matchingPairCache_1.default.get(userId);
+        console.log("in be get matching wohooasdasd, matchingPair=", matchingPair);
+        var status = matchingRequestCache_1.default.get(userId);
+        console.log("in be get matching wohooasdasd, status=", status);
+        if (matchingPair != undefined) {
+            const roomId = matchingPair.roomId;
+            res.status(200).json(roomId);
+        }
+        else if (status !== undefined) {
+            res.status(202).send();
+        }
+        else if (status === undefined) {
+            res.status(404).send();
+        }
+        // status = 1;
         // if (status == 1) {
-        //   const roomId = 912738;
         //   res.status(200).json(roomId);
         // } else if (status == 2) {
         //   res.status(202).send();
         // } else if (status == 0) {
         //   res.status(404).send();
-        // }
-        // try {
-        //   const matchingPair = await matchingService.read(userId);
-        //   if (matchingPair) {
-        //     res.status(200).json(matchingPair);
-        //     console.log("got my pair kasjdbkas kukujiao", matchingPair);
-        //   }
-        //   res.status(404).send();
-        // } catch (error) {
-        //   res.status(500).send();
         // }
     });
 }

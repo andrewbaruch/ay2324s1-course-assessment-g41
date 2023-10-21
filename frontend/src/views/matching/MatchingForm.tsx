@@ -39,39 +39,6 @@ import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
 import useGetIdentity from "@/hooks/auth/useGetIdentity";
 
-// function startPolling(
-//   callApiFn: () => Promise<any>,
-//   testFn: (data: any) => boolean,
-//   time: number,
-// ): void {
-//   let intervalId: NodeJS.Timeout | null = setInterval(() => {
-//     callApiFn()
-//       .then((data) => {
-//         if (intervalId && testFn(data)) {
-//           stopPolling();
-//           return data;
-//           // doFn(data);
-//         }
-//       })
-//       .catch((e) => {
-//         stopPolling();
-//         throw new Error("Polling cancelled due to API error");
-//       });
-//   }, time);
-
-//   function stopPolling() {
-//     if (intervalId) {
-//       console.log(new Date(), "Stopping polling...");
-//       clearInterval(intervalId);
-//       intervalId = null;
-//     } else {
-//       console.log(new Date(), "Polling was already stopped...");
-//     }
-//   }
-
-//   stopPolling();
-// }
-
 export const MatchingForm = () => {
   const {
     register,
@@ -101,7 +68,7 @@ export const MatchingForm = () => {
       height="100%"
       display="flex"
     >
-      <Heading fontWeight="bold">Peer Coding oicb wtfasjhdasd </Heading>
+      <Heading fontWeight="bold">Peer Coding </Heading>
 
       <Text color="gray.500">
         Match with a peer to tackle problems together! Feel free to choose the complexity of the
@@ -141,32 +108,35 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
-            // TODO: if matched redirect to collab room
-            // redirect('/collabroom')
-
             // console.log(identity, loading, loaded, error);
             console.log("hello walao cb");
             console.log(data);
             sendMatchingRequest(data.userId, data.complexity);
 
-            // onOpen();
-            // setIsLoading(true);
+            onOpen();
+            setIsLoading(true);
 
-            // let intervalId: NodeJS.Timeout | null = setInterval(() => {
-            //   getMatchingStatus("2hello")
-            //     // .then((data) => {
-            //     //   if (intervalId && testFn(data)) {
-            //     //     stopPolling();
-            //     //     return data;
-            //     //     // doFn(data);
-            //     //   }
-            //     // })
-            //     .catch((e) => {
-            //       throw new Error("Polling cancelled due to API error");
-            //     });
-            // }, 1000);
-
-            // getMatchingStatus("2hello");
+            let intervalId: NodeJS.Timeout | null = setInterval(() => {
+              getMatchingStatus(data.userId)
+                .then((response) => {
+                  const statusCode = response.status;
+                  if (intervalId && statusCode == 200) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    redirect("/collabroom");
+                    return;
+                  }
+                  if (intervalId && statusCode == 404) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    setIsLoading(false);
+                    return;
+                  }
+                })
+                .catch((e) => {
+                  throw new Error("Polling cancelled due to API error");
+                });
+            }, 1000);
           } catch (err) {
             toast({
               status: "error",
@@ -192,6 +162,10 @@ export const MatchingForm = () => {
             </AlertDialogHeader>
 
             {isLoading ? (
+              <AlertDialogBody>
+                <Spinner />
+              </AlertDialogBody>
+            ) : (
               <>
                 <AlertDialogBody>
                   There seems to be no other peers :(
@@ -208,10 +182,6 @@ export const MatchingForm = () => {
                   </Button> */}
                 </AlertDialogFooter>
               </>
-            ) : (
-              <AlertDialogBody>
-                <Spinner />
-              </AlertDialogBody>
             )}
           </AlertDialogContent>
         </AlertDialogOverlay>

@@ -2,35 +2,31 @@ import matchingService from "@/services/matching-service";
 import { Request, Response } from "express";
 // import matchingService from "@/services/matching-service";
 
+import matchingRequestCache from "@/matchingRequestCache";
+import matchingPairCache from "@/matchingPairCache";
+
 export async function getMatchingStatus(
   req: Request,
   res: Response
 ): Promise<void> {
   // TODO: pull data from db
   const userId = req.params.id;
-  console.log("in be get matching wohoo, userid=", userId);
+  console.log("in be get matching wohooasdasd, userid=", userId);
 
-  // const status = 1;
-  // if (status == 1) {
-  //   const roomId = 912738;
-  //   res.status(200).json(roomId);
-  // } else if (status == 2) {
-  //   res.status(202).send();
-  // } else if (status == 0) {
-  //   res.status(404).send();
-  // }
+  const matchingPair: any = matchingPairCache.get(userId);
+  console.log("in be get matching wohooasdasd, matchingPair=", matchingPair);
 
-  // try {
-  //   const matchingPair = await matchingService.read(userId);
-  //   if (matchingPair) {
-  //     res.status(200).json(matchingPair);
-  //     console.log("got my pair kasjdbkas kukujiao", matchingPair);
-  //   }
+  var status = matchingRequestCache.get(userId);
+  console.log("in be get matching wohooasdasd, status=", status);
 
-  //   res.status(404).send();
-  // } catch (error) {
-  //   res.status(500).send();
-  // }
+  if (matchingPair != undefined) {
+    const roomId: string | undefined = matchingPair.roomId;
+    res.status(200).json(roomId);
+  } else if (status !== undefined) {
+    res.status(202).send();
+  } else if (status === undefined) {
+    res.status(404).send();
+  }
 }
 export async function getMatchingStatusWithoutParams(
   req: Request,
@@ -38,7 +34,7 @@ export async function getMatchingStatusWithoutParams(
 ): Promise<void> {
   // TODO: pull data from db
   // const userId = req.params.id;
-  console.log("in be get matching without param, userid");
+  console.log("in be get matching without param");
 
   const status = 1;
   if (status == 1) {

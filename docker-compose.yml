@@ -150,7 +150,7 @@ services:
       # - "./matching/key.json:/home/node/app/key.json"
       # - 3219Matching:/home/node/app/
 
-      - ./matching/key.json:/home/node/app/key.json
+      # - ./matching/key.json:/home/node/app/key.json
       - ./matching:/home/node/app/
     ports:
       - 8000:3000
@@ -257,6 +257,8 @@ services:
       - /app/node_modules
     networks:
       - frontend
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 
 volumes:
   postgres:

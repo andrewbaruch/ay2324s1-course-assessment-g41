@@ -1,5 +1,5 @@
 export interface MatchingPair {
-  user_id1: string;
-  user_id2: string;
-  room_id: number;
+  userId1: string;
+  userId2: string;
+  roomId: number;
 }

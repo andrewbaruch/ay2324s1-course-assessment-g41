@@ -24,15 +24,18 @@ let dequeuedPairs: Record<string, any[]> = {
   Hard: [],
 };
 
+import matchingRequestCache from "@/matchingRequestCache";
+import matchingPairCache from "@/matchingPairCache";
+
 // Create an event handler to handle messages
 const messageHandler = (message: any): void => {
+  // "Ack" (acknowledge receipt of) the message
+  message.ack();
+
   console.log("=======================================");
   console.log(`Received message ${message.id}:`);
   console.log(`\tData: ${message.data}`);
   console.log(`\tAttributes: ${message.attributes}`);
-
-  // "Ack" (acknowledge receipt of) the message
-  message.ack();
 
   const parsedData = JSON.parse(message.data);
 
@@ -40,6 +43,12 @@ const messageHandler = (message: any): void => {
 
   const complexity: string = parsedData.questionComplexity;
   dequeuedPairs[complexity].push(parsedData);
+
+  // set request expiry to 30s, after that discard it
+  console.log(
+    "-------hello wassup getting request",
+    matchingRequestCache.set(parsedData.userId, { complexity: complexity }, 30)
+  );
 
   console.log(dequeuedPairs);
   // remove expired requests
@@ -77,6 +86,20 @@ const messageHandler = (message: any): void => {
 
     console.log(`user1=${user1.userId} user2=${user2.userId}`);
     console.log(`myData=${myData} `);
+
+    console.log(
+      "----hello matcheddd",
+      matchingPairCache.set(user1.userId, {
+        userId2: user2.userId,
+        complexity: complexity,
+        roomId: "Dummyroom",
+      }),
+      matchingPairCache.set(user2.userId, {
+        userId2: user1.userId,
+        complexity: complexity,
+        roomId: "Dummyroom",
+      })
+    );
   }
   console.log(`matchingpairs=${JSON.stringify(matchingPairs)}`);
 };
