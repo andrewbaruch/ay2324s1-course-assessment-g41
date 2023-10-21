@@ -3,3 +3,6 @@ cd ..
 
 cd user && npm install && npm build
 cd ..
+
+cd question && npm install && npm build
+cd ..

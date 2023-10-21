@@ -16,6 +16,7 @@ if (!secret) {
 export function authJWT(req: Request, res: Response, next: Function) {
   if (process.env.SKIP_AUTH == 'TRUE') {
     next();
+    return
   }
   
   const token = req.cookies[accessTokenKey]

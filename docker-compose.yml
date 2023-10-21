@@ -2,7 +2,7 @@ version: "3.8"
 
 x-common-variables: &common-variables
   POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
-  MONGO: mongodb://user:pass@mongodb
+  MONGO: mongodb://user:pass@mongo:27017
   EXE_ENV: DEV
 
 networks:
@@ -26,11 +26,9 @@ services:
     container_name: question
     build:
       dockerfile: Dockerfile.dev
-      context: ./user
-    volumes:
-      - 3219User:/home/node/app/
+      context: ./question
     ports:
-      - 3000:3000
+      - 3001:3000
     restart: on-failure
     networks:
       - backend

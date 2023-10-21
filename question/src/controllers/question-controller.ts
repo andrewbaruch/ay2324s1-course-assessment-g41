@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
-import { Question } from '@/models/question'; // Adjust the import path as needed
-import QuestionService from '@/services/question-service'; 
+import { Question, Difficulty } from '@/models/question';
+import { QuestionService, CreateQuestionReq } from '@/services/question-service'; 
 
 
 const questionService = new QuestionService();
 
 export async function createQuestion(req: Request, res: Response) {
   try {
-    const newQuestion: Question = req.body;
+    const newQuestion: CreateQuestionReq = req.body;
     await questionService.createQuestion(newQuestion);
+
     res.status(201).send();
   } catch (error) {
     res.status(500).send();
@@ -33,22 +34,29 @@ export async function getFilteredQuestions(req: Request, res: Response) {
   try {
     const { difficulties, sorting } = req.query;
 
-    if (!difficulties) {
-      return res.status(400).send('Invalid difficulties parameter');
+    let difficultiesEnumArray = [];
+
+    if (difficulties && typeof difficulties === 'string') {
+      difficultiesEnumArray = difficulties
+        .split(',')
+        .map(d => parseInt(d, 10))
+        .filter(d => !isNaN(d) && Object.values(Difficulty).includes(d))
+        .map(d => d as Difficulty);
+    } else {
+      return res.status(400).send('No valid difficulties provided');
     }
 
-    if (!Array.isArray(difficulties)) {
+    const sort: 'asc' | 'desc' | 'nil' = (sorting === 'asc' || sorting === 'desc') ? sorting : 'nil';
 
-    }
+    const sortedQuestions = await questionService.getFilteredQuestions(
+      difficultiesEnumArray,
+      sort
+    );
 
-    // const sortedQuestions = await questionService.getFilteredQuestions(
-    //   difficulties.map((d: string) => parseInt(d, 10)),
-    //   sorting as 'asc' | 'desc' | 'nil'
-    // );
-
-    // res.json(sortedQuestions);
+    res.json(sortedQuestions);
   } catch (error) {
-    res.status(500).send();
+    console.error(error);
+    res.status(500).send('Internal server error');
   }
 }
 

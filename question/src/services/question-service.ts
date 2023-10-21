@@ -10,7 +10,16 @@ import { Question, Difficulty } from '@/models/question'
 //   complexity: Complexity;
 // }
 
-class QuestionService {
+
+export interface CreateQuestionReq {
+  title: string;
+  description: string;
+  topic: string;
+  subtopic: string;
+  difficulty: Difficulty;
+}
+
+export class QuestionService {
   private dbClient: MongoDBClient;
   private collectionName = 'questions'
 
@@ -19,7 +28,7 @@ class QuestionService {
     this.dbClient.connect()
   }
 
-  async createQuestion(question: Question): Promise<Question> {
+  async createQuestion(question: CreateQuestionReq): Promise<Question> {
     const insertedQuestion = await this.dbClient.insertOne(this.collectionName, question);
 
     return insertedQuestion as Question;
@@ -33,7 +42,7 @@ class QuestionService {
   }
 
   async getFilteredQuestions(difficulties: Difficulty[], sorting: 'asc' | 'desc' | 'nil'): Promise<Question[]> {
-    const filter = { complexity: { $in: difficulties } };
+    const filter = { difficulty: { $in: difficulties } };
     const questions = await this.dbClient.find(this.collectionName, filter) as Question[];
   
     if (sorting === 'asc') {
@@ -59,5 +68,3 @@ class QuestionService {
     return deleteResult.deletedCount === 1;
   }
 }
-
-export default QuestionService;
