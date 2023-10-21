@@ -38,6 +38,8 @@ import { useForm } from "react-hook-form";
 import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
 import useGetIdentity from "@/hooks/auth/useGetIdentity";
+import { useRouter } from "next/navigation";
+import { Status } from "@/@types/status";
 
 export const MatchingForm = () => {
   const {
@@ -55,6 +57,7 @@ export const MatchingForm = () => {
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
   // const { identity, loading, loaded, error } = useGetIdentity();
+  const router = useRouter();
 
   return (
     <Stack
@@ -68,7 +71,7 @@ export const MatchingForm = () => {
       height="100%"
       display="flex"
     >
-      <Heading fontWeight="bold">Peer Coding </Heading>
+      <Heading fontWeight="bold">Peer Coding</Heading>
 
       <Text color="gray.500">
         Match with a peer to tackle problems together! Feel free to choose the complexity of the
@@ -109,34 +112,34 @@ export const MatchingForm = () => {
         onClick={handleSubmit((data) => {
           try {
             // console.log(identity, loading, loaded, error);
-            console.log("hello walao cb");
             console.log(data);
-            sendMatchingRequest(data.userId, data.complexity);
-
             onOpen();
             setIsLoading(true);
 
-            let intervalId: NodeJS.Timeout | null = setInterval(() => {
-              getMatchingStatus(data.userId)
-                .then((response) => {
-                  const statusCode = response.status;
-                  if (intervalId && statusCode == 200) {
-                    clearInterval(intervalId);
-                    intervalId = null;
-                    redirect("/collabroom");
-                    return;
-                  }
-                  if (intervalId && statusCode == 404) {
-                    clearInterval(intervalId);
-                    intervalId = null;
-                    setIsLoading(false);
-                    return;
-                  }
-                })
-                .catch((e) => {
-                  throw new Error("Polling cancelled due to API error");
-                });
-            }, 1000);
+            sendMatchingRequest(data.userId, data.complexity).then(() => {
+              let intervalId: NodeJS.Timeout | null = setInterval(() => {
+                getMatchingStatus(data.userId)
+                  .then((response) => {
+                    const responseStatus = response.status;
+                    console.log("in frontend, status code", response);
+                    if (intervalId && responseStatus == Status.paired) {
+                      clearInterval(intervalId);
+                      intervalId = null;
+                      router.push(`/collabroom/${response.roomId}`);
+                      return;
+                    }
+                    if (intervalId && responseStatus == Status.expired) {
+                      clearInterval(intervalId);
+                      intervalId = null;
+                      setIsLoading(false);
+                      return;
+                    }
+                  })
+                  .catch((e) => {
+                    throw new Error("Polling cancelled due to API error");
+                  });
+              }, 1000);
+            });
           } catch (err) {
             toast({
               status: "error",

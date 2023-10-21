@@ -2,6 +2,8 @@ import express from "express";
 import routes from "@/routes/router";
 
 import { processMatching } from "./matchingSubscriber";
+import matchingRequestCache from "@/matchingRequestCache";
+import matchingPairCache from "@/matchingPairCache";
 
 class Server {
   private app;
@@ -33,10 +35,9 @@ class Server {
   }
 
   private runOnStart() {
-    console.log(
-      "Running pubsub ---- test haiya ==== oicb subscriber on server start"
-    );
-    console.log("haiya wtf---=========");
+    console.log("Running pubsub subscriber on server start");
+    matchingRequestCache.flushAll();
+    matchingPairCache.flushAll();
     processMatching();
   }
 }

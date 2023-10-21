@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router_1 = __importDefault(require("./routes/router"));
 const matchingSubscriber_1 = require("./matchingSubscriber");
+const matchingRequestCache_1 = __importDefault(require("./matchingRequestCache"));
+const matchingPairCache_1 = __importDefault(require("./matchingPairCache"));
 class Server {
     constructor() {
         const port = process.env.SERVER_PORT;
@@ -31,6 +33,8 @@ class Server {
     runOnStart() {
         console.log("Running pubsub ---- test haiya ==== oicb subscriber on server start");
         console.log("haiya wtf---=========");
+        matchingRequestCache_1.default.flushAll();
+        matchingPairCache_1.default.flushAll();
         (0, matchingSubscriber_1.processMatching)();
     }
 }

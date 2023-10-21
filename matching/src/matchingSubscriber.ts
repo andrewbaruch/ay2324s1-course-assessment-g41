@@ -45,10 +45,7 @@ const messageHandler = (message: any): void => {
   dequeuedPairs[complexity].push(parsedData);
 
   // set request expiry to 30s, after that discard it
-  console.log(
-    "-------hello wassup getting request",
-    matchingRequestCache.set(parsedData.userId, { complexity: complexity }, 30)
-  );
+  matchingRequestCache.set(parsedData.userId, { complexity: complexity }, 30);
 
   console.log(dequeuedPairs);
   // remove expired requests
@@ -88,7 +85,7 @@ const messageHandler = (message: any): void => {
     console.log(`myData=${myData} `);
 
     console.log(
-      "----hello matcheddd",
+      "matched pair, inserting into cache",
       matchingPairCache.set(user1.userId, {
         userId2: user2.userId,
         complexity: complexity,

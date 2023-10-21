@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 
 import matchingRequestCache from "@/matchingRequestCache";
 import matchingPairCache from "@/matchingPairCache";
+import { Status } from "@/models/status";
 
 export async function getMatchingStatus(
   req: Request,
@@ -11,21 +12,30 @@ export async function getMatchingStatus(
 ): Promise<void> {
   // TODO: pull data from db
   const userId = req.params.id;
-  console.log("in be get matching wohooasdasd, userid=", userId);
+  // console.log(
+  //   "in be get matching, matching keys=",
+  //   matchingRequestCache.keys()
+  // );
+  // console.log(
+  //   "in be get matching, pair keys=",
+  //   matchingPairCache.keys()
+  // );
+
+  // console.log("in be get matching, userid=", userId);
 
   const matchingPair: any = matchingPairCache.get(userId);
-  console.log("in be get matching wohooasdasd, matchingPair=", matchingPair);
+  // console.log("in be get matching, matchingPair=", matchingPair);
 
   var status = matchingRequestCache.get(userId);
-  console.log("in be get matching wohooasdasd, status=", status);
+  // console.log("in be get matching, status=", status);
 
-  if (matchingPair != undefined) {
+  if (matchingPair !== undefined) {
     const roomId: string | undefined = matchingPair.roomId;
-    res.status(200).json(roomId);
+    res.status(200).json({ roomId, status: Status.paired });
   } else if (status !== undefined) {
-    res.status(202).send();
+    res.status(200).json({ status: Status.processing });
   } else if (status === undefined) {
-    res.status(404).send();
+    res.status(200).json({ status: Status.expired });
   }
 }
 export async function getMatchingStatusWithoutParams(
@@ -43,6 +53,6 @@ export async function getMatchingStatusWithoutParams(
   } else if (status == 2) {
     res.status(202).send();
   } else if (status == 0) {
-    res.status(404).send();
+    res.status(204).send();
   }
 }

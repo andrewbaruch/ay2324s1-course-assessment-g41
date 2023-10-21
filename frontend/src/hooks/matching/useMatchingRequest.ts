@@ -33,8 +33,8 @@ export const useMatching = () => {
   //   return stopPolling;
   // }
 
-  const sendMatchingRequest = (user: String, complexity: QuestionComplexity) => {
-    MatchingService.setUpPairCoding(user, complexity);
+  const sendMatchingRequest = (user: String, complexity: QuestionComplexity): Promise<void> => {
+    return MatchingService.setUpPairCoding(user, complexity);
   };
 
   const getMatchingStatus = (user: String) => {

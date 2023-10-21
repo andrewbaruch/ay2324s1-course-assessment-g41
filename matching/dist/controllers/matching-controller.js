@@ -16,33 +16,28 @@ exports.getMatchingStatusWithoutParams = exports.getMatchingStatus = void 0;
 // import matchingService from "../services/matching-service";
 const matchingRequestCache_1 = __importDefault(require("../matchingRequestCache"));
 const matchingPairCache_1 = __importDefault(require("../matchingPairCache"));
+const status_1 = require("../models/status");
 function getMatchingStatus(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // TODO: pull data from db
         const userId = req.params.id;
+        console.log("in be get matching wohooasdasd, matching keys=", matchingRequestCache_1.default.keys());
+        console.log("in be get matching wohooasdasd, pair keys=", matchingPairCache_1.default.keys());
         console.log("in be get matching wohooasdasd, userid=", userId);
         const matchingPair = matchingPairCache_1.default.get(userId);
         console.log("in be get matching wohooasdasd, matchingPair=", matchingPair);
         var status = matchingRequestCache_1.default.get(userId);
         console.log("in be get matching wohooasdasd, status=", status);
-        if (matchingPair != undefined) {
+        if (matchingPair !== undefined) {
             const roomId = matchingPair.roomId;
-            res.status(200).json(roomId);
+            res.status(200).json({ roomId, status: status_1.Status.paired });
         }
         else if (status !== undefined) {
-            res.status(202).send();
+            res.status(200).json({ status: status_1.Status.processing });
         }
         else if (status === undefined) {
-            res.status(404).send();
+            res.status(200).json({ status: status_1.Status.expired });
         }
-        // status = 1;
-        // if (status == 1) {
-        //   res.status(200).json(roomId);
-        // } else if (status == 2) {
-        //   res.status(202).send();
-        // } else if (status == 0) {
-        //   res.status(404).send();
-        // }
     });
 }
 exports.getMatchingStatus = getMatchingStatus;
@@ -50,7 +45,7 @@ function getMatchingStatusWithoutParams(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // TODO: pull data from db
         // const userId = req.params.id;
-        console.log("in be get matching without param, userid");
+        console.log("in be get matching without param");
         const status = 1;
         if (status == 1) {
             const roomId = 18263;
@@ -60,7 +55,7 @@ function getMatchingStatusWithoutParams(req, res) {
             res.status(202).send();
         }
         else if (status == 0) {
-            res.status(404).send();
+            res.status(204).send();
         }
     });
 }
