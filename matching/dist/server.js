@@ -16,6 +16,7 @@ class Server {
         this.port = port;
         this.app = (0, express_1.default)();
         this.configRouter();
+        // this.start();
         this.runOnStart();
     }
     configRouter() {
@@ -24,11 +25,12 @@ class Server {
     }
     start() {
         this.app.listen(this.port, () => {
-            console.log("listening to port", this.port);
+            console.log("listening to port cb", this.port);
         });
     }
     runOnStart() {
-        console.log("Running pubsub subscriber on server start");
+        console.log("Running pubsub ---- oicb subscriber on server start");
+        console.log("haiya wtf--21348675--");
         (0, matchingSubscriber_1.processMatching)();
     }
 }

@@ -30,7 +30,7 @@ class Server {
         this.app.use(cors({
             origin: '*',
         }));
-
+s
     }
 
     private configRouter() {

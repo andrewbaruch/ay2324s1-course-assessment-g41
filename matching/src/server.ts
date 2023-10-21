@@ -17,6 +17,7 @@ class Server {
     this.port = port;
     this.app = express();
     this.configRouter();
+    // this.start();
     this.runOnStart();
   }
 
@@ -27,15 +28,13 @@ class Server {
 
   public start() {
     this.app.listen(this.port, () => {
-      console.log("listening to port", this.port);
+      console.log("listening to port cb", this.port);
     });
   }
 
   private runOnStart() {
-    console.log(
-      "Running pubsub similanjiao kukujiao subscriber on server start"
-    );
-    console.log("haiya wtf----======-=-=-=-===--------");
+    console.log("Running pubsub ---- oicb subscriber on server start");
+    console.log("haiya wtf--21348675--");
     processMatching();
   }
 }

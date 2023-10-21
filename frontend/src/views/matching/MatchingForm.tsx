@@ -109,6 +109,10 @@ export const MatchingForm = () => {
       </Text>
 
       <Stack spacing={2} display="flex" px={0}>
+        <FormControl>
+          <FormLabel htmlFor="userId">User Id</FormLabel>
+          <Input placeholder="User Id" defaultValue="1" {...register("userId")} />
+        </FormControl>
         <FormControl isInvalid={errors.complexity ? true : false}>
           <FormLabel htmlFor="complexity">Complexity</FormLabel>
           <Select
@@ -141,25 +145,26 @@ export const MatchingForm = () => {
             // redirect('/collabroom')
 
             // console.log(identity, loading, loaded, error);
-            console.log("hello walao");
-            sendMatchingRequest("ok lo", data.complexity);
+            console.log("hello walao cb");
+            console.log(data);
+            sendMatchingRequest(data.userId, data.complexity);
 
-            onOpen();
-            setIsLoading(true);
+            // onOpen();
+            // setIsLoading(true);
 
-            let intervalId: NodeJS.Timeout | null = setInterval(() => {
-              getMatchingStatus("2hello")
-                // .then((data) => {
-                //   if (intervalId && testFn(data)) {
-                //     stopPolling();
-                //     return data;
-                //     // doFn(data);
-                //   }
-                // })
-                .catch((e) => {
-                  throw new Error("Polling cancelled due to API error");
-                });
-            }, 1000);
+            // let intervalId: NodeJS.Timeout | null = setInterval(() => {
+            //   getMatchingStatus("2hello")
+            //     // .then((data) => {
+            //     //   if (intervalId && testFn(data)) {
+            //     //     stopPolling();
+            //     //     return data;
+            //     //     // doFn(data);
+            //     //   }
+            //     // })
+            //     .catch((e) => {
+            //       throw new Error("Polling cancelled due to API error");
+            //     });
+            // }, 1000);
 
             // getMatchingStatus("2hello");
           } catch (err) {

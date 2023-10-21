@@ -26,5 +26,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const MatchingController = __importStar(require("../controllers/matching-controller"));
 const matchingRouter = (0, express_1.Router)();
-matchingRouter.post("/status", MatchingController.getMatchingStatus);
+matchingRouter.get("/status/:id", MatchingController.getMatchingStatus);
+matchingRouter.get("/status", MatchingController.getMatchingStatusWithoutParams);
 exports.default = matchingRouter;
