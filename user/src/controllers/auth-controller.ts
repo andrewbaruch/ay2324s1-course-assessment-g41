@@ -4,18 +4,31 @@ import userService from '@/services/user-service';
 
 const testEmail = "example@email.com"
 
-const accessTokenKey = "PEERPREPACCESSTOKEN"
-const refreshTokenKey = "PEERPREPREFRESHTOKEN"
-
 const cookieConfig = {
   httpOnly: true, 
-  //secure: true, 
   maxAge: 60 * 60 * 24 * 30,
-  // signed: true // if you use the secret with cookieParser
 };
 
+if (!process.env.LOGIN_REDIRECT_URL) {
+  console.log("Missing LOGIN_REDIRECT_URL")
+  process.exit()
+}
+const loginRedirectURL = process.env.LOGIN_REDIRECT_URL
+
+if (!process.env.ACCESS_COOKIE_KEY) {
+  console.log("Missing ACCESS_COOKIE_KEY")
+  process.exit()
+}
+const accessTokenKey = process.env.ACCESS_COOKIE_KEY
+
+if (!process.env.REFRESH_COOKIE_KEY) {
+  console.log("Missing REFRESH_COOKIE_KEY")
+  process.exit()
+}
+const refreshTokenKey = process.env.REFRESH_COOKIE_KEY
+
 export async function googleAuth(req: Request, res: Response): Promise<void> {
-  if (process.env.EXE_ENV === 'DEV' && process.env.SKIP_AUTH === 'TRUE') {
+  if (process.env.EXE_ENV === 'DEV' && process.env.SKIP_LOGIN_AUTH === 'TRUE') {
     let user = await userService.readByEmail(testEmail)
 
     if (!user) {
@@ -44,12 +57,6 @@ export async function googleRedirect(req: Request, res: Response): Promise<void>
 
     if (!user) {
       user = await userService.create(userInfo.email, userInfo.image)
-      // if (process.env.REGISTRATION_URL) {
-      //   res.redirect(process.env.REGISTRATION_URL);
-      // } else {
-      //   console.log("Missing REGISTRATION_URL")
-      //   res.status(500).send()
-      // }
     }
     
     const accessToken = await authService.generateAccessToken(user!.id);
@@ -58,7 +65,7 @@ export async function googleRedirect(req: Request, res: Response): Promise<void>
     res.cookie(accessTokenKey, accessToken, cookieConfig)
     res.cookie(refreshTokenKey, refreshToken, cookieConfig)
 
-    res.status(200).json(user)
+    res.redirect(loginRedirectURL)
   } catch (error) {
     console.error('Google OAuth callback error:', error);
     res.status(500).json({ message: 'Google Auth failed' });

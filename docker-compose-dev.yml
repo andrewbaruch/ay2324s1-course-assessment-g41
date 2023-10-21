@@ -13,24 +13,13 @@ services:
   user:
     container_name: user
     build:
-      dockerfile: Dockerfile.dev
-      context: ./user
-    ports:
-      - 8080:3000
-    restart: on-failure
-    networks:
-      - backend
-    environment: *common-variables
-
-  question:
-    container_name: question
-    build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.local
       context: ./user
     volumes:
-      - 3219User:/home/node/app/
+      - ./user:/home/node/app/
+      - /home/node/app/node_modules
     ports:
-      - 3000:3000
+      - 8080:3000
     restart: on-failure
     networks:
       - backend
@@ -109,11 +98,15 @@ services:
 
   client:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.local
       context: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     networks:
       - frontend
 
 volumes:
   postgres:
   mongo:
+  3219User:
