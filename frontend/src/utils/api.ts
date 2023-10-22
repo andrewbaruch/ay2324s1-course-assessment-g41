@@ -17,7 +17,7 @@ export const BE_API = {
     uploadImageUrl: `${ROOTS_USER}/user/uploadImageUrl`,
   },
   questions: {
-    root: `${ROOT_QUESTION}`
+    root: `${ROOT_QUESTION}/question`
   },
   topics: `${ROOTS_USER}/topics`,
   languages: `${ROOTS_USER}/languages`,

@@ -25,7 +25,7 @@ export const useQuestions = () => {
       console.log(questions)
       setQuestionList(questions)
     })
-    
+
   }, [])
 
   const addQuestion = async ({
@@ -43,7 +43,7 @@ export const useQuestions = () => {
     setQuestionList(await QuestionService.getQuestions());
   };
 
-  const removeQuestion = async ({ id }: { id: number }) => {
+  const removeQuestion = async ({ id }: { id: string }) => {
     await QuestionService.removeQuestion({ id });
     setQuestionList(await QuestionService.getQuestions());
   };

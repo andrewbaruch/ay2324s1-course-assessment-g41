@@ -41,7 +41,7 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
           <Stack borderWidth={1} borderRadius={4} spacing={0} background={bgColor}>
             {questions.map((q, index) =>
               index !== questions.length - 1 ? (
-                <Link key={q.id} href={`questions/${q.id}`}>
+                <Link key={q.id} href={`coding-questions/${q.id}`}>
                   <Box key={`q-${index}`} _hover={{ background: hoverColor, cursor: "pointer" }}>
                     <Box p={4}>
                       <QuestionCard {...q} />
@@ -50,7 +50,7 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
                   </Box>
                 </Link>
               ) : (
-                  <Link key={index} href={`questions/${q.id}`}>
+                  <Link key={index} href={`coding-questions/${q.id}`}>
                     <Box
                       p={4}
                       key={`q-${index}`}
@@ -71,7 +71,7 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
                 This question repository helps you save questions you have encountered from past
                 interviews! You can also design and save your own question!
             </AlertDescription>
-              <Link href={"/questions/add-question"}>
+              <Link href={"/coding-questions/add-question"}>
                 <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
                   Craft Question
               </Button>

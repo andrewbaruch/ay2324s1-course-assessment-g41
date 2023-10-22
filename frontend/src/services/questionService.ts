@@ -2,7 +2,7 @@ import { Question } from "@/@types/models/question";
 import { QuestionComplexity } from "@/@types/models/question";
 import { BE_API } from "@/utils/api";
 import authorizedAxios from "@/utils/axios/authorizedAxios";
-import { transformQuestionComplexity } from "@/utils/question";
+import { transformQuestionComplexity, transformQuestionDifficulty } from "@/utils/question";
 
 class QuestionService {
   static async addQuestion({
@@ -36,7 +36,7 @@ class QuestionService {
     }
   }
 
-  static async removeQuestion({ id }: { id: number }) {
+  static async removeQuestion({ id }: { id: string }) {
     if (typeof window === "undefined") {
       return;
     }
@@ -73,16 +73,20 @@ class QuestionService {
       return [];
     }
 
-    const questions = await authorizedAxios.get(BE_API.questions.root) as Question[]
-    return questions
+    const { data }: { data: { title: string, difficulty: number, description: string, topics: string[], _id: string }[] } = await authorizedAxios.get(BE_API.questions.root)
+    return data.map(d => ({title: d.title, complexity: transformQuestionDifficulty(d.difficulty), description: d.description, categories: d.topics, id: d._id} as Question))
   }
 
-  static async getQuestion(id: number) {
-    return await authorizedAxios.get(BE_API.questions.root, {
-      params: {
-        id
-      }
-    })
+  static async getQuestion(id: string) {
+    console.log('calling API', BE_API.questions.root, id)
+    const { data }: { data: { title: string, difficulty: number, description: string, topics: string[], _id: string }[] } = await authorizedAxios.get(`${BE_API.questions.root}?id=${id}`)
+    console.log('received response', data)
+    if (data.length <= 0) {
+      return null
+    }
+
+    return data.map(d => ({title: d.title, complexity: transformQuestionDifficulty(d.difficulty), description: d.description, categories: d.topics, id: d._id} as Question))[0]
+    
   }
 
   // TODO: add validation from backend question service

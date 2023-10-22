@@ -168,7 +168,7 @@ export const QuestionForm = ({ question = null }: { question: Question | null })
               complexity={watch("complexity")}
               categories={watch("categories")}
               description={watch("description")}
-              id={-1}
+              id={"-1"}
               isPreview={true}
             />
           </TabPanel>

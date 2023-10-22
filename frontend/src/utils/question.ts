@@ -10,3 +10,14 @@ export const transformQuestionComplexity = (complexity: QuestionComplexity) => {
       return 3
   }
 }
+
+export const transformQuestionDifficulty = (difficulty: number) => {
+  switch (difficulty) {
+    case 1:
+      return QuestionComplexity.EASY
+    case 2:
+      return QuestionComplexity.MEDIUM
+    case 3:
+      return QuestionComplexity.HARD
+  }
+}
