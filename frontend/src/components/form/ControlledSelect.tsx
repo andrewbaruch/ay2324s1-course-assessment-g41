@@ -45,7 +45,6 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
         ref={ref}
         onBlur={onBlur}
         options={options}
-        // single select handled here --------------v   v--- multi select is handled here
         value={
           props.isMulti
             ? options && Array.isArray(value)
