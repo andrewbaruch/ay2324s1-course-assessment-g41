@@ -1,6 +1,6 @@
 {
-  "name": "@hocuspocus/server-demos",
-  "version": "2.6.1",
+  "name": "peerprep hocuspocus server",
+  "version": "0.0.1",
   "private": true,
   "type": "commonjs",
   "scripts": {
