@@ -125,7 +125,7 @@ export const MatchingForm = () => {
                     if (intervalId && responseStatus == Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
-                      router.push(`/collabroom/${response.roomId}`);
+                      router.push(`/collabroom`);
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {
