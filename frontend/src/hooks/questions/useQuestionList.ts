@@ -22,7 +22,6 @@ export const useQuestions = () => {
 
   useEffect(() => {
     QuestionService.getQuestions().then(questions => {
-      console.log(questions)
       setQuestionList(questions)
     })
 
@@ -45,12 +44,12 @@ export const useQuestions = () => {
 
   const removeQuestion = async ({ id }: { id: string }) => {
     await QuestionService.removeQuestion({ id });
-    setQuestionList(await QuestionService.getQuestions());
+    setQuestionList(questionListWrapper.questions.filter(q => q.id !== id));
   };
 
   const editQuestion = async (editedQuestionData: Question) => {
     await QuestionService.editQuestion(editedQuestionData);
-    setQuestionList(await QuestionService.getQuestions());
+    setQuestionList([editedQuestionData, ...questionListWrapper.questions.filter(q => q.id !== editedQuestionData.id)]);
   };
 
   return {

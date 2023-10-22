@@ -78,9 +78,7 @@ class QuestionService {
   }
 
   static async getQuestion(id: string) {
-    console.log('calling API', BE_API.questions.root, id)
     const { data }: { data: { title: string, difficulty: number, description: string, topics: string[], _id: string }[] } = await authorizedAxios.get(`${BE_API.questions.root}?id=${id}`)
-    console.log('received response', data)
     if (data.length <= 0) {
       return null
     }
