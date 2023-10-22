@@ -4,7 +4,9 @@ import unauthorizedAxios from "../utils/axios/unauthorizedAxios";
 import { HOST_API } from "@/config";
 
 export const loginWithGoogle = () => {
-  window.location.href = `${HOST_API}${BE_API.auth.google}`;
+  return new Promise(() => {
+    window.location.href = `${HOST_API}${BE_API.auth.google}`;
+  });
 };
 
 export const checkAuth = () => authorizedAxios.head(BE_API.auth.checkAuth);
