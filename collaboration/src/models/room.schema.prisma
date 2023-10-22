@@ -9,10 +9,10 @@ generator client {
 
 model Room {
   id     Int @id @default(autoincrement())
-  user1  String
-  user2  String
+  user1  String // relation
+  user2  String // relation
   name   String @unique // Random slug generated at app level
   isOpen Boolean @default(false)
-  attemptId String?
+  attemptId String? // relation
   createdAt DateTime @default(now())
 }

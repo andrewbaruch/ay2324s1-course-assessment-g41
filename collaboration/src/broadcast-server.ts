@@ -35,6 +35,7 @@ class BroadcastServer {
         console.log(`Broadcast server is listening on port "${data.port}"!`);
       },
       onConnect: async (data) => {
+        // validation logic here for the client
         console.log(data.socketId)
         console.log('connect')
       }
