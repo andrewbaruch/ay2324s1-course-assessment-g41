@@ -80,7 +80,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
     register,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isDirty, isSubmitting },
     reset,
   } = useForm<IFormInput>({
     defaultValues: toIFormInput(identity),
@@ -100,6 +100,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   const { run: updateUserProfile } = useRequest(runUpdates, {
     manual: true,
     onSuccess: (result, params) => {
+      reset(toIFormInput(identity)); // Reset form state after submission is successful
       toast({
         title: "Profile Update Success",
         description: "Your profile has been updated successfully!",
@@ -196,6 +197,8 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             mt={{ base: "20px", "2xl": "auto" }}
             variant="brand"
             fontWeight="500"
+            isDisabled={!isDirty || isSubmitting}
+            isLoading={isSubmitting}
           >
             Submit
           </Button>
