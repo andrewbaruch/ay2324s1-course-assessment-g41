@@ -1,13 +1,14 @@
 import { atom, useAtom } from "jotai";
 import { Question, QuestionComplexity } from "@/@types/models/question";
 import QuestionService from "@/services/questionService";
+import { useEffect } from "react";
 
 interface QuestionListAtom {
   questions: Question[];
 }
 
 const questionListAtom = atom<QuestionListAtom>({
-  questions: QuestionService.getQuestions(),
+  questions: [],
 });
 
 export const useQuestions = () => {
@@ -19,7 +20,15 @@ export const useQuestions = () => {
     });
   };
 
-  const addQuestion = ({
+  useEffect(() => {
+    QuestionService.getQuestions().then(questions => {
+      console.log(questions)
+      setQuestionList(questions)
+    })
+    
+  }, [])
+
+  const addQuestion = async ({
     title,
     description,
     complexity,
@@ -30,18 +39,18 @@ export const useQuestions = () => {
     complexity: QuestionComplexity;
     categories: string[];
   }) => {
-    QuestionService.addQuestion({ title, description, complexity, categories });
-    setQuestionList(QuestionService.getQuestions());
+    await QuestionService.addQuestion({ title, description, complexity, categories });
+    setQuestionList(await QuestionService.getQuestions());
   };
 
-  const removeQuestion = ({ id }: { id: number }) => {
-    QuestionService.removeQuestion({ id });
-    setQuestionList(QuestionService.getQuestions());
+  const removeQuestion = async ({ id }: { id: number }) => {
+    await QuestionService.removeQuestion({ id });
+    setQuestionList(await QuestionService.getQuestions());
   };
 
-  const editQuestion = (editedQuestionData: Question) => {
-    QuestionService.editQuestion(editedQuestionData);
-    setQuestionList(QuestionService.getQuestions());
+  const editQuestion = async (editedQuestionData: Question) => {
+    await QuestionService.editQuestion(editedQuestionData);
+    setQuestionList(await QuestionService.getQuestions());
   };
 
   return {
