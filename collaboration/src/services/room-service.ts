@@ -1,4 +1,4 @@
-import { Room } from "@prisma/client";
+import { Room } from "../models/room"
 import { generateSlug } from "random-word-slugs";
 import { prisma } from "../clients/prisma";
 
@@ -37,12 +37,12 @@ export class RoomService {
     // TODO: @didy send attempt to attempt service via MQ 
   }
 
-  static async createRoom(user1: string, user2: string) {
-    RoomService.validateUsers(user1, user2);
+  static async createRoom(userId1: string, userId2: string) {
+    RoomService.validateUsers(userId1, userId2);
     const { roomName } = await RoomService.generateRoomName();
     console.log('write into db')
     const room = await prisma.room.create({
-      data: { user1, user2, name: roomName }
+      data: { userId1, userId2, name: roomName }
     })
 
     console.log('complete db')

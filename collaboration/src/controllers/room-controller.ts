@@ -1,4 +1,3 @@
-import { Room } from '@prisma/client';
 import { Request, Response } from 'express';
 import { RoomService } from "../services/room-service";
 
