@@ -197,11 +197,9 @@ class UserService {
     }
   }
 
-  async updateTopics(userId: string, topicSlugs: string[]): Promise<void> {
+  async updateTopics(userId: string, topicIds: string[]): Promise<void> {
     let begunTransaction = false
     try {
-        const topicIds = await this.getTopicIdsBySlugs(topicSlugs);
-
         await postgresClient.query('BEGIN');
         begunTransaction = true
 
