@@ -2,9 +2,7 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs"
 import { editor } from 'monaco-editor'
 import { MonacoBinding } from 'y-monaco';
-
-// TODO: @didy move to env
-const SERVER_WS_URL = "ws://localhost:1234/broadcast"
+import { BE_API } from "@/utils/api";
 
 export class RoomService {
   readonly document: Y.Doc | undefined;
@@ -25,7 +23,7 @@ export class RoomService {
 
     // Connect to peers with WebSocket
     let yProvider: HocuspocusProvider = new HocuspocusProvider({
-      url: SERVER_WS_URL,
+      url: `${process.env.NEXT_PUBLIC_HOST_API_KEY?.replace("http://", "ws://")}/${BE_API.collaboration.broadcast}`,
       name: roomName, // room name
       document: yDoc,
     })
