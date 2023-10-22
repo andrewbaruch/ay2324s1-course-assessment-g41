@@ -1,21 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import routes from '@/routes/router';
 import cookieParser from "cookie-parser";
+import router from '@/routes/question-router'
 
 class Server {
     private app
     private port
 
     constructor() {
-        const port = process.env.SERVER_PORT
-        if (!port) {
-            console.log("Missing SERVER_PORT")
-            process.exit()
-        }
-
-        this.port = port
+        this.port = process.env.SERVER_PORT
         this.app = express();
         this.configMiddleware();
         this.configRouter()
@@ -29,12 +23,11 @@ class Server {
         this.app.use(cors({
             origin: '*',
         }));
-
     }
 
     private configRouter() {
         // NOTE: Central router if necessary
-        this.app.use('/', routes);
+        this.app.use('/question', router);
     }
 
     public start() {

@@ -26,9 +26,9 @@ import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
-import useLogin from "@/hooks/auth/useLogin";
 import { HOST_API } from "@/config";
 import { BE_API } from "@/utils/api";
+import { useLogin } from "@/hooks/auth/useLogin";
 
 export default function SignIn() {
   // Chakra color mode
@@ -47,16 +47,11 @@ export default function SignIn() {
 
   const handleGoogleLogin = async () => {
     try {
-      console.log("karwi: click google login");
-      // karwi: better way?
-      // await login();
-      // window.open(`${HOST_API}${BE_API.auth.google}`, "Google Sign In", "width=500,height=600");
-      window.location.href = `${HOST_API}${BE_API.auth.google}`;
+      await login({ shouldRedirect: false });
     } catch (err) {
       console.error("Error:", err);
     }
   };
-
   return (
     <DefaultAuthLayout illustrationBackground={"/img/auth/auth5.mp4"}>
       <Flex
