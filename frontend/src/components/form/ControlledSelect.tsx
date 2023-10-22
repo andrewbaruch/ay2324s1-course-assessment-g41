@@ -8,7 +8,7 @@ interface OptionType extends OptionBase {
 }
 
 interface ControlledSelectProps {
-  control: Control<FieldValues>;
+  control: Control;
   name: string;
   id: string;
   label: string;
@@ -35,6 +35,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
     control,
     rules,
   });
+  console.log("[form value] name:", name, "value:", value);
 
   return (
     <FormControl isInvalid={invalid} id={id}>
@@ -42,7 +43,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
       <Select
         name={name}
         ref={ref}
-        // onBlur={onBlur}
+        onBlur={onBlur}
         options={options}
         value={options && value ? options.find((option) => option.value === value) : null}
         onChange={(option) => {

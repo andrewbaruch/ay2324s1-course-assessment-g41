@@ -23,8 +23,10 @@ import useGetIdentity from "@/hooks/auth/useGetIdentity";
 import { useEffect } from "react";
 import ControlledSelect from "@/components/form/ControlledSelect";
 import ControlledInput from "@/components/form/ControlledInput";
+import { updateTopics } from "@/services/topics";
 
-type IFormInput = UserRequest;
+type PreFormInput = Omit<UserRequest, "preferred_difficulty">;
+type IFormInput = PreFormInput & { preferred_difficulty?: string | null };
 
 interface OptionType extends OptionBase {
   value: string;
@@ -37,12 +39,30 @@ const difficultyOptions: OptionType[] = [
   { value: "2", label: "Hard" },
 ];
 
+function toIFormInput(user: UserRequest): IFormInput {
+  const { preferred_difficulty, ...rest } = user;
+  return {
+    ...rest,
+    preferred_difficulty: preferred_difficulty !== null ? String(preferred_difficulty) : null,
+  };
+}
+
+function toUserRequest(input: IFormInput): UserRequest {
+  const { preferred_difficulty, ...rest } = input;
+  return {
+    ...rest,
+    preferred_difficulty: preferred_difficulty !== null ? Number(preferred_difficulty) : null,
+  };
+}
+
 export default function GeneralInformation(props: { [x: string]: any }) {
   const { ...rest } = props;
   const { languages } = useLanguages();
   const { topics } = useTopics();
   const toast = useToast();
   const { identity } = useGetIdentity();
+
+  console.log("[form values]", toIFormInput(identity));
 
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
@@ -55,11 +75,23 @@ export default function GeneralInformation(props: { [x: string]: any }) {
     setValue,
     control,
     formState: { errors },
+    reset,
   } = useForm<IFormInput>({
-    defaultValues: identity,
+    defaultValues: toIFormInput(identity),
   });
 
-  const { run: updateUserProfile } = useRequest(updateUser, {
+  useEffect(() => {
+    reset(toIFormInput(identity)); // Reset the form to the new default values
+  }, [identity, reset]);
+
+  const runUpdates = (values: IFormInput) => {
+    return Promise.all([
+      updateUser(toUserRequest(values)),
+      updateTopics(values.preferred_topics ?? []),
+    ]);
+  };
+
+  const { run: updateUserProfile } = useRequest(runUpdates, {
     manual: true,
     onSuccess: (result, params) => {
       toast({
@@ -82,7 +114,6 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   });
 
   const onSubmit = (data: IFormInput) => {
-    data.preferred_difficulty = Number(data.preferred_difficulty);
     updateUserProfile(data);
   };
 
