@@ -21,11 +21,10 @@ export const useQuestions = () => {
   };
 
   useEffect(() => {
-    QuestionService.getQuestions().then(questions => {
-      setQuestionList(questions)
-    })
-
-  }, [])
+    QuestionService.getQuestions().then((questions) => {
+      setQuestionList(questions);
+    });
+  }, []);
 
   const addQuestion = async ({
     title,
@@ -44,12 +43,15 @@ export const useQuestions = () => {
 
   const removeQuestion = async ({ id }: { id: string }) => {
     await QuestionService.removeQuestion({ id });
-    setQuestionList(questionListWrapper.questions.filter(q => q.id !== id));
+    setQuestionList(questionListWrapper.questions.filter((q) => q.id !== id));
   };
 
   const editQuestion = async (editedQuestionData: Question) => {
     await QuestionService.editQuestion(editedQuestionData);
-    setQuestionList([editedQuestionData, ...questionListWrapper.questions.filter(q => q.id !== editedQuestionData.id)]);
+    setQuestionList([
+      editedQuestionData,
+      ...questionListWrapper.questions.filter((q) => q.id !== editedQuestionData.id),
+    ]);
   };
 
   return {

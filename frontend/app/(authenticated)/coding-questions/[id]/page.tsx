@@ -6,15 +6,15 @@ import { QuestionDetails } from "@/views/question";
 import { useEffect, useState } from "react";
 
 const QuestionDetailsPage = ({ params }: { params: { id: string } }) => {
-  const [question, setQuestion] = useState<Question | null>(null)
+  const [question, setQuestion] = useState<Question | null>(null);
 
   useEffect(() => {
-    QuestionService.getQuestion(params.id).then(q => {
-      setQuestion(q)
-    })
-  }, [params])
+    QuestionService.getQuestion(params.id).then((q) => {
+      setQuestion(q);
+    });
+  }, [params]);
 
-  return <QuestionDetails {...question as Question} isPreview={false} />;
+  return <QuestionDetails {...(question as Question)} isPreview={false} />;
 };
 
 export default QuestionDetailsPage;

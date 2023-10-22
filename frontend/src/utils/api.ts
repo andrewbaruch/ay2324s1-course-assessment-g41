@@ -18,11 +18,11 @@ export const BE_API = {
     uploadImageUrl: `${ROOTS_USER}/user/uploadImageUrl`,
   },
   questions: {
-    root: `${ROOT_QUESTION}/question`
+    root: `${ROOT_QUESTION}/question`,
   },
   collaboration: {
     broadcast: `${ROOT_COLLAB}/broadcast`,
-    room: `${ROOT_COLLAB}/room`
+    room: `${ROOT_COLLAB}/room`,
   },
   topics: `${ROOTS_USER}/topics`,
   languages: `${ROOTS_USER}/languages`,

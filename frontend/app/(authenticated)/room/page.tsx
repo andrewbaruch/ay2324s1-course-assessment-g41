@@ -1,6 +1,4 @@
-'use client';
-import {
-  CodeEditor,
-} from '@/views/codeEditor';
+"use client";
+import { CodeEditor } from "@/views/codeEditor";
 
-export default CodeEditor
+export default CodeEditor;

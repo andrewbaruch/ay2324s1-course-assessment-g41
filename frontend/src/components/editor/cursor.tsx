@@ -1,36 +1,35 @@
-import { HocuspocusProvider } from "@hocuspocus/provider"
-import { useEffect, useMemo, useState } from "react"
+import { HocuspocusProvider } from "@hocuspocus/provider";
+import { useEffect, useMemo, useState } from "react";
 
 export const Cursor = ({ yProvider }: { yProvider: HocuspocusProvider }) => {
-  const awareness = yProvider.awareness
-  const [users, setUsers] = useState<any>([])
+  const awareness = yProvider.awareness;
+  const [users, setUsers] = useState<any>([]);
 
   useEffect(() => {
     const set = () => {
       if (!awareness) {
-        return
+        return;
       }
-      setUsers(Array.from(awareness.getStates()))
-    }
+      setUsers(Array.from(awareness.getStates()));
+    };
 
     yProvider.awareness?.setLocalStateField("user", {
       name: awareness?.doc.clientID, // todo: @didy replace with user name when integrate with user service
-      color: Math.floor(Math.random() * 16777215).toString(16) // todo: @didy replace with real colors instead of random colors
-    })
+      color: Math.floor(Math.random() * 16777215).toString(16), // todo: @didy replace with real colors instead of random colors
+    });
 
-    yProvider.awareness?.on("change", set)
-    set()
+    yProvider.awareness?.on("change", set);
+    set();
 
     return () => {
-      awareness?.off("change", set)
-    }
-
-  }, [yProvider])
+      awareness?.off("change", set);
+    };
+  }, [yProvider]);
 
   const styleSheet = useMemo(() => {
     let cursorStyles = "";
     for (let i = 0; i < users.length; i++) {
-      const [clientId, client] = users[i]
+      const [clientId, client] = users[i];
 
       // TODO @didy: refactor to use chakra ui component
       if (client?.user) {
@@ -66,7 +65,7 @@ export const Cursor = ({ yProvider }: { yProvider: HocuspocusProvider }) => {
     }
 
     return { __html: cursorStyles };
-  }, [users])
+  }, [users]);
 
-  return <style dangerouslySetInnerHTML={styleSheet} />
-}
+  return <style dangerouslySetInnerHTML={styleSheet} />;
+};

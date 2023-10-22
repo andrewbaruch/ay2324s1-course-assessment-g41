@@ -1,1 +1,1 @@
-export * from "./codeEditor"
+export * from "./CodeEditor";

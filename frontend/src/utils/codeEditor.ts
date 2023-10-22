@@ -1,24 +1,24 @@
-import { editor } from 'monaco-editor'
+import { editor } from "monaco-editor";
 
 export const themifyCodeEditor = (colorMode: string) => {
   switch (colorMode) {
     case "light":
-      return "light"
+      return "light";
     case "dark":
-      return "vs-dark"
+      return "vs-dark";
     default:
-      return colorMode
+      return colorMode;
   }
-}
+};
 
 export const codeEditorOptions: editor.IStandaloneEditorConstructionOptions = {
-  autoIndent: 'full',
+  autoIndent: "full",
   contextmenu: true,
-  fontFamily: 'monospace',
+  fontFamily: "monospace",
   fontSize: 13,
   lineHeight: 24,
   hideCursorInOverviewRuler: true,
-  matchBrackets: 'always',
+  matchBrackets: "always",
   minimap: {
     enabled: false,
   },
@@ -29,6 +29,6 @@ export const codeEditorOptions: editor.IStandaloneEditorConstructionOptions = {
   selectOnLineNumbers: false,
   roundedSelection: false,
   readOnly: false,
-  cursorStyle: 'line',
+  cursorStyle: "line",
   automaticLayout: true,
 };
