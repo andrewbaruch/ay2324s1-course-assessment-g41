@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-const accessTokenKey = "PEERPREPACCESSTOKEN"
+if (!process.env.ACCESS_COOKIE_KEY) {
+  console.log("Missing ACCESS_COOKIE_KEY");
+  process.exit();
+}
+const accessTokenKey = process.env.ACCESS_COOKIE_KEY;
 
 interface AccessPayload extends jwt.JwtPayload {
   userId: string
