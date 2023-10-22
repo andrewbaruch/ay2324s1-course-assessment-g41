@@ -29,6 +29,6 @@
     "pg": "^8.11.3",
     "tsconfig-paths": "^4.2.0",
     "tscpaths": "^0.0.9",
-    "typescript": "^5.3.0-dev.20230930"
+    "typescript": "^5.2.2"
   }
 }

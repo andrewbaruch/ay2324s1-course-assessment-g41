@@ -47,9 +47,11 @@ export default function SignIn() {
 
   const handleGoogleLogin = async () => {
     try {
+      console.log("karwi: click google login");
       // karwi: better way?
       // await login();
-      window.open(`${HOST_API}${BE_API.auth.google}`, "Google Sign In", "width=500,height=600");
+      // window.open(`${HOST_API}${BE_API.auth.google}`, "Google Sign In", "width=500,height=600");
+      window.location.href = `${HOST_API}${BE_API.auth.google}`;
     } catch (err) {
       console.error("Error:", err);
     }
