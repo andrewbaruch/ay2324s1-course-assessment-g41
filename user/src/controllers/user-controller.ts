@@ -77,6 +77,18 @@ export async function readCurrentTopics(req: Request, res: Response) {
     }
 }
 
+export async function updateTopics(req: Request, res: Response) {
+    const userId = res.locals.userId;
+    const topics = req.body as string[];
+
+    try {
+        await userService.addTopics(userId, topics);
+        res.status(200).send();
+    } catch (error) {
+        res.status(500).send();
+    }
+}
+
 export async function addTopics(req: Request, res: Response) {
     const userId = res.locals.userId;
     const topics = req.body as string[];
