@@ -41,11 +41,7 @@ class QuestionService {
       return;
     }
 
-    await authorizedAxios.delete(BE_API.questions.root, {
-      params: {
-        id
-      }
-    })
+    await authorizedAxios.delete(`${BE_API.questions.root}/${id}`)
   }
 
   static async editQuestion(questionData: Question) {
@@ -56,12 +52,8 @@ class QuestionService {
     try {
       QuestionService.validateAddQuestion(questionData);
       const { id, title, complexity, categories, description } = questionData
-      await authorizedAxios.patch(BE_API.questions.root, {
-        title, complexity, categories, description
-      }, {
-        params: {
-          id
-        }
+      await authorizedAxios.patch(`${BE_API.questions.root}/${id}`, {
+        title, description, difficulty: transformQuestionComplexity(complexity), topics: categories
       })
     } catch (err) {
       throw err;
@@ -78,12 +70,9 @@ class QuestionService {
   }
 
   static async getQuestion(id: string) {
-    const { data }: { data: { title: string, difficulty: number, description: string, topics: string[], _id: string }[] } = await authorizedAxios.get(`${BE_API.questions.root}?id=${id}`)
-    if (data.length <= 0) {
-      return null
-    }
+    const { data }: { data: { title: string, difficulty: number, description: string, topics: string[], _id: string } } = await authorizedAxios.get(`${BE_API.questions.root}/${id}`)
 
-    return data.map(d => ({title: d.title, complexity: transformQuestionDifficulty(d.difficulty), description: d.description, categories: d.topics, id: d._id} as Question))[0]
+    return ({title: data.title, complexity: transformQuestionDifficulty(data.difficulty), description: data.description, categories: data.topics, id: data._id} as Question)
     
   }
 
