@@ -17,6 +17,7 @@ services:
       context: ./user
     volumes:
       - ./user:/home/node/app/
+      - /home/node/app/node_modules
     ports:
       - 8080:3000
     restart: on-failure
