@@ -34,7 +34,7 @@ export async function getFilteredQuestions(req: Request, res: Response) {
   try {
     const { difficulties, sorting } = req.query;
 
-    let difficultiesEnumArray = [];
+    let difficultiesEnumArray: Difficulty[] = [];
 
     if (difficulties && typeof difficulties === 'string') {
       difficultiesEnumArray = difficulties
@@ -43,7 +43,8 @@ export async function getFilteredQuestions(req: Request, res: Response) {
         .filter(d => !isNaN(d) && Object.values(Difficulty).includes(d))
         .map(d => d as Difficulty);
     } else {
-      return res.status(400).send('No valid difficulties provided');
+      // get all questions
+      difficultiesEnumArray = Object.values(Difficulty).map(d => d as Difficulty)
     }
 
     const sort: 'asc' | 'desc' | 'nil' = (sorting === 'asc' || sorting === 'desc') ? sorting : 'nil';

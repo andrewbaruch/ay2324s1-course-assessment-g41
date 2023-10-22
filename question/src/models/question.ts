@@ -2,8 +2,7 @@ export interface Question {
     id: string;
     title: string;
     description: string;
-    topic: string;
-    subtopic: string;
+    topic: string[];
     difficulty: Difficulty;
 }
 
