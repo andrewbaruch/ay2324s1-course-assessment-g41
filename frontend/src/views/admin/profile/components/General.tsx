@@ -25,8 +25,11 @@ import ControlledSelect from "@/components/form/ControlledSelect";
 import ControlledInput from "@/components/form/ControlledInput";
 import { updateTopics } from "@/services/topics";
 
-type PreFormInput = Omit<UserRequest, "preferred_difficulty">;
-type IFormInput = PreFormInput & { preferred_difficulty?: string | null };
+type PreFormInput = Omit<UserRequest, "preferred_difficulty" | "preferred_topics">;
+type IFormInput = PreFormInput & {
+  preferred_difficulty?: string | null;
+  preferred_topics?: string[] | null;
+};
 
 interface OptionType extends OptionBase {
   value: string;
@@ -40,18 +43,21 @@ const difficultyOptions: OptionType[] = [
 ];
 
 function toIFormInput(user: UserRequest): IFormInput {
-  const { preferred_difficulty, ...rest } = user;
+  const { preferred_difficulty, preferred_topics, ...rest } = user;
   return {
     ...rest,
     preferred_difficulty: preferred_difficulty !== null ? String(preferred_difficulty) : null,
+    preferred_topics: preferred_topics?.map((topic) => topic.id) ?? [],
   };
 }
 
 function toUserRequest(input: IFormInput): UserRequest {
-  const { preferred_difficulty, ...rest } = input;
+  const { preferred_difficulty, preferred_topics, ...rest } = input;
   return {
     ...rest,
     preferred_difficulty: preferred_difficulty !== null ? Number(preferred_difficulty) : null,
+    // karwi: no use currently
+    // preferred_topics: null,
   };
 }
 

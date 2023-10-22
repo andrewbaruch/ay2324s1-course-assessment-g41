@@ -45,16 +45,23 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
         ref={ref}
         onBlur={onBlur}
         options={options}
-        value={options && value ? options.find((option) => option.value === value) : null}
+        // single select handled here --------------v   v--- multi select is handled here
+        value={
+          props.isMulti
+            ? options && Array.isArray(value)
+              ? options.filter((option) => value.includes(option.value))
+              : []
+            : options && value
+            ? options.find((option) => option.value === value)
+            : null
+        }
         onChange={(option) => {
           if (Array.isArray(option)) {
-            // This is multi-select mode
-            // Apply logic for handling multiple values
+            // multi-select mode
             const values = option.map((o: OptionType) => o.value);
             onChange(values);
           } else if (option && "value" in option) {
-            // This is single-select mode
-            // Added a type check for option, to make sure it's not a MultiValue
+            // single-select mode
             onChange(option.value);
           } else {
             // The select was cleared

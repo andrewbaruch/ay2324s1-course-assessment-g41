@@ -4,5 +4,4 @@ import { TopicRequest, TopicsResponse } from "@/@types/topic";
 
 export const getTopics = () => authorizedAxios.get<TopicsResponse>(BE_API.topics);
 
-export const updateTopics = (topics: TopicRequest[]) =>
-  authorizedAxios.post(BE_API.users.topics, topics);
+export const updateTopics = (topics: string[]) => authorizedAxios.post(BE_API.users.topics, topics);
