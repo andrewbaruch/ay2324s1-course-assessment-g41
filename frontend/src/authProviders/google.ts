@@ -14,7 +14,6 @@ export const googleAuthProvider: AuthProvider = {
   login: async (params) => {
     try {
       await loginWithGoogle();
-      await deleteCache(CacheName.API);
     } catch (err) {
       console.error(err);
     }
