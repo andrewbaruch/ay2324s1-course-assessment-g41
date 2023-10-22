@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import useCheckNotAuth from './useCheckNotAuth';
+import { useEffect } from "react";
+import useCheckNotAuth from "./useCheckNotAuth";
 
 /**
  * Restrict access to anonymous users.

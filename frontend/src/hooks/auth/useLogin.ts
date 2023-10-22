@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
-import { useRouter } from 'next/router';
-import useAuthProvider from './useAuthProvider';
-import { JwtTokenSet } from 'src/@types/token';
-import { PATH_ADMIN } from '../../routes/paths';
+import { useCallback } from "react";
+import useAuthProvider from "./useAuthProvider";
+import { PATH_MAIN } from "../../routes/paths";
+import { JwtTokenSet } from "@/@types/token";
+import { useRouter } from "next/navigation";
 
-type Login = (tokens: JwtTokenSet, redirectTo?: string) => Promise<any>;
+type Login = (tokens?: JwtTokenSet, redirectTo?: string) => Promise<any>;
 
 /**
  * Get a callback for calling the authProvider.login() method
@@ -19,7 +19,7 @@ const useLogin = (): Login => {
   const { push } = useRouter();
 
   const callLogin: Login = useCallback(
-    async (tokens, redirectTo = PATH_ADMIN.general.dashboard) => {
+    async (tokens, redirectTo = PATH_MAIN.general.dashboard) => {
       await authProvider.login(tokens);
 
       push(redirectTo);

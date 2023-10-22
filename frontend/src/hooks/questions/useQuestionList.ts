@@ -11,8 +11,7 @@ const questionListAtom = atom<QuestionListAtom>({
 });
 
 export const useQuestions = () => {
-  const [questionListWrapper, setQuestionListWrapper] =
-    useAtom(questionListAtom);
+  const [questionListWrapper, setQuestionListWrapper] = useAtom(questionListAtom);
 
   const setQuestionList = (questionList: Question[]) => {
     setQuestionListWrapper({
