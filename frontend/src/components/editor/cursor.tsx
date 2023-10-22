@@ -14,7 +14,7 @@ export const Cursor = ({ yProvider }: { yProvider: HocuspocusProvider }) => {
     }
 
     yProvider.awareness?.setLocalStateField("user", {
-      name: awareness?.clientID, // todo: @didy replace with user name when integrate with user service
+      name: awareness?.doc.clientID, // todo: @didy replace with user name when integrate with user service
       color: Math.floor(Math.random() * 16777215).toString(16) // todo: @didy replace with real colors instead of random colors
     })
 
