@@ -13,7 +13,7 @@ type CheckRoles = (
 ) => Promise<any>;
 
 const useCheckRoles = (): CheckRoles => {
-  const { identity } = useGetIdentity();
+  const { identity, loading } = useGetIdentity();
   const router = useRouter();
   const toast = useToast();
 
@@ -22,6 +22,11 @@ const useCheckRoles = (): CheckRoles => {
       expectedRoles: Role[],
       { redirectTo = PATH_MAIN.general.dashboard }: { redirectTo?: string } = {},
     ) => {
+      if (loading) {
+        // Data is still being fetched. Defer roles checking
+        return;
+      }
+
       const currentRoles = identity.roles ?? [];
       const hasAllRoles = expectedRoles.every((role) => currentRoles.includes(role));
 
@@ -39,7 +44,7 @@ const useCheckRoles = (): CheckRoles => {
         throw new Error("Insufficient permissions");
       }
     },
-    [identity, router],
+    [identity, router, loading],
   );
 
   return checkRoles;
