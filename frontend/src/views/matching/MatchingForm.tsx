@@ -111,12 +111,15 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
+            // TODO: uncomment the hook call useGetIdentity() above and the router.push change to the commented one to use the roomId instead.
+
             // console.log(identity, loading, loaded, error);
             console.log(data);
             onOpen();
             setIsLoading(true);
 
-            sendMatchingRequest(data.userId, data.complexity).then(() => {
+            sendMatchingRequest(data.userId, data.complexity).then(async () => {
+              await new Promise((r) => setTimeout(r, 1000));
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
                 getMatchingStatus(data.userId)
                   .then((response) => {
@@ -126,6 +129,7 @@ export const MatchingForm = () => {
                       clearInterval(intervalId);
                       intervalId = null;
                       router.push(`/collabroom`);
+                      // router.push(`/collabroom/${response.roomId}`);
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {

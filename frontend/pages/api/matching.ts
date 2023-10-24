@@ -4,7 +4,7 @@ import { PubSub } from "@google-cloud/pubsub";
 import { QuestionComplexity } from "@/@types/models/question";
 
 const pubSubClient = new PubSub();
-const MATCHING_QUEUE = "EASY_MATCHING_TOPIC";
+const MATCHING_QUEUE = "MATCHING_REQUEST_TOPIC";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {

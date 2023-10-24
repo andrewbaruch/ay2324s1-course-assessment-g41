@@ -1,20 +1,24 @@
-const EASY_MATCHING_SUBSCRIPTION: string = "EASY_MATCHING_TOPIC-sub";
-const MEDIUM_MATCHING_SUBSCRIPTION: string = "MEDIUM_MATCHING_TOPIC-sub";
-const HARD_MATCHING_SUBSCRIPTION: string = "HARD_MATCHING_TOPIC-sub";
-const MATCHING_REQUEST_VALID_DURATION_IN_SECONDS: number = 30;
+// const EASY_MATCHING_SUBSCRIPTION: string = "EASY_MATCHING_TOPIC-sub";
+// const MEDIUM_MATCHING_SUBSCRIPTION: string = "MEDIUM_MATCHING_TOPIC-sub";
+// const HARD_MATCHING_SUBSCRIPTION: string = "HARD_MATCHING_TOPIC-sub";
 
-const projectId = "operating-ally-401008";
-const STATUS_REQUEST: string = "STATUS_REQUEST";
-const STATUS_DONE: string = "STATUS_DONE";
+const MATCHING_REQUEST_VALID_DURATION_IN_SECONDS: number = 30;
+const MATCHING_REQUEST_TOPIC_SUBSCRIPTION: string =
+  "MATCHING_REQUEST_TOPIC-sub";
+
+// const projectId = "operating-ally-401008";
+// const STATUS_REQUEST: string = "STATUS_REQUEST";
+// const STATUS_DONE: string = "STATUS_DONE";
 
 // Imports the Google Cloud client library
 import { PubSub } from "@google-cloud/pubsub";
 
 // Creates a client; cache this for further use
-const pubSubClient: PubSub = new PubSub({
-  projectId,
-  keyFilename: "./key.json",
-});
+const pubSubClient: PubSub = new PubSub();
+// const pubSubClient: PubSub = new PubSub({
+//   projectId,
+//   keyFilename: "./key.json",
+// });
 
 // data structures
 let matchingPairs: Record<string, string> = {};
@@ -31,6 +35,10 @@ import matchingPairCache from "@/matchingPairCache";
 const messageHandler = (message: any): void => {
   // "Ack" (acknowledge receipt of) the message
   message.ack();
+
+  console.log("=======================================");
+  console.log(matchingRequestCache.keys());
+  console.log(matchingPairCache.keys());
 
   console.log("=======================================");
   console.log(`Received message ${message.id}:`);
@@ -79,7 +87,7 @@ const messageHandler = (message: any): void => {
     matchingPairs[user1.userId] = user2.userId;
     matchingPairs[user2.userId] = user1.userId;
 
-    // TODO: call collab service here to get room id
+    // TODO: call collab service here to get room id, replace "Dummyroom" with roomid below
 
     console.log(`user1=${user1.userId} user2=${user2.userId}`);
     console.log(`myData=${myData} `);
@@ -102,20 +110,12 @@ const messageHandler = (message: any): void => {
 };
 
 const processMatching = (): void => {
-  const easySubscription = pubSubClient.subscription(
-    EASY_MATCHING_SUBSCRIPTION
-  );
-  const mediumSubscription = pubSubClient.subscription(
-    MEDIUM_MATCHING_SUBSCRIPTION
-  );
-  const hardSubscription = pubSubClient.subscription(
-    HARD_MATCHING_SUBSCRIPTION
+  const matchingRequestSubscription = pubSubClient.subscription(
+    MATCHING_REQUEST_TOPIC_SUBSCRIPTION
   );
 
   // Listen for new messages until timeout is hit
-  easySubscription.on("message", messageHandler);
-  mediumSubscription.on("message", messageHandler);
-  hardSubscription.on("message", messageHandler);
+  matchingRequestSubscription.on("message", messageHandler);
 };
 
 export { processMatching };

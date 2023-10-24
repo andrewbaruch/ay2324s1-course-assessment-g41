@@ -27,7 +27,7 @@ class Server {
     }
     start() {
         this.app.listen(this.port, () => {
-            console.log("listening to port cb", this.port);
+            console.log("listening to port", this.port);
         });
     }
     runOnStart() {
