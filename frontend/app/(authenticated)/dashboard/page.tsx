@@ -57,7 +57,7 @@ export default function NftMarketplace() {
               align={{ base: "start", md: "center" }}
             >
               <Text color={textColor} fontSize="2xl" ms="24px" fontWeight="700">
-                Trending Problems wtf pls
+                Trending Problems
               </Text>
               <Flex
                 align="center"

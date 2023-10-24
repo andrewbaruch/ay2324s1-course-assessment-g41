@@ -42,8 +42,6 @@ export async function getMatchingStatusWithoutParams(
   req: Request,
   res: Response
 ): Promise<void> {
-  // TODO: pull data from db
-  // const userId = req.params.id;
   console.log("in be get matching without param");
 
   const status = 1;
