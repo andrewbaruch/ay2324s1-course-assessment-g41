@@ -4,7 +4,6 @@ import bodyParser from 'body-parser';
 import routes from '@/routes/router';
 import cookieParser from "cookie-parser";
 
-
 class Server {
     private app
     private port
@@ -30,7 +29,7 @@ class Server {
         this.app.use(cors({
             origin: '*',
         }));
-s
+
     }
 
     private configRouter() {
