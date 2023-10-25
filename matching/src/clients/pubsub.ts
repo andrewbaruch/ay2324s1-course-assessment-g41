@@ -11,6 +11,12 @@ class PubSubClient {
     const subscription = this.client.subscription(topic)
     subscription.on("message", messageHandler);
   }
+
+  publishToTopic(topic: string, data: string) {
+    this.client.topic(topic).publishMessage({
+      data: Buffer.from(data)
+    })
+  }
 }
 
 export default PubSubClient;

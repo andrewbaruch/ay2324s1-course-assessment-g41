@@ -1,3 +1,5 @@
+import bodyParser from 'body-parser';
+import cors from 'cors';
 import express from "express";
 import routes from "@/routes/router";
 import ComplexitySubscriber from "./subscribers/complexity-subscriber";
@@ -15,9 +17,18 @@ class Server {
 
     this.port = port;
     this.app = express();
+    this.configMiddleware()
     this.configRouter();
     // this.start();
     this.runOnStart();
+  }
+
+  private configMiddleware() {
+    this.app.use(bodyParser.urlencoded({ extended: true }))
+    this.app.use(bodyParser.json())
+    this.app.use(cors({
+      origin: '*',
+    }));
   }
 
   private configRouter() {
@@ -33,8 +44,8 @@ class Server {
 
   private runOnStart() {
     console.log("Running pubsub subscriber on server start");
-    const complexitySubscriber = new ComplexitySubscriber()
-    complexitySubscriber.start()
+    const complexitySubscriber = new ComplexitySubscriber();
+    complexitySubscriber.start();
   }
 }
 

@@ -1,6 +1,7 @@
 import { MATCHING_REQUEST_VALID_DURATION_IN_SECONDS } from "@/constants/matching-request";
+import * as CollabClient from "@/clients/collab-client"
 
-class ComplexityMatchingService {
+class ComplexityMatchingPullService {
   readonly matchingPairs: Record<string, string> = {};
   readonly dequeuedPairs: Record<string, any[]> = {
     Easy: [],
@@ -8,17 +9,17 @@ class ComplexityMatchingService {
     Hard: [],
   };
 
-  isUserAlreadyMatched(userId: string) {
+  public isUserAlreadyMatched(userId: string) {
     return userId in this.matchingPairs
   }
 
-  registerRequestForMatch(requestForMatchData: any) {
+  public registerRequestForMatch(requestForMatchData: any) {
     const complexity: string = requestForMatchData.questionComplexity;
     this.dequeuedPairs[complexity].push(requestForMatchData);
     return complexity
   }
 
-  removeExpiredRequestsOfComplexity(complexity: string) {
+  public removeExpiredRequestsOfComplexity(complexity: string) {
     const currentTime: number = new Date().getTime();
     while (this.dequeuedPairs[complexity].length != 0) {
       console.log(
@@ -33,14 +34,11 @@ class ComplexityMatchingService {
     }
   }
 
-  retrieveRoomId(userId1: string, userId2: string) {
-    const { COLLAB_SERVICE_ENDPOINT } = process.env
-    console.log("Found collab service endpoint", COLLAB_SERVICE_ENDPOINT)
-
-    return "Dummyroom"
+  public async retrieveRoomId(userId1: string, userId2: string) {
+    return await CollabClient.createRoom(userId1, userId2)
   }
 
-  matchUsersIfMoreThanTwo(complexity: string) {
+  public async matchUsersIfMoreThanTwo(complexity: string) {
     if (this.dequeuedPairs[complexity].length < 2) {
       return {
         roomId: null,
@@ -65,7 +63,7 @@ class ComplexityMatchingService {
     this.matchingPairs[user2.userId] = user1.userId;
 
     // TODO: call collab service here to get room id, replace "Dummyroom" with roomid below
-    const roomId = this.retrieveRoomId(user1.userId, user2.userId)
+    const roomId = await this.retrieveRoomId(user1.userId, user2.userId)
 
     console.log(`user1=${user1.userId} user2=${user2.userId}`);
     console.log(`myData=${matchingTopicData} `);
@@ -78,4 +76,4 @@ class ComplexityMatchingService {
   }
 }
 
-export default ComplexityMatchingService;
+export default ComplexityMatchingPullService;

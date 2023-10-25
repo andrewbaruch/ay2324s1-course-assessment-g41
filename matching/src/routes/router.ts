@@ -6,4 +6,6 @@ const matchingRouter = Router();
 matchingRouter.get("/status/:id", MatchingController.getMatchingStatus);
 // matchingRouter.get("/status", MatchingController.getMatchingStatusWithoutParams);
 
+matchingRouter.post("/user", MatchingController.pushMatchRequestToQueue)
+
 export default matchingRouter;

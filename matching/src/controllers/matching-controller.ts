@@ -3,6 +3,21 @@ import { Request, Response } from "express";
 import complexityMatchingRequestCache from "@/utils/complexity-matching-request-cache";
 import complexityMatchingPairCache from "@/utils/complexity-matching-pair-cache";
 import { Status } from "@/models/status";
+import ComplexityMatchingPushService from "@/services/complexity-matching-push-service";
+
+export const pushMatchRequestToQueue = async (req: Request, res: Response) => {
+  // TODO: @didy refator to use jwt token and auth service
+  const { userId, questionComplexity }: {userId: string, questionComplexity: string} = req.body;
+  const complexityPublisherService = new ComplexityMatchingPushService();
+  try {
+    complexityPublisherService.pushMatchingRequest(userId, questionComplexity)
+  } catch (err) {
+    // TODO: add better error validation
+    res.status(400).send()
+  }
+  res.status(200).send()
+  
+}
 
 export async function getMatchingStatus(
   req: Request,
