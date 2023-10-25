@@ -1,9 +1,7 @@
-import matchingService from "@/services/matching-service";
 import { Request, Response } from "express";
-// import matchingService from "@/services/matching-service";
 
-import matchingRequestCache from "@/matchingRequestCache";
-import matchingPairCache from "@/matchingPairCache";
+import matchingRequestCache from "@/utils/matchingRequestCache";
+import matchingPairCache from "@/utils/matchingPairCache";
 import { Status } from "@/models/status";
 
 export async function getMatchingStatus(

@@ -1,9 +1,6 @@
 import express from "express";
 import routes from "@/routes/router";
-
-import { processMatching } from "./matchingSubscriber";
-import matchingRequestCache from "@/matchingRequestCache";
-import matchingPairCache from "@/matchingPairCache";
+import ComplexitySubscriber from "./subscribers/complexitySubscriber";
 
 class Server {
   private app;
@@ -36,9 +33,8 @@ class Server {
 
   private runOnStart() {
     console.log("Running pubsub subscriber on server start");
-    matchingRequestCache.flushAll();
-    matchingPairCache.flushAll();
-    processMatching();
+    const complexitySubscriber = new ComplexitySubscriber()
+    complexitySubscriber.start()
   }
 }
 
