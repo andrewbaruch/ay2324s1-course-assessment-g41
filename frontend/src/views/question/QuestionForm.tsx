@@ -181,18 +181,18 @@ export const QuestionForm = ({ question = null }: { question: Question | null })
           try {
             question
               ? editQuestion({
-                id: question.id,
-                categories: data.categories ? data.categories : [],
-                title: data.title,
-                description: data.description,
-                complexity: data.complexity,
-              })
+                  id: question.id,
+                  categories: data.categories ? data.categories : [],
+                  title: data.title,
+                  description: data.description,
+                  complexity: data.complexity,
+                })
               : addQuestion({
-                categories: data.categories ? data.categories : [],
-                title: data.title,
-                description: data.description,
-                complexity: data.complexity,
-              });
+                  categories: data.categories ? data.categories : [],
+                  title: data.title,
+                  description: data.description,
+                  complexity: data.complexity,
+                });
             router.push("/coding-questions");
           } catch (err: any) {
             toast({

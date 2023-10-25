@@ -29,8 +29,11 @@ class QuestionService {
       });
 
       await authorizedAxios.post(BE_API.questions.root, {
-        title, description, difficulty: transformQuestionComplexity(complexity), topics: categories
-      })
+        title,
+        description,
+        difficulty: transformQuestionComplexity(complexity),
+        topics: categories,
+      });
     } catch (err) {
       throw err;
     }
@@ -41,7 +44,7 @@ class QuestionService {
       return;
     }
 
-    await authorizedAxios.delete(`${BE_API.questions.root}/${id}`)
+    await authorizedAxios.delete(`${BE_API.questions.root}/${id}`);
   }
 
   static async editQuestion(questionData: Question) {
@@ -51,10 +54,13 @@ class QuestionService {
 
     try {
       QuestionService.validateAddQuestion(questionData);
-      const { id, title, complexity, categories, description } = questionData
+      const { id, title, complexity, categories, description } = questionData;
       await authorizedAxios.patch(`${BE_API.questions.root}/${id}`, {
-        title, description, difficulty: transformQuestionComplexity(complexity), topics: categories
-      })
+        title,
+        description,
+        difficulty: transformQuestionComplexity(complexity),
+        topics: categories,
+      });
     } catch (err) {
       throw err;
     }
@@ -65,15 +71,49 @@ class QuestionService {
       return [];
     }
 
-    const { data }: { data: { title: string, difficulty: number, description: string, topics: string[], _id: string }[] } = await authorizedAxios.get(BE_API.questions.root)
-    return data.map(d => ({title: d.title, complexity: transformQuestionDifficulty(d.difficulty), description: d.description, categories: d.topics, id: d._id} as Question))
+    const {
+      data,
+    }: {
+      data: {
+        title: string;
+        difficulty: number;
+        description: string;
+        topics: string[];
+        _id: string;
+      }[];
+    } = await authorizedAxios.get(BE_API.questions.root);
+    return data.map(
+      (d) =>
+        ({
+          title: d.title,
+          complexity: transformQuestionDifficulty(d.difficulty),
+          description: d.description,
+          categories: d.topics,
+          id: d._id,
+        }) as Question,
+    );
   }
 
   static async getQuestion(id: string) {
-    const { data }: { data: { title: string, difficulty: number, description: string, topics: string[], _id: string } } = await authorizedAxios.get(`${BE_API.questions.root}/${id}`)
+    const {
+      data,
+    }: {
+      data: {
+        title: string;
+        difficulty: number;
+        description: string;
+        topics: string[];
+        _id: string;
+      };
+    } = await authorizedAxios.get(`${BE_API.questions.root}/${id}`);
 
-    return ({title: data.title, complexity: transformQuestionDifficulty(data.difficulty), description: data.description, categories: data.topics, id: data._id} as Question)
-    
+    return {
+      title: data.title,
+      complexity: transformQuestionDifficulty(data.difficulty),
+      description: data.description,
+      categories: data.topics,
+      id: data._id,
+    } as Question;
   }
 
   // TODO: add validation from backend question service

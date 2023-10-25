@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@hocuspocus/server": "^2.6.1",
+    "@nestjs/cli": "^10.1.18"
+  }
+}
