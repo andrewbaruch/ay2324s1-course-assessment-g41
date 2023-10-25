@@ -17,6 +17,11 @@ export class Server {
       process.exit()
     }
 
+    if (!process.env.POSTGRES_COLLAB) {
+      console.log("Missing env variable, POSTGRES_COLLAB for database")
+      process.exit()
+    }
+
     this.port = port
     const { app } = expressWebsockets(express())
     this.app = app
