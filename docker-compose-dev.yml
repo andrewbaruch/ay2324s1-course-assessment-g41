@@ -144,7 +144,7 @@ services:
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/home/node/app/key.json
       - SERVER_PORT=3000
-      - COLLAB_SERVICE_ENDPOINT=http://collaboration
+      - COLLAB_SERVICE_ENDPOINT=http://localhost:3000/collaboration
 
   nginx:
     depends_on:

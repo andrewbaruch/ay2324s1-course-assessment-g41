@@ -1,4 +1,5 @@
 import axios from "axios";
+// TODO: implement service registry to retrieve collab service endpoint
 const { COLLAB_SERVICE_ENDPOINT } = process.env
 
 const collabClient = axios.create({
@@ -6,7 +7,7 @@ const collabClient = axios.create({
 });
 
 const createRoom = async (userId1: string, userId2: string) => {
-  return await collabClient.post("/", {
+  return await collabClient.post("/room", {
     userId1, userId2
   })
 }
