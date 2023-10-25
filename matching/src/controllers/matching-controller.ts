@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
-import matchingRequestCache from "@/utils/matchingRequestCache";
-import matchingPairCache from "@/utils/matchingPairCache";
+import complexityMatchingRequestCache from "@/utils/complexity-matching-request-cache";
+import complexityMatchingPairCache from "@/utils/complexity-matching-pair-cache";
 import { Status } from "@/models/status";
 
 export async function getMatchingStatus(
@@ -21,10 +21,10 @@ export async function getMatchingStatus(
 
   // console.log("in be get matching, userid=", userId);
 
-  const matchingPair: any = matchingPairCache.get(userId);
+  const matchingPair: any = complexityMatchingPairCache.get(userId);
   // console.log("in be get matching, matchingPair=", matchingPair);
 
-  var status = matchingRequestCache.get(userId);
+  var status = complexityMatchingRequestCache.get(userId);
   // console.log("in be get matching, status=", status);
 
   if (matchingPair !== undefined) {

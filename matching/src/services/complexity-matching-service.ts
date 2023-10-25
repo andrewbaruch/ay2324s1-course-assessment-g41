@@ -1,9 +1,6 @@
-// import postgresClient from "@/clients/postgres";
-// import { Difficulty } from "@/models/question";
+import { MATCHING_REQUEST_VALID_DURATION_IN_SECONDS } from "@/constants/matching-request";
 
-import { MATCHING_REQUEST_VALID_DURATION_IN_SECONDS } from "@/constants/matchingRequest";
-
-class MatchingService {
+class ComplexityMatchingService {
   readonly matchingPairs: Record<string, string> = {};
   readonly dequeuedPairs: Record<string, any[]> = {
     Easy: [],
@@ -79,50 +76,6 @@ class MatchingService {
     }
   
   }
-
-
-
-  
-
-
-  // async read(userId: string): Promise<MatchingPair[] | null> {
-  //         const matchingPairResult = await postgresClient.query<MatchingPair>(
-  //       query,
-  //       [userId]
-  //     );
-  //     if (!matchingPairResult.rows || matchingPairResult.rows.length === 0) {
-  //       return null;
-  //     }
-  //     return matchingPairResult.rows;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
-
-  // async create(difficulty: Difficulty): Promise<MatchingPair> {}
-  // async read(userId: string): Promise<MatchingPair[] | null> {
-  //   try {
-  //     const query = `
-  //       SELECT *
-  //       FROM matching_pairs
-  //       WHERE user_id1 = $1
-  //     `;
-  //     const matchingPairResult = await postgresClient.query<MatchingPair>(
-  //       query,
-  //       [userId]
-  //     );
-  //     if (!matchingPairResult.rows || matchingPairResult.rows.length === 0) {
-  //       return null;
-  //     }
-  //     return matchingPairResult.rows;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-  
 }
 
-// const matchingService = new MatchingService();
-
-export default MatchingService;
+export default ComplexityMatchingService;

@@ -1,6 +1,6 @@
 import express from "express";
 import routes from "@/routes/router";
-import ComplexitySubscriber from "./subscribers/complexitySubscriber";
+import ComplexitySubscriber from "./subscribers/complexity-subscriber";
 
 class Server {
   private app;
