@@ -14,38 +14,9 @@ const nextConfig = {
     if (options.isServer) {
       return config
     }
-    
-    const rule = config.module.rules
-      .find(rule => rule.oneOf)
-      .oneOf.find(
-        r =>
-          // Find the global CSS loader
-          r.issuer && r.issuer.include && r.issuer.include.includes("_app")
-      );
-    if (rule) {
-      rule.issuer.include = [
-        rule.issuer.include,
-        // Allow `monaco-editor` to import global CSS:
-        /[\\/]node_modules[\\/]monaco-editor[\\/]/
-      ];
-    }
 
     config.plugins.push(
-      new MonacoWebpackPlugin({
-        languages: [
-          "json",
-          "markdown",
-          "css",
-          "typescript",
-          "javascript",
-          "html",
-          "graphql",
-          "python",
-          "scss",
-          "yaml"
-        ],
-        filename: "static/[name].worker.js"
-      })
+      new MonacoWebpackPlugin()
     );
 
     // Monaco Editor to be available globally
@@ -55,13 +26,6 @@ const nextConfig = {
     }
 
     return config;
-    // if (!options.isServer) {
-    //   const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin")
-    //   config.plugins.push(new MonacoWebpackPlugin({
-    //     filename: 'static/[name].worker.js',
-    //   }))
-    // }
-    // return config
   }
 };
 

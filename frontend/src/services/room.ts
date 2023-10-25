@@ -34,19 +34,22 @@ export class RoomService {
   }
 
   private bindDocumentToMonacoEditor(editor: monaco.editor.IStandaloneCodeEditor) {
-    if (!this.document || !this.provider) {
+    if (!this.document || !this.provider || typeof window === "undefined") {
       // throw error
       return { binding: undefined };
     }
 
     const text = this.document.getText("monaco");
     const model = editor.getModel() as monaco.editor.ITextModel;
-    const binding = new MonacoBinding(
-      text,
-      model,
-      new Set([editor as monaco.editor.IStandaloneCodeEditor]),
-      this.provider.awareness,
-    );
+    const binding =
+      typeof window === "undefined"
+        ? undefined
+        : new MonacoBinding(
+            text,
+            model,
+            new Set([editor as monaco.editor.IStandaloneCodeEditor]),
+            this.provider.awareness,
+          );
     return { binding };
   }
 }
