@@ -2,12 +2,13 @@ import axios from "axios";
 
 import { QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
+import authorizedAxios from "@/utils/axios/authorizedAxios";
 
 class MatchingService {
   static async setUpPairCoding(user: String, questionComplexity: QuestionComplexity) {
     try {
-      const data = { user, questionComplexity };
-      await axios.post("/api/matching", data);
+      const data = { userId: user, questionComplexity };
+      await authorizedAxios.post("/matching/user", data);
     } catch (error) {
       console.error("Error while sending matching request:", error);
     }

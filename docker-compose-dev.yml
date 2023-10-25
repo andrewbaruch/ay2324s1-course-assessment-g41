@@ -137,7 +137,7 @@ services:
     volumes:
       - ./matching:/home/node/app/
     ports:
-      - 8000:3000
+      - 7001:3000
     restart: on-failure
     networks:
       - backend
