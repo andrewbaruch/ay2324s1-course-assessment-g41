@@ -21,9 +21,9 @@ coverage
 
 # API keys and secrets
 .env
+key.json
 
 # # Dependency directory
-node_modules
 /node_modules
 
 # Editors
@@ -33,6 +33,7 @@ node_modules
 
 # Ignore built ts files
 dist
+/dist
 
 # ignore yarn.lock
 yarn.lock
