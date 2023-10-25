@@ -11,11 +11,20 @@ import { linkStyles } from "./components/link";
 import { breakpoints } from "./foundations/breakpoints";
 import { globalStyles } from "./styles";
 
+import { DM_Sans } from "next/font/google";
+
+export const dmSans = DM_Sans({
+  subsets: ["latin"],
+});
+
 export default extendTheme(
   {
     breakpoints,
     config: {
       disableTransitionOnChange: false,
+    },
+    fonts: {
+      "DM Sans": dmSans.style.fontFamily,
     },
   }, // Breakpoints
   globalStyles,

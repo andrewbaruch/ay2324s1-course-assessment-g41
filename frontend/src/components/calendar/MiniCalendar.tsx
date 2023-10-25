@@ -2,7 +2,6 @@
 import { useState } from "react";
 import Calendar from "react-calendar";
 import { Text, Icon } from "@chakra-ui/react";
-import "react-calendar/dist/Calendar.css";
 // Chakra imports
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 // Custom components
