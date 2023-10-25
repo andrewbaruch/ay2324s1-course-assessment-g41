@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { editor as Editor } from "monaco-editor";
 import { RoomService } from "@/services/room";
 
 export const useRoom = () => {
-  const [editor, setEditor] = useState<Editor.IStandaloneCodeEditor>();
-  const [roomService, setRoomService] = useState<RoomService>();
+  const [editor, setEditor] = useState<any>(null);
+  const [roomService, setRoomService] = useState<RoomService | null>(null);
 
   useEffect(() => {
     if (!editor) {
@@ -16,14 +15,14 @@ export const useRoom = () => {
     setRoomService(room);
   }, [editor]);
 
-  const handleEditorMount = (editor: Editor.IStandaloneCodeEditor) => {
+  const handleEditorMount = (editor: any) => {
     setEditor(editor);
   };
 
   return {
     handleEditorMount,
-    provider: roomService?.provider,
-    document: roomService?.document,
-    binding: roomService?.binding,
+    provider: roomService && roomService.provider ? roomService.provider : null,
+    document: roomService && roomService.document ? roomService.document : null,
+    binding: roomService && roomService.binding ? roomService.binding : null,
   };
 };

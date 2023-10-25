@@ -8,7 +8,7 @@ export const useSharedDocument = ({
 }: {
   sharedKey: string;
   valueToShare: any;
-  document: Doc | undefined;
+  document: Doc | null;
 }) => {
   const [sharedValue, setSharedValue] = useState(valueToShare);
   useEffect(() => {

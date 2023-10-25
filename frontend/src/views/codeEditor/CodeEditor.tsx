@@ -1,5 +1,8 @@
+"use client";
+
 import { useEffect } from "react";
 import { Editor } from "@monaco-editor/react";
+
 import { Cursor } from "../../components/editor";
 import { useRoom } from "@/hooks/room/useRoom";
 import { useSharedDocument } from "@/hooks/room/useSharedDocument";
@@ -8,7 +11,6 @@ import { Select } from "chakra-react-select";
 import { Box, Stack, useColorMode } from "@chakra-ui/react";
 import { codeEditorOptions, themifyCodeEditor } from "@/utils/codeEditor";
 
-// loader.config({ monaco });
 /**
  * Reference: https://liveblocks.io/examples/collaborative-code-editor/nextjs-yjs-monaco
  */

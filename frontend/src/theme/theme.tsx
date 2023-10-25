@@ -11,12 +11,21 @@ import { linkStyles } from "./components/link";
 import { breakpoints } from "./foundations/breakpoints";
 import { globalStyles } from "./styles";
 
+import { DM_Sans } from "next/font/google"
+
+export const dmSans = DM_Sans({
+  subsets: ["latin"]
+})
+
 export default extendTheme(
   {
     breakpoints,
     config: {
       disableTransitionOnChange: false,
     },
+    fonts: {
+      "DM Sans": dmSans.style.fontFamily,
+    }
   }, // Breakpoints
   globalStyles,
   badgeStyles, // badge styles
@@ -30,4 +39,4 @@ export default extendTheme(
   CardComponent, // card component
 );
 
-export interface CustomCardProps extends HTMLChakraProps<"div">, ThemingProps {}
+export interface CustomCardProps extends HTMLChakraProps<"div">, ThemingProps { }
