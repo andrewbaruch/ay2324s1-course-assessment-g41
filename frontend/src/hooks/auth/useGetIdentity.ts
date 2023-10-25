@@ -11,6 +11,7 @@ const defaultUser: User = {
   preferred_language: null,
   preferred_difficulty: null,
   preferred_topics: [],
+  roles: [],
 };
 
 /**
