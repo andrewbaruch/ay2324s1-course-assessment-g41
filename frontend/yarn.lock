@@ -3247,11 +3247,6 @@
   "resolved" "https://registry.npmjs.org/clsx/-/clsx-2.0.0.tgz"
   "version" "2.0.0"
 
-"codemirror@^5.52.2":
-  "integrity" "sha512-YC4EHbbwQeubZzxLl5G4nlbLc1T21QTrKGaOal/Pkm9dVDMZXMH7+ieSPEOZCtO9I68i8/oteJKOxzHC2zR+0g=="
-  "resolved" "https://registry.npmjs.org/codemirror/-/codemirror-5.65.15.tgz"
-  "version" "5.65.15"
-
 "color-convert@^1.9.0":
   "integrity" "sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg=="
   "resolved" "https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz"
@@ -5043,7 +5038,7 @@
     "prelude-ls" "^1.2.1"
     "type-check" "~0.4.0"
 
-"lib0@^0.2.31", "lib0@^0.2.42", "lib0@^0.2.43", "lib0@^0.2.47", "lib0@^0.2.52", "lib0@^0.2.74", "lib0@^0.2.85":
+"lib0@^0.2.31", "lib0@^0.2.43", "lib0@^0.2.47", "lib0@^0.2.52", "lib0@^0.2.74", "lib0@^0.2.85":
   "integrity" "sha512-kxigQTM4Q7NwJkEgdqQvU21qiR37twcqqLmh+/SbiGbRLfPlLVbHyY9sWp7PwXh0Xus9ELDSjsUOwcrdt5yZ4w=="
   "resolved" "https://registry.npmjs.org/lib0/-/lib0-0.2.86.tgz"
   "version" "0.2.86"
@@ -7306,13 +7301,6 @@
   "resolved" "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz"
   "version" "4.0.2"
 
-"y-codemirror@^3.0.1":
-  "integrity" "sha512-TsLSoouAZxkxOKbmTj7qdwZNS0lZMVqIdp7/j9EgUUqYj0remZYDGl6VBABrmp9UX1QvX6RoXXqzbNhftgfCbA=="
-  "resolved" "https://registry.npmjs.org/y-codemirror/-/y-codemirror-3.0.1.tgz"
-  "version" "3.0.1"
-  dependencies:
-    "lib0" "^0.2.42"
-
 "y-leveldb@^0.1.0", "y-leveldb@^0.1.1":
   "integrity" "sha512-6ulEn5AXfXJYi89rXPEg2mMHAyyw8+ZfeMMdOtBbV8FJpQ1NOrcgi6DTAcXof0dap84NjHPT2+9d0rb6cFsjEg=="
   "resolved" "https://registry.npmjs.org/y-leveldb/-/y-leveldb-0.1.2.tgz"
@@ -7378,7 +7366,7 @@
   "resolved" "https://registry.npmjs.org/yaml/-/yaml-2.3.3.tgz"
   "version" "2.3.3"
 
-"yjs@^13.0.0", "yjs@^13.3.1", "yjs@^13.5.17", "yjs@^13.5.6", "yjs@^13.6.4", "yjs@^13.6.8":
+"yjs@^13.0.0", "yjs@^13.3.1", "yjs@^13.5.6", "yjs@^13.6.4", "yjs@^13.6.8":
   "integrity" "sha512-ZPq0hpJQb6f59B++Ngg4cKexDJTvfOgeiv0sBc4sUm8CaBWH7OQC4kcCgrqbjJ/B2+6vO49exvTmYfdlPtcjbg=="
   "resolved" "https://registry.npmjs.org/yjs/-/yjs-13.6.8.tgz"
   "version" "13.6.8"
