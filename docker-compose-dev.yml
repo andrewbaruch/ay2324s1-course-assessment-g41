@@ -54,7 +54,8 @@ services:
     restart: on-failure
     networks:
       - backend
-    environment: *common-variables
+    environment:
+      <<: *common-variables
 
   postgres:
     container_name: postgres
