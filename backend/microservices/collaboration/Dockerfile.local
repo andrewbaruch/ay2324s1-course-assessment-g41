@@ -1,0 +1,11 @@
+FROM node:lts
+
+WORKDIR /home/node/app
+
+COPY ./microservices/collaboration/package*.json ./
+
+RUN npm install
+
+COPY ./microservices/collaboration ./
+
+CMD [ "npm", "start"]

@@ -2,10 +2,10 @@ FROM node:lts
 
 WORKDIR /home/node/app
 
-COPY package*.json ./
+COPY ./microservices/matching/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY ./microservices/matching .
 
 CMD [ "npm", "run", "start"]

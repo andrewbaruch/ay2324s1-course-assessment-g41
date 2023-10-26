@@ -22,6 +22,11 @@ export class Server {
       process.exit()
     }
 
+    if (!process.env.JWT_SECRET || !process.env.ACCESS_COOKIE_KEY || !process.env.REFRESH_COOKIE_KEY) {
+      console.log("Missing JWT secret for decryption")
+      process.exit()
+    }
+
     this.port = port
     const { app } = expressWebsockets(express())
     this.app = app
