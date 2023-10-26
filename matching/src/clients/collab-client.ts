@@ -6,9 +6,6 @@ const collabClient = axios.create({
   baseURL: COLLAB_SERVICE_ENDPOINT,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': "*/*",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
   }
 });
 
