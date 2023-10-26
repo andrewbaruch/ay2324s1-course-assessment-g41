@@ -56,6 +56,7 @@ services:
       - backend
     environment:
       <<: *common-variables
+      SERVER_PORT: 3000
 
   postgres:
     container_name: postgres
@@ -72,7 +73,7 @@ services:
       - "5432:5432"
     networks:
       - backend
-  
+
   postgres-collab:
     container_name: postgres-collab
     build:
@@ -85,7 +86,7 @@ services:
     volumes:
       - postgres-collab:/var/lib/postgresql/data
     ports:
-      - "5433:5432"  # Use a different port for the new instance, e.g., 5433
+      - "5433:5432" # Use a different port for the new instance, e.g., 5433
     networks:
       - backend
 
@@ -137,6 +138,7 @@ services:
       context: ./matching
     volumes:
       - ./matching:/home/node/app/
+      - /home/node/app/node_modules
     ports:
       - 7001:3000
     restart: on-failure
