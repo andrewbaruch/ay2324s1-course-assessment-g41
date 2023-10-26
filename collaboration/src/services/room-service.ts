@@ -1,20 +1,16 @@
 import { Room } from "../models/room"
 import { generateSlug } from "random-word-slugs";
-import { prisma } from "../clients/prisma";
+import { knexPgClient } from "@/clients/pg-knex";
 
 export class RoomService {
   static async openRoom(room: Room) {
     if (!room) {
       return 
     }
-    await prisma.room.update({
-      where: {
-        id: room.id
-      },
-      data: {
-        isOpen: true
-      }
-    })
+    const updatedRoom = await knexPgClient("Room").where("id", room.id).update({
+      isOpen: true
+    }, ["id", "isOpen", "name"])
+    console.log("updated room", updatedRoom)
   }
 
   static async closeRoom(roomId: number) {
@@ -24,16 +20,11 @@ export class RoomService {
     }
     
     // set isOpen to false
-    await prisma.room.update({
-      where: {
-        id: roomId
-      },
-      data: {
-        isOpen: false
-      }
-    })
-    console.log('closed room in db')
-    
+    const updatedRoom = await knexPgClient("Room").where("id", roomId).update({
+      isOpen: false
+    }, ["id", "isOpen", "name"])
+
+    console.log("closed room", updatedRoom)
     // TODO: @didy send attempt to attempt service via MQ 
   }
 
@@ -41,11 +32,11 @@ export class RoomService {
     RoomService.validateUsers(userId1, userId2);
     const { roomName } = await RoomService.generateRoomName();
     console.log('write into db')
-    const room = await prisma.room.create({
-      data: { userId1, userId2, name: roomName }
-    })
-
-    console.log('complete db')
+    const room: Room = await knexPgClient("Room").insert({
+      userId1, userId2, name: roomName
+    }, ["id", "name", "userId1", "userId2", "isOpen"])
+    
+    console.log('complete db insertion', room)
     return room
   }
 
@@ -59,11 +50,8 @@ export class RoomService {
     let slug = "";
     while (true) {
       slug = generateSlug()
-      const room = await prisma.room.findFirst({
-        where: {
-          name: slug
-        }
-      })
+      const room = await knexPgClient("Room").where("name", slug).first() as Room
+      console.log('retrieved room', room)
       if (!room) {
         console.log('generated room name', slug)
         break
