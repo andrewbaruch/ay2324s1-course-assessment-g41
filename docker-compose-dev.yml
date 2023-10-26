@@ -54,7 +54,8 @@ services:
     restart: on-failure
     networks:
       - backend
-    environment: *common-variables
+    environment:
+      <<: *common-variables
 
   postgres:
     container_name: postgres
@@ -129,10 +130,28 @@ services:
     networks:
       - backend
 
+  matching:
+    container_name: matching
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./matching
+    volumes:
+      - ./matching:/home/node/app/
+    ports:
+      - 7001:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/node/app/key.json
+      - SERVER_PORT=3000
+      - COLLAB_SERVICE_ENDPOINT=http://localhost:3000/collaboration
+
   nginx:
     depends_on:
       - client
       - user
+      - matching
     restart: always
     build:
       dockerfile: Dockerfile.dev
@@ -152,6 +171,8 @@ services:
       - /app/node_modules
     networks:
       - frontend
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 
 volumes:
   postgres:
