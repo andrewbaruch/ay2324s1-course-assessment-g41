@@ -1,5 +1,14 @@
 FROM node:lts
 
+# Build shared library
+WORKDIR /home/node
+
+COPY ./shared/package*.json ./
+RUN npm install
+
+COPY ./shared ./
+
+# Build microservice
 WORKDIR /home/node/app
 
 COPY ./microservices/collaboration/package*.json ./

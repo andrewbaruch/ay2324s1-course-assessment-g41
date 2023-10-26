@@ -9,8 +9,3 @@ export const verifyAccessToken = (token: string, jwtSecret: string) => {
   const decoded = jwt.verify(token, jwtSecret) as AccessPayload
   return decoded;
 }
-
-export const retrieveUserIdFromToken = (token: string, jwtSecret) => {
-  const decodedPayload = verifyAccessToken(token, jwtSecret)
-  return decodedPayload.userId;
-}

@@ -2,12 +2,15 @@ import esbuild from 'esbuild'
 import fs from 'fs/promises'
 import { glob } from 'glob'
 
-const files = await glob('**/src/**/*.ts', { ignore: 'node_modules/**' })
+const microserviceFiles = await glob('microservices/collaboration/src/**/*.ts', { ignore: 'node_modules/**' })
+const sharedFiles = await glob('shared/**/*.ts', { ignore: 'node_modules/**' })
+
+const allFiles = [...microserviceFiles, ...sharedFiles]
 
 const pkg = await fs.readFile('package.json').then(JSON.parse)
 
 const result = await esbuild.build({
-  entryPoints: files,
+  entryPoints: allFiles,
   bundle: true,
   outdir: 'dist',
   metafile: true,
