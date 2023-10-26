@@ -17,7 +17,7 @@ export const PATH_MAIN = {
   root: ROOTS_MAIN,
   general: {
     dashboard: path(ROOTS_MAIN, "/dashboard"),
-    questions: path(ROOTS_MAIN, "/questions"),
+    questions: path(ROOTS_MAIN, "/coding-questions"),
     profile: path(ROOTS_MAIN, "/profile"),
   },
 };

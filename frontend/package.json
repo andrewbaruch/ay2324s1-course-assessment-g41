@@ -25,6 +25,7 @@
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "ahooks": "^3.7.8",
+    "allotment": "^1.19.3",
     "apexcharts": "^3.43.0",
     "async-mutex": "^0.4.0",
     "axios": "0.27.2",
@@ -61,10 +62,12 @@
     "yjs": "^13.6.8"
   },
   "devDependencies": {
+    "css-loader": "^6.8.1",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "style-loader": "^3.3.3"
   }
 }
