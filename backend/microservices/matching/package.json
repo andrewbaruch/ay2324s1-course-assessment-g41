@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "tsc --build --clean",
-    "start": "node build.mjs && node dist/index.mjs",
+    "start": "node build.mjs && node dist/microservices/matching/src/index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
