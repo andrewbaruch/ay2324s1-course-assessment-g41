@@ -7,7 +7,8 @@ import ComplexityMatchingPushService from "@/services/complexity-matching-push-s
 
 export const pushMatchRequestToQueue = async (req: Request, res: Response) => {
   // TODO: @didy refator to use jwt token and auth service
-  const { userId, questionComplexity }: {userId: string, questionComplexity: string} = req.body;
+  const userId = res.locals.userId
+  const { questionComplexity }: {questionComplexity: string} = req.body;
   const complexityPublisherService = new ComplexityMatchingPushService();
   try {
     complexityPublisherService.pushMatchingRequest(userId, questionComplexity)

@@ -6,8 +6,11 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "esbuild": "^0.19.5",
     "express": "^4.18.2",
     "expressjs": "^1.0.1",
+    "fs": "^0.0.1-security",
+    "glob": "^10.3.10",
     "pg": "^8.11.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
@@ -25,7 +28,7 @@
   },
   "scripts": {
     "build": "tsc --build --clean",
-    "start": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s src -o dist && node -r tsconfig-paths/register dist/index.js",
+    "start": "node build.mjs && node dist/index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
