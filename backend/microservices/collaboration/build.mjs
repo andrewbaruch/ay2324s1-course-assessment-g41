@@ -35,5 +35,4 @@ const result = await esbuild.build({
     '.js': '.mjs',
   },
 })
-console.log(result)
 console.log('Built')

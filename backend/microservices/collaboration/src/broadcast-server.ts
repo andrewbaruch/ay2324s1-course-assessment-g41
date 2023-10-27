@@ -2,7 +2,6 @@ import express from 'express'
 import { WebSocket } from 'ws'
 import { Server as HocuspocusServer } from '@hocuspocus/server'
 import { Logger } from '@hocuspocus/extension-logger'
-import { SQLite } from '@hocuspocus/extension-sqlite'
 
 /**
  * Handles the broadcast logic between multiple clients via Yjs. 
@@ -27,7 +26,6 @@ class BroadcastServer {
       name: 'PeerPrep Collaboration WebSocket Server',
       extensions: [
         new Logger(),
-        new SQLite(),
       ],
       onListen: async (data) => {
         console.log(data)

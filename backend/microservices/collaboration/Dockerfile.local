@@ -1,20 +1,16 @@
 FROM node:lts
 
-# Build shared library
-WORKDIR /home/node
+# Set the working directory
+WORKDIR /home/microservices/collaboration
 
-COPY ./shared/package*.json ./
+# Copy the shared and microservices directories
+COPY shared ../../shared
+COPY microservices/collaboration ./
+
+# Install dependencies for the shared directory
+RUN cd ../../shared && npm install && cd ../microservices/collaboration
+# Install dependencies for the microservice
 RUN npm install
 
-COPY ./shared ./
-
-# Build microservice
-WORKDIR /home/node/app
-
-COPY ./microservices/collaboration/package*.json ./
-
-RUN npm install
-
-COPY ./microservices/collaboration ./
-
-CMD [ "npm", "start"]
+# Start your application
+CMD [ "npm", "run", "start"]

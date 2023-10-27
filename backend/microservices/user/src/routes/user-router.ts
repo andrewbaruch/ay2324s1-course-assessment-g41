@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import * as UserController from '@/controllers/user-controller';
-import * as AuthMiddleware from '@/middlewares/auth-middleware';
+// import * as AuthMiddleware from '@/middlewares/auth-middleware';
+import { authJWT } from "../../../../shared/middleware/auth-middleware";
 
 const userRouter = Router();
 
-userRouter.use(AuthMiddleware.authJWT);
+// userRouter.use(AuthMiddleware.authJWT);
+userRouter.use(authJWT);
 
 // NOTE: No need to expose creating, should be done in registration steps?
 userRouter.get('/topics', UserController.readCurrentTopics);

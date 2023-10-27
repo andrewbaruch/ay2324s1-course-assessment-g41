@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import * as QuestionController from '@/controllers/question-controller';
-import * as AuthMiddleware from '@/middlewares/auth-middleware';
+// import * as AuthMiddleware from '@/middlewares/auth-middleware';
+import { authJWT } from "../../../../shared/middleware/auth-middleware"
 
 const router = Router();
 
 // TODO: update for session/middleware
-router.use(AuthMiddleware.authJWT);
+// router.use(AuthMiddleware.authJWT);
+router.use(authJWT)
 
 router.get('/', QuestionController.getFilteredQuestions);
 
