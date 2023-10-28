@@ -1,6 +1,6 @@
 // components/TopBar.tsx
 import React from "react";
-import { Select } from "@chakra-ui/react";
+import { Flex, Select } from "@chakra-ui/react";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const TopBar = () => {
@@ -9,13 +9,16 @@ const TopBar = () => {
   const currentLanguage = currentAttempt?.language;
 
   return (
-    <Select value={currentLanguage?.slug} placeholder="Select language">
-      {languageTotalList.map((language) => (
-        <option key={language.id} value={language.slug}>
-          {language.name}
-        </option>
-      ))}
-    </Select>
+    <Flex align="center" justify="flex-start" pb={4}>
+      <Select value={currentLanguage?.slug} placeholder="Select language" maxWidth="200px">
+        {languageTotalList.map((language) => (
+          <option key={language.id} value={language.slug}>
+            {language.name}
+          </option>
+        ))}
+      </Select>
+      {/* Other components or elements can go here, and they will be positioned to the right of the Select component */}
+    </Flex>
   );
 };
 

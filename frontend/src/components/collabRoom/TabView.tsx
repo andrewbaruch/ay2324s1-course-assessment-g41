@@ -9,7 +9,6 @@ const TabView = () => {
       <TabList>
         <Tab>Description</Tab>
       </TabList>
-
       <TabPanels>
         <TabPanel>
           <QuestionDescription />

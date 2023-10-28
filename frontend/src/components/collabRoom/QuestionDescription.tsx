@@ -6,7 +6,7 @@ import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 const QuestionDescription = () => {
   const { state, onNewAttempt, onQuestionChange, onDeleteAttempt, setCurrentAttempt } =
     useCollabContext();
-  const { currentAttempt } = useCollabContext(); // It's better to merge this with the line above
+  const { currentAttempt } = useCollabContext();
 
   const { questionTotalList } = state;
 

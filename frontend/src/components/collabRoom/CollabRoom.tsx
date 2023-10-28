@@ -3,13 +3,13 @@ import React, { useState, createContext, FunctionComponent } from "react";
 import { Box } from "@chakra-ui/react";
 import Splitter from "@devbookhq/splitter";
 import CodeEditor from "./CodeEditor";
-import QuestionDescription from "./QuestionDescription";
 import TopBar from "./TopBar";
 import BottomBar from "./BottomBar";
 import { Question } from "@/@types/models/question";
 import { User } from "@/@types/user";
 import { Language } from "@/@types/language";
 import { Attempt } from "@/@types/attempt";
+import TabView from "./TabView";
 
 interface CollabRoomProps {
   questionTotalList: Question[];
@@ -94,7 +94,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
           <TopBar />
           <Splitter>
             <CodeEditor />
-            <QuestionDescription />
+            <TabView />
           </Splitter>
           <BottomBar />
         </Box>

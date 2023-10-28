@@ -19,7 +19,7 @@ const BottomBar = () => {
       </Flex>
       <Button
         onClick={() => {
-          alert("[BottomBar] Closing room...");
+          console.log("[BottomBar] Closing room...");
           onCloseRoom();
         }}
       >

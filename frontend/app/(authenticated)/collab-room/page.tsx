@@ -32,6 +32,16 @@ const mockUsers: User[] = [
     preferred_topics: null,
     roles: null,
   },
+  {
+    id: "user2",
+    email: "user2@example.com",
+    image: null,
+    name: "User Two",
+    preferred_language: "Python",
+    preferred_difficulty: 2,
+    preferred_topics: null,
+    roles: null,
+  },
   // ... other users
 ];
 
