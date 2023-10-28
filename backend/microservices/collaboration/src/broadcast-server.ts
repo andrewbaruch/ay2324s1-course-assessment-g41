@@ -34,8 +34,16 @@ class BroadcastServer {
       },
       onConnect: async (data) => {
         // validation logic here for the client
-        console.log(data.socketId)
+        // console.log(data.request.headers.cookie)
+        console.log(data.request)
+        console.log(data.requestHeaders)
+        console.log(data.requestParameters)
         console.log('connect')
+      },
+      onStoreDocument: async (data) => {
+        this.emitEvent(`SAVING_DOCUMENT_${data.documentName}`)
+        // TODO: add features to store document here
+        this.emitEvent(`SAVED_DOCUMENT_${data.documentName}`)
       }
       // TOOD: add optional configurations for auth checks
       // 
@@ -59,6 +67,11 @@ class BroadcastServer {
       //   })
       // },
     })
-  }  
+  }
+  
+  private emitEvent(event: string) {
+    if (!this.broadcastWebsocketServer.server) return;
+    this.broadcastWebsocketServer.server.webSocketServer.emit(event)
+  }
 }
 export default BroadcastServer

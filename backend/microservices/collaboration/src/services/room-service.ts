@@ -32,12 +32,12 @@ export class RoomService {
     RoomService.validateUsers(userId1, userId2);
     const { roomName } = await RoomService.generateRoomName();
     console.log('write into db')
-    const room: Room = await knexPgClient("Room").insert({
+    const room: Room[] = await knexPgClient("Room").insert({
       userId1, userId2, name: roomName
     }, ["id", "name", "userId1", "userId2", "isOpen"])
     
-    console.log('complete db insertion', room)
-    return room
+    console.log('complete db insertion', room[0])
+    return { room: room[0] }
   }
 
   // TODO: @didy update validation logic on integration with user service

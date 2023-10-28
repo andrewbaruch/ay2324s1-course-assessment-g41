@@ -3,9 +3,9 @@ import { RoomService } from "../services/room-service";
 
 export async function createRoom(req: Request, res: Response) {
   const { userId1, userId2 }: { userId1: string, userId2: string } = req.body
-  const room = await RoomService.createRoom(userId1, userId2)
+  const { room } = await RoomService.createRoom(userId1, userId2)
   res.status(200).json({
-    room
+    ...room
   })
 }
 
