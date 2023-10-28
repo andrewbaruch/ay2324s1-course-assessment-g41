@@ -41,7 +41,7 @@ interface CollabContextValue {
   >;
   onDeleteAttempt: (attemptId: number) => void;
   onCloseRoom: () => void;
-  onNewAttempt: (questionId: string) => void; // karwi: initial selected qn
+  onNewAttempt: (questionId: string) => void;
   onCodeChange: (newCodeText: string, attemptId: number) => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
   onLanguageChange: (newLanguageId: string, attemptId: number) => void;

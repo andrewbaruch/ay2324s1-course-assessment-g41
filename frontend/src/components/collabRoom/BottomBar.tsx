@@ -1,7 +1,7 @@
 // components/BottomBar.tsx
 import React from "react";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
-import { useCollabContext } from "./useCollabContext";
+import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const BottomBar = () => {
   const { state, onCloseRoom } = useCollabContext();

@@ -1,7 +1,7 @@
 // components/TopBar.tsx
 import React from "react";
 import { Select } from "@chakra-ui/react";
-import { useCollabContext } from "./useCollabContext";
+import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const TopBar = () => {
   const { state, currentAttempt } = useCollabContext();

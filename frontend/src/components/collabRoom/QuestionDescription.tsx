@@ -1,7 +1,7 @@
 // components/QuestionDescription.tsx
 import React from "react";
 import { Select, Button, Tag, Text } from "@chakra-ui/react";
-import { useCollabContext } from "./useCollabContext";
+import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const QuestionDescription = () => {
   const { state, onNewAttempt, onQuestionChange, onDeleteAttempt, setCurrentAttempt } =
