@@ -26,6 +26,6 @@ export function authJWT(req: Request, res: Response, next: Function) {
       res.status(401).send()
     }
   } else {
-      res.status(401).send()
+    res.status(401).send()
   }
 }

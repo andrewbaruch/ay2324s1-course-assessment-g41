@@ -1,7 +1,8 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 import express from "express";
-import routes from "@/routes/router";
+import routes from "@/routes/matching-router";
 import ComplexitySubscriber from "./subscribers/complexity-subscriber";
 
 class Server {
@@ -26,6 +27,7 @@ class Server {
   private configMiddleware() {
     this.app.use(bodyParser.urlencoded({ extended: true }))
     this.app.use(bodyParser.json())
+    this.app.use(cookieParser())
     this.app.use(cors({
       origin: '*',
     }));

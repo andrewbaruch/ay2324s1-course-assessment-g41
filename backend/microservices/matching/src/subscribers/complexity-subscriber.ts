@@ -1,4 +1,3 @@
-
 import PubSubClient from "@/clients/pubsub";
 import { MATCHING_REQUEST_TOPIC_SUBSCRIPTION, MATCHING_REQUEST_VALID_DURATION_IN_SECONDS } from "@/constants/matching-request";
 import ComplexityMatchingPullService from "@/services/complexity-matching-pull-service";
@@ -37,35 +36,38 @@ class ComplexitySubscriber {
       console.log(`\tAttributes: ${message.attributes}`);
 
       const parsedData = JSON.parse(message.data.toString());
-      console.log(`parsedData`, parsedData)
 
-      if (complexityMatchingPullService.isUserAlreadyMatched(parsedData.userId || parsedData.user)) return;
+      if (complexityMatchingPullService.isUserAlreadyMatched(parsedData.userId)) {
+        console.log(`${parsedData.userId} is already matched`)
+        return
+      };
 
       const complexity = complexityMatchingPullService.registerRequestForMatch(parsedData)
       // add to request cache
-      complexityMatchingRequestCache.set(parsedData.userId || parsedData.user, { complexity: complexity }, MATCHING_REQUEST_VALID_DURATION_IN_SECONDS);
+      complexityMatchingRequestCache.set(parsedData.userId, { complexity: complexity }, MATCHING_REQUEST_VALID_DURATION_IN_SECONDS);
 
       complexityMatchingPullService.removeExpiredRequestsOfComplexity(complexity)
-      const { roomId, user1, user2 } = await complexityMatchingPullService.matchUsersIfMoreThanTwo(complexity)
+      const { room, user1, user2 } = await complexityMatchingPullService.matchUsersIfMoreThanTwo(complexity)
 
-      if (roomId) {
+      if (room) {
         // update matchingPairCache
         console.log(
           "matched pair, inserting into cache",
           complexityMatchingPairCache.set(user1.userId, {
             userId2: user2.userId,
             complexity: complexity,
-            roomId: roomId,
+            roomId: room.name,
           }),
           complexityMatchingPairCache.set(user2.userId, {
             userId2: user1.userId,
             complexity: complexity,
-            roomId: roomId,
+            roomId: room.name,
           })
         );
       }
       console.log(`matchingpairs=${JSON.stringify(complexityMatchingPullService.matchingPairs)}`);
     } catch (err) {
+      // allow graceful timeout from waiting
       console.error(`message ${message.id} has an error:`, err)
     }
     
