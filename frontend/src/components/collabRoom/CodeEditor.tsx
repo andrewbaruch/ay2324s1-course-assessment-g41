@@ -1,20 +1,16 @@
 // components/CodeEditor.tsx
 import React, { useContext } from "react";
-import { CollabContext } from "./CollabRoom";
+import { CurrentAttemptContext } from "./CollabRoom";
 import { useCollabContext } from "./useCollabContext";
 
 const CodeEditor = () => {
-  const { state, setState } = useCollabContext();
-
-  const handleCodeChange = (newCode: string) => {
-    setState((prevState) => ({
-      ...prevState,
-      codeEditorText: newCode,
-    }));
-  };
+  const { currentAttempt } = useCollabContext();
 
   return (
-    <textarea value={state.codeEditorText} onChange={(e) => handleCodeChange(e.target.value)} />
+    <textarea
+      value={currentAttempt ? currentAttempt.codeText : ""}
+      readOnly={true} // Set to readOnly as per the requirement
+    />
   );
 };
 
