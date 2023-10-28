@@ -3,6 +3,7 @@ import { HOST_API } from "../../config";
 
 const authorizedAxios = axios.create({
   baseURL: HOST_API,
+  withCredentials: true,
 });
 
 // karwi: can remove this. not needed

@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import { QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
 import authorizedAxios from "@/utils/axios/authorizedAxios";
@@ -16,8 +14,7 @@ class MatchingService {
 
   static async getMatchingStatus(id: String) {
     try {
-      const response = await axios.get(`/matching/status/${id}`);
-      console.log("in get status frontend");
+      const response = await authorizedAxios.get(`/matching/user/status`);
       console.log(response.data);
       return response.data;
     } catch (error) {
