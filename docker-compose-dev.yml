@@ -2,7 +2,8 @@ version: "3.8"
 
 x-common-variables: &common-variables
   POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
-  MONGO: mongodb://user:pass@mongodb
+  POSTGRES_COLLAB: postgresql://postgres:postgres@postgres-collab:5432/postgres?connect_timeout=300
+  MONGO: mongodb://user:password@mongo:27017
   EXE_ENV: DEV
 
 networks:
@@ -17,12 +18,44 @@ services:
       context: ./user
     volumes:
       - ./user:/home/node/app/
+      - /home/node/app/node_modules
     ports:
       - 8080:3000
     restart: on-failure
     networks:
       - backend
     environment: *common-variables
+
+  question:
+    container_name: question
+    build:
+      dockerfile: Dockerfile.local
+      context: ./question
+    volumes:
+      - ./question:/home/node/app/
+      - /home/node/app/node_modules
+    ports:
+      - 3001:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment: *common-variables
+
+  collaboration:
+    container_name: collaboration
+    build:
+      dockerfile: Dockerfile.local
+      context: ./collaboration
+    volumes:
+      - ./collaboration:/home/node/app/
+      - /home/node/app/node_modules
+    ports:
+      - 5001:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      <<: *common-variables
 
   postgres:
     container_name: postgres
@@ -37,6 +70,22 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - backend
+  
+  postgres-collab:
+    container_name: postgres-collab
+    build:
+      context: ./postgres-collab
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-collab:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Use a different port for the new instance, e.g., 5433
     networks:
       - backend
 
@@ -81,10 +130,28 @@ services:
     networks:
       - backend
 
+  matching:
+    container_name: matching
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./matching
+    volumes:
+      - ./matching:/home/node/app/
+    ports:
+      - 7001:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/node/app/key.json
+      - SERVER_PORT=3000
+      - COLLAB_SERVICE_ENDPOINT=http://nginx:80/collaboration
+
   nginx:
     depends_on:
       - client
       - user
+      - matching
     restart: always
     build:
       dockerfile: Dockerfile.dev
@@ -104,7 +171,10 @@ services:
       - /app/node_modules
     networks:
       - frontend
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 
 volumes:
   postgres:
+  postgres-collab:
   mongo:

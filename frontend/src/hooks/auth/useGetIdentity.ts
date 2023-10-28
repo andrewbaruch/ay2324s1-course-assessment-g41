@@ -11,6 +11,7 @@ const defaultUser: User = {
   preferred_language: null,
   preferred_difficulty: null,
   preferred_topics: [],
+  roles: [],
 };
 
 /**
@@ -28,7 +29,7 @@ const useGetIdentity = () => {
   const { data, loading, error } = useSafeRequest(getUser, {
     cacheKey: CacheKey.User,
   });
-
+  console.log("calling from use getridentity")
   return {
     identity: data?.data ?? defaultUser,
     loading,

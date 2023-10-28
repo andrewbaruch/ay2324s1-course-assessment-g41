@@ -27,7 +27,7 @@ class UserService {
 
   async read(userId: string): Promise<User | null> {
     try {
-      const query = `
+        const query = `
             SELECT *
             FROM users
             WHERE users.id = $1
@@ -39,85 +39,35 @@ class UserService {
             return null;
         }
 
-        const dbUser = userResult.rows[0];
-        const user: User = {
-            id: dbUser.id,
-            email: dbUser.email,
-            image: dbUser.image,
-            name: dbUser.name,
-            preferred_language: dbUser.preferred_language,
-            preferred_difficulty: dbUser.preferred_difficulty,
-            preferred_topics: [],
-        };
-
-      const topicsQuery = `
-        SELECT topics.*
-        FROM user_topic
-        JOIN topics ON user_topic.topic_id = topics.id
-        WHERE user_topic.user_id = $1
-      `;
-
-      const topicsResult = await postgresClient.query<Topic>(topicsQuery, [userId]);
-
-      if (topicsResult.rows) {
-        user.preferred_topics = topicsResult.rows;
-      }
-
-      return user;
+        return this.fetchUserDetails(userResult.rows[0]);
     } catch (error) {
-      if (error instanceof Error) {
-        throw parseError(error);
-      }
-
-      throw error;
+        if (error instanceof Error) {
+            throw parseError(error);
+        }
+        throw error;
     }
   }
 
   async readByEmail(email: string): Promise<User | null> {
     try {
-      const query = `
-        SELECT *
-        FROM users
-        WHERE users.email = $1
-      `;
+        const query = `
+            SELECT *
+            FROM users
+            WHERE users.email = $1
+        `;
 
-      const userResult = await postgresClient.query<UserDao>(query, [email]);
+        const userResult = await postgresClient.query<UserDao>(query, [email]);
 
-      if (!userResult.rows || userResult.rows.length === 0) {
-        return null;
-      }
+        if (!userResult.rows || userResult.rows.length === 0) {
+            return null;
+        }
 
-      const dbUser = userResult.rows[0];
-      const user: User = {
-        id: dbUser.id,
-        email: dbUser.email,
-        image: dbUser.image,
-        name: dbUser.name,
-        preferred_language: dbUser.preferred_language,
-        preferred_difficulty: dbUser.preferred_difficulty,
-        preferred_topics: [],
-      };
-
-      const topicsQuery = `
-        SELECT topics.*
-        FROM user_topic
-        JOIN topics ON user_topic.topic_id = topics.id
-        WHERE user_topic.user_id = $1
-      `;
-
-      const topicsResult = await postgresClient.query<Topic>(topicsQuery, [user.id]);
-
-      if (topicsResult.rows) {
-        user.preferred_topics = topicsResult.rows;
-      }
-
-      return user;
+        return this.fetchUserDetails(userResult.rows[0]);
     } catch (error) {
-      if (error instanceof Error) {
-        throw parseError(error);
-      }
-
-      throw error;
+        if (error instanceof Error) {
+            throw parseError(error);
+        }
+        throw error;
     }
   }
 

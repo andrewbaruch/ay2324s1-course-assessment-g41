@@ -2,5 +2,7 @@
 # built in localhost
 FROM node:alpine
 WORKDIR '/app'
-
-CMD ["yarn", "run", "dev"]
+COPY ./package.json ./package-lock.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run", "dev"]

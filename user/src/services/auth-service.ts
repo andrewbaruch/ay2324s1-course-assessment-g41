@@ -17,12 +17,12 @@ export class AuthService {
   private googleClient;
   private jwtSecret;
 
-    constructor() {
-        this.googleClient = new google.auth.OAuth2(
-            process.env.OAUTH_GOOGLE_CLIENT,
-            process.env.OAUTH_GOOGLE_SECRET,
-            process.env.AUTH_DOMAIN + '/auth/googleRedirect' 
-        );
+  constructor() {
+    this.googleClient = new google.auth.OAuth2(
+      process.env.OAUTH_GOOGLE_CLIENT,
+      process.env.OAUTH_GOOGLE_SECRET,
+      process.env.AUTH_DOMAIN + "/auth/googleRedirect"
+    );
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
@@ -83,10 +83,10 @@ export class AuthService {
 
       const accessToken = credentials.access_token;
       const res = await fetch(
-        `https://www.googleapis.com/oauth2/v3/userinfo?access_token${accessToken}`
+        `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`
       );
       const data = await res.json();
-      console.log(data)
+      console.log(data);
 
       return data;
     } catch (error) {

@@ -6,44 +6,44 @@ import { handleServiceError } from '@/controllers/error-handler';
 import { JsonWebTokenError } from 'jsonwebtoken';
 
 
-const testEmail = "example@email.com"
+const testEmail = "example@email.com";
 
 const cookieConfig = {
-  httpOnly: true, 
+  httpOnly: true,
   maxAge: 60 * 60 * 24 * 30,
 };
 
 if (!process.env.LOGIN_REDIRECT_URL) {
-  console.log("Missing LOGIN_REDIRECT_URL")
-  process.exit()
+  console.log("Missing LOGIN_REDIRECT_URL");
+  process.exit();
 }
-const loginRedirectURL = process.env.LOGIN_REDIRECT_URL
+const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
 
 if (!process.env.ACCESS_COOKIE_KEY) {
-  console.log("Missing ACCESS_COOKIE_KEY")
-  process.exit()
+  console.log("Missing ACCESS_COOKIE_KEY");
+  process.exit();
 }
-const accessTokenKey = process.env.ACCESS_COOKIE_KEY
+const accessTokenKey = process.env.ACCESS_COOKIE_KEY;
 
 if (!process.env.REFRESH_COOKIE_KEY) {
-  console.log("Missing REFRESH_COOKIE_KEY")
-  process.exit()
+  console.log("Missing REFRESH_COOKIE_KEY");
+  process.exit();
 }
-const refreshTokenKey = process.env.REFRESH_COOKIE_KEY
+const refreshTokenKey = process.env.REFRESH_COOKIE_KEY;
 
 export async function googleAuth(req: Request, res: Response): Promise<void> {
-  if (process.env.EXE_ENV === 'DEV' && process.env.SKIP_LOGIN_AUTH === 'TRUE') {
-    let user = await userService.readByEmail(testEmail)
+  if (process.env.EXE_ENV === "DEV" && process.env.SKIP_LOGIN_AUTH === "TRUE") {
+    let user = await userService.readByEmail(testEmail);
 
     if (!user) {
-      user = await userService.create(testEmail, "")
+      user = await userService.create(testEmail, "");
     }
-    
+
     const accessToken = await authService.generateAccessToken(user!.id);
     const refreshToken = await authService.generateRefreshToken(user!.id);
 
-    res.cookie(accessTokenKey, accessToken, cookieConfig)
-    res.cookie(refreshTokenKey, refreshToken, cookieConfig)
+    res.cookie(accessTokenKey, accessToken, cookieConfig);
+    res.cookie(refreshTokenKey, refreshToken, cookieConfig);
 
     res.status(StatusCodes.OK).json(user)
   }
@@ -52,25 +52,28 @@ export async function googleAuth(req: Request, res: Response): Promise<void> {
   res.redirect(authUrl);
 }
 
-export async function googleRedirect(req: Request, res: Response): Promise<void> {
+export async function googleRedirect(
+  req: Request,
+  res: Response
+): Promise<void> {
   const code = req.query.code;
 
   try {
     const userInfo = await authService.googleCallback(code as string);
 
-    let user = await userService.readByEmail(userInfo.email)
+    let user = await userService.readByEmail(userInfo.email);
 
     if (!user) {
-      user = await userService.create(userInfo.email, userInfo.image)
+      user = await userService.create(userInfo.email, userInfo.picture);
     }
-    
+
     const accessToken = await authService.generateAccessToken(user!.id);
     const refreshToken = await authService.generateRefreshToken(user!.id);
 
-    res.cookie(accessTokenKey, accessToken, cookieConfig)
-    res.cookie(refreshTokenKey, refreshToken, cookieConfig)
+    res.cookie(accessTokenKey, accessToken, cookieConfig);
+    res.cookie(refreshTokenKey, refreshToken, cookieConfig);
 
-    res.redirect(loginRedirectURL)
+    res.redirect(loginRedirectURL);
   } catch (error) {
     console.error('googleRedirect: ', error);
     
@@ -80,24 +83,26 @@ export async function googleRedirect(req: Request, res: Response): Promise<void>
 }
 
 export async function refresh(req: Request, res: Response): Promise<void> {
-  const token = req.cookies[refreshTokenKey]
+  const token = req.cookies[refreshTokenKey];
 
   if (token) {
     try {
       const decodedToken = authService.verifyRefreshToken(token);
-      
-      const tokenStore = await authService.readRefreshToken(decodedToken.id)
+
+      const tokenStore = await authService.readRefreshToken(decodedToken.id);
       if (!tokenStore || tokenStore.revoked) {
         res.status(StatusCodes.UNAUTHORIZED).send()
       }
 
       // sync delete, if failed dont continue
-      await authService.deleteRefreshToken(decodedToken.id)
+      await authService.deleteRefreshToken(decodedToken.id);
       const accessToken = authService.generateAccessToken(decodedToken.userId);
-      const refreshToken = await authService.generateRefreshToken(decodedToken.userId);
+      const refreshToken = await authService.generateRefreshToken(
+        decodedToken.userId
+      );
 
-      res.cookie(accessTokenKey, accessToken, cookieConfig)
-      res.cookie(refreshTokenKey, refreshToken, cookieConfig)
+      res.cookie(accessTokenKey, accessToken, cookieConfig);
+      res.cookie(refreshTokenKey, refreshToken, cookieConfig);
 
       res.status(StatusCodes.OK).send()
     } catch(error) {
@@ -115,7 +120,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
 }
 
 export async function checkAuth(req: Request, res: Response): Promise<void> {
-  const token = req.cookies[accessTokenKey]
+  const token = req.cookies[accessTokenKey];
 
   if (token) {
     try {
@@ -131,12 +136,12 @@ export async function checkAuth(req: Request, res: Response): Promise<void> {
 }
 
 export async function logout(req: Request, res: Response): Promise<void> {
-  const token = req.cookies[refreshTokenKey]
+  const token = req.cookies[refreshTokenKey];
 
   if (token) {
     try {
       const id = authService.verifyRefreshToken(token).tokenId;
-      await authService.deleteRefreshToken(id)
+      await authService.deleteRefreshToken(id);
 
       res.clearCookie(accessTokenKey, cookieConfig);
       res.clearCookie(refreshTokenKey, cookieConfig);
