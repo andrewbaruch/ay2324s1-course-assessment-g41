@@ -10,7 +10,6 @@ class ComplexityMatchingPullService {
   };
 
   public isUserAlreadyMatched(userId: string) {
-    console.log(userId, this.matchingPairs)
     return userId in this.matchingPairs
   }
 
@@ -66,7 +65,7 @@ class ComplexityMatchingPullService {
     // TODO: call collab service here to get room id, replace "Dummyroom" with roomid below
     const room = await this.retrieveRoomId(user1.userId, user2.userId)
 
-    console.log(`user1=${user1.userId} user2=${user2.userId}`);
+    console.log(`user1=${user1.userId}, user2=${user2.userId}`);
     console.log(`myData=${matchingTopicData} `);
     return {
       user1,

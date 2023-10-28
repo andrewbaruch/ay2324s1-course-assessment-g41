@@ -1,4 +1,3 @@
-
 import PubSubClient from "@/clients/pubsub";
 import { MATCHING_REQUEST_TOPIC_SUBSCRIPTION, MATCHING_REQUEST_VALID_DURATION_IN_SECONDS } from "@/constants/matching-request";
 import ComplexityMatchingPullService from "@/services/complexity-matching-pull-service";
@@ -37,10 +36,9 @@ class ComplexitySubscriber {
       console.log(`\tAttributes: ${message.attributes}`);
 
       const parsedData = JSON.parse(message.data.toString());
-      console.log(`parsedData`, parsedData)
 
       if (complexityMatchingPullService.isUserAlreadyMatched(parsedData.userId)) {
-        console.log('already matched')
+        console.log(`${parsedData.userId} is already matched`)
         return
       };
 
@@ -69,6 +67,7 @@ class ComplexitySubscriber {
       }
       console.log(`matchingpairs=${JSON.stringify(complexityMatchingPullService.matchingPairs)}`);
     } catch (err) {
+      // allow graceful timeout from waiting
       console.error(`message ${message.id} has an error:`, err)
     }
     

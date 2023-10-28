@@ -11,7 +11,6 @@ export const pushMatchRequestToQueue = async (req: Request, res: Response) => {
   const complexityPublisherService = new ComplexityMatchingPushService();
   try {
     complexityPublisherService.pushMatchingRequest(userId, questionComplexity)
-    console.log("pushed into pubsub queue")
   } catch (err) {
     // TODO: add better error validation
     res.status(400).send()
@@ -25,7 +24,6 @@ export async function getMatchingStatus(
   res: Response
 ): Promise<void> {
   const userId: string = res.locals.userId
-  console.log(`user ${userId} attempting to get matching status`)
   const matchingPair: {roomId: string, user1: string, user2: string} | undefined = complexityMatchingPairCache.get(userId);
   const status = complexityMatchingRequestCache.get(userId);
 
