@@ -11,6 +11,13 @@ export async function createRoom(req: Request, res: Response) {
 
 export async function closeRoom(req: Request, res: Response) {
   const { roomId } = req.params
-  await RoomService.closeRoom(parseInt(roomId))
+  const userId: string = res.locals.userId
+  await RoomService.closeRoom(parseInt(roomId), userId)
   res.status(200).send()
+}
+
+export async function openRoom(req: Request, res: Response) {
+  const { roomId } = req.params
+  const userId: string = res.locals.userId
+  await RoomService.openRoom(parseInt(roomId), userId)
 }

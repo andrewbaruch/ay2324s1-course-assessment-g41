@@ -8,8 +8,8 @@ const roomRouter = Router()
 roomRouter.post('/', RoomController.createRoom)
 
 // indempotency
-// add auth JWT
+// auth JWT endpoints
 roomRouter.put('/:roomId/status/close', authJWT, RoomController.closeRoom)
-roomRouter.put('/:roomId/status/open', authJWT, RoomController.closeRoom)
+roomRouter.put('/:roomId/status/open', authJWT, RoomController.openRoom)
 
 export default roomRouter
