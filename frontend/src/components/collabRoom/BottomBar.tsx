@@ -4,7 +4,7 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useCollabContext } from "./useCollabContext";
 
 const BottomBar = () => {
-  const { state } = useCollabContext();
+  const { state, onCloseRoom } = useCollabContext();
   const { listOfActiveUsers } = state;
 
   return (
@@ -17,7 +17,14 @@ const BottomBar = () => {
           </Flex>
         ))}
       </Flex>
-      <Button onClick={() => alert("Close room")}>Close Room</Button>
+      <Button
+        onClick={() => {
+          alert("[BottomBar] Closing room...");
+          onCloseRoom();
+        }}
+      >
+        Close Room
+      </Button>
     </Flex>
   );
 };

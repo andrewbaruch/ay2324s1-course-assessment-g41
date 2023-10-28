@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { CollabContext, CurrentAttemptContext } from "./CollabRoom";
 
+// karwi: move to hooks
 export const useCollabContext = () => {
   const collabContext = useContext(CollabContext);
   const currentAttemptContext = useContext(CurrentAttemptContext);

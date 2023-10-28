@@ -8,7 +8,6 @@ const TabView = () => {
     <Tabs>
       <TabList>
         <Tab>Description</Tab>
-        <Tab>etc</Tab>
       </TabList>
 
       <TabPanels>

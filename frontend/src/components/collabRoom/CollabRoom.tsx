@@ -8,36 +8,39 @@ import TopBar from "./TopBar";
 import BottomBar from "./BottomBar";
 import { Question } from "@/@types/models/question";
 import { User } from "@/@types/user";
+import { Language } from "@/@types/language";
 
 interface Attempt {
-  attemptId: number;
+  attemptId: number; // karwi: string?
   codeText: string;
-  questionId: string;
+  question: Question;
+  language: Language;
 }
 
 interface CollabRoomProps {
   questionTotalList: Question[];
-  languageTotalList: string[];
+  languageTotalList: Language[];
   listOfAttempts: Attempt[];
   listOfActiveUsers: User[];
   onDeleteAttempt: (attemptId: number) => void;
   onCloseRoom: () => void;
   onNewAttempt: (questionId: string) => void;
   onCodeChange: (newCodeText: string, attemptId: number) => void;
-  onQuestionChange: (newQuestionId: string) => void;
+  onQuestionChange: (newQuestionId: string, attemptId: number) => void;
+  onLanguageChange: (newLanguageId: string, attemptId: number) => void;
 }
 
 interface CollabContextValue {
   state: {
     questionTotalList: Question[];
-    languageTotalList: string[];
+    languageTotalList: Language[];
     listOfAttempts: Attempt[];
     listOfActiveUsers: User[];
   };
   setState: React.Dispatch<
     React.SetStateAction<{
       questionTotalList: Question[];
-      languageTotalList: string[];
+      languageTotalList: Language[];
       listOfAttempts: Attempt[];
       listOfActiveUsers: User[];
     }>
@@ -47,8 +50,10 @@ interface CollabContextValue {
   onNewAttempt: (questionId: string) => void; // karwi: initial selected qn
   onCodeChange: (newCodeText: string, attemptId: number) => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
+  onLanguageChange: (newLanguageId: string, attemptId: number) => void;
 }
 
+// karwi: consolidate contexts
 interface CurrentAttemptContextValue {
   currentAttempt: Attempt | null;
   setCurrentAttempt: React.Dispatch<React.SetStateAction<Attempt | null>>;
@@ -67,6 +72,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onNewAttempt,
   onCodeChange,
   onQuestionChange,
+  onLanguageChange,
 }) => {
   const [state, setState] = useState({
     questionTotalList,
@@ -86,6 +92,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
         onNewAttempt,
         onCodeChange,
         onQuestionChange,
+        onLanguageChange,
       }}
     >
       <CurrentAttemptContext.Provider value={{ currentAttempt, setCurrentAttempt }}>

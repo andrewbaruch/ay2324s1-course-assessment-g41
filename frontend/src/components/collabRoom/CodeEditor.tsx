@@ -1,8 +1,8 @@
 // components/CodeEditor.tsx
-import React, { useContext } from "react";
-import { CurrentAttemptContext } from "./CollabRoom";
+import React from "react";
 import { useCollabContext } from "./useCollabContext";
 
+// karwi: replace with didymus code editor
 const CodeEditor = () => {
   const { currentAttempt } = useCollabContext();
 

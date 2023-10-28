@@ -4,29 +4,38 @@ import { Select, Button, Tag, Text } from "@chakra-ui/react";
 import { useCollabContext } from "./useCollabContext";
 
 const QuestionDescription = () => {
-  const { state, setState } = useCollabContext();
-  const { currentAttempt, setCurrentAttempt } = useCollabContext();
+  const { state, onNewAttempt, onQuestionChange, onDeleteAttempt, setCurrentAttempt } =
+    useCollabContext();
+  const { currentAttempt } = useCollabContext(); // It's better to merge this with the line above
+
   const { questionTotalList } = state;
 
   const handleNewAttempt = () => {
-    // Logic for creating a new attempt
+    if (currentQuestion) {
+      onNewAttempt(currentQuestion.id); // Assuming `currentQuestion` is defined
+    }
   };
 
   const handleQuestionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    // Logic for handling question change
+    const newQuestionId = event.target.value;
+    if (currentAttempt) {
+      onQuestionChange(newQuestionId, currentAttempt.attemptId);
+    }
   };
 
   const handlePageChange = (pageIndex: number) => {
-    // Logic for changing page
-    // karwi: set current attempt
+    const selectedAttempt = state.listOfAttempts[pageIndex];
+    if (selectedAttempt) {
+      setCurrentAttempt(selectedAttempt); // Assuming setCurrentAttempt is obtained from useCollabContext or a similar context
+    }
   };
 
   const handleDeleteAttempt = (attemptId: number) => {
-    // Logic for deleting an attempt
+    onDeleteAttempt(attemptId);
   };
 
   const currentQuestion = questionTotalList.find(
-    (question) => question.id === currentAttempt?.questionId,
+    (question) => question.id === currentAttempt?.question.id,
   );
 
   return (
