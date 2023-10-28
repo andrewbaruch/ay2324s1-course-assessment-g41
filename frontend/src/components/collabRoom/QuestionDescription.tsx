@@ -1,8 +1,6 @@
 // components/QuestionDescription.tsx
-import React, { useContext } from "react";
+import React from "react";
 import { Select, Button, Tag, Text } from "@chakra-ui/react";
-import { CollabContext, CurrentAttemptContext } from "./CollabRoom";
-import { QuestionComplexity } from "@/@types/models/question";
 import { useCollabContext } from "./useCollabContext";
 
 const QuestionDescription = () => {
@@ -16,6 +14,15 @@ const QuestionDescription = () => {
 
   const handleQuestionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     // Logic for handling question change
+  };
+
+  const handlePageChange = (pageIndex: number) => {
+    // Logic for changing page
+    // karwi: set current attempt
+  };
+
+  const handleDeleteAttempt = (attemptId: number) => {
+    // Logic for deleting an attempt
   };
 
   const currentQuestion = questionTotalList.find(
@@ -42,6 +49,22 @@ const QuestionDescription = () => {
           <Text>{currentQuestion.description}</Text>
           {/* Page buttons and new attempt button */}
           <Button onClick={handleNewAttempt}>New Attempt</Button>
+          <div>
+            {state.listOfAttempts.map((attempt, index) => (
+              <Button
+                key={attempt.attemptId}
+                onClick={() => handlePageChange(index)}
+                isActive={currentAttempt?.attemptId === attempt.attemptId}
+              >
+                Page {index + 1}
+              </Button>
+            ))}
+          </div>
+          {currentAttempt && (
+            <Button onClick={() => handleDeleteAttempt(currentAttempt.attemptId)}>
+              Delete Attempt
+            </Button>
+          )}
         </>
       )}
     </div>
