@@ -1,5 +1,21 @@
 import { Pool, QueryResult, QueryResultRow } from 'pg';
 
+export interface PostgresError extends Error {
+    code: string;
+}
+
+// export class PostgresError extends Error {
+//     code?: string | number;
+
+//     constructor(message: string, code?: string | number) {
+//         super(message);
+//         this.name = "PostgresError";
+//         this.code = code;
+
+//         Object.setPrototypeOf(this, PostgresError.prototype);
+//     }
+// }
+
 class PostgresClient {
     private readonly pool: Pool;
 
@@ -19,6 +35,11 @@ class PostgresClient {
 
         try {
             return await client.query(sql, values);
+        } catch(error) {
+            const e = error as PostgresError;
+            console.log(e.code);
+
+            throw(error)
         } finally {
             client.release(); 
         }

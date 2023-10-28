@@ -1,5 +1,6 @@
 import postgresClient from '@/clients/postgres'; 
-import { Language, Topic } from '@/models/user'; // Replace with the actual import path to your interfaces
+import { parseError } from '@/services/service-errors'; 
+import { Language, Topic } from '@/models/user';
 
 class ResourceService {
   async getAllLanguages(): Promise<Language[]> {
@@ -8,7 +9,11 @@ class ResourceService {
       const result = await postgresClient.query<Language>(sql);
       return result.rows;
     } catch (error) {
-      throw error;
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
+      throw error
     }
   }
 
@@ -18,7 +23,11 @@ class ResourceService {
       const result = await postgresClient.query<Topic>(sql);
       return result.rows;
     } catch (error) {
-      throw error;
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
+      throw error
     }
   }
 }

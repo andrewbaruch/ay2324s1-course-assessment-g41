@@ -1,6 +1,10 @@
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import authService from '@/services/auth-service';
 import userService from '@/services/user-service';
+import { StatusCodes } from 'http-status-codes';
+import { handleServiceError } from '@/controllers/error-handler';
+import { JsonWebTokenError } from 'jsonwebtoken';
+
 
 const testEmail = "example@email.com"
 
@@ -41,8 +45,9 @@ export async function googleAuth(req: Request, res: Response): Promise<void> {
     res.cookie(accessTokenKey, accessToken, cookieConfig)
     res.cookie(refreshTokenKey, refreshToken, cookieConfig)
 
-    res.status(200).json(user)
+    res.status(StatusCodes.OK).json(user)
   }
+
   const authUrl = authService.getGoogleAuthURL();
   res.redirect(authUrl);
 }
@@ -67,8 +72,10 @@ export async function googleRedirect(req: Request, res: Response): Promise<void>
 
     res.redirect(loginRedirectURL)
   } catch (error) {
-    console.error('Google OAuth callback error:', error);
-    res.status(500).json({ message: 'Google Auth failed' });
+    console.error('googleRedirect: ', error);
+    
+    handleServiceError(error, res)
+    res.send();
   }
 }
 
@@ -81,8 +88,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
       
       const tokenStore = await authService.readRefreshToken(decodedToken.id)
       if (!tokenStore || tokenStore.revoked) {
-        console.log("Invalid refresh token")
-        res.status(500).send()
+        res.status(StatusCodes.UNAUTHORIZED).send()
       }
 
       // sync delete, if failed dont continue
@@ -93,13 +99,18 @@ export async function refresh(req: Request, res: Response): Promise<void> {
       res.cookie(accessTokenKey, accessToken, cookieConfig)
       res.cookie(refreshTokenKey, refreshToken, cookieConfig)
 
-      res.status(200).json({ access_token: accessToken, refresh_token: refreshToken })
-    } catch(err) {
-      console.log("Token verification failed", err)
-      res.status(401).send()
+      res.status(StatusCodes.OK).send()
+    } catch(error) {
+      if (error instanceof JsonWebTokenError) {
+        res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid Token/Expired token"})
+      } else {
+        handleServiceError(error, res)
+      }
+
+      res.send();
     }
   } else {
-    res.status(401).send()
+    res.status(StatusCodes.UNAUTHORIZED).send()
   }
 }
 
@@ -110,12 +121,12 @@ export async function checkAuth(req: Request, res: Response): Promise<void> {
     try {
       authService.verifyAccessToken(token).userId;
 
-      res.status(200).send()
+      res.status(StatusCodes.OK).send()
     } catch(err) {
-      res.status(401).send()
+      res.status(StatusCodes.UNAUTHORIZED).send()
     }
   } else {
-      res.status(401).send()
+      res.status(StatusCodes.UNAUTHORIZED).send()
   }
 }
 
@@ -130,11 +141,17 @@ export async function logout(req: Request, res: Response): Promise<void> {
       res.clearCookie(accessTokenKey, cookieConfig);
       res.clearCookie(refreshTokenKey, cookieConfig);
           
-      res.status(200).send()
+      res.status(StatusCodes.OK).send()
     } catch(err) {
-      res.status(401).send()
+      res.status(StatusCodes.UNAUTHORIZED).send()
     }
   } else {
-      res.status(400).send()
+      res.status(StatusCodes.OK).send()
+  }
+}
+
+export class OAuthError extends Error {
+  constructor(message: string) {
+      super(message);
   }
 }

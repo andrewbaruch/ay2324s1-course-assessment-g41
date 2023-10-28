@@ -1,24 +1,28 @@
 import { Request, Response } from 'express';
 import { User } from '@/models/user'
 import resourceService from '@/services/resource-service'; 
+import { StatusCodes } from 'http-status-codes';
+import { handleServiceError } from '@/controllers/error-handler';
+
 
 export async function getTopics(req: Request, res: Response) {
     try {
         const topics = await resourceService.getAllTopics()
-        res.status(200).json(topics);
+        res.status(StatusCodes.OK).json(topics);
     } catch(error) {
-        res.status(500).send();
-
+        handleServiceError(error, res)
+        res.send();
     }
 }
 
 export async function getLanguages(req: Request, res: Response) {
     try {
         const languages = await resourceService.getAllLanguages()
-        res.status(200).json(languages);
+        res.status(StatusCodes.OK).json(languages);
 
     } catch(error) {
-        res.status(500).send();
+        handleServiceError(error, res)
+        res.send();
 
     }
 }

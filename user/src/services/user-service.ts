@@ -1,6 +1,8 @@
 import postgresClient from '@/clients/postgres'; 
-import { User, Topic, Difficulty } from '@/models/user'
+import { User, Role, Topic, Difficulty } from '@/models/user'
 import { UserDao } from '@/db_models/user-dao'
+import * as error from '@/services/service-errors';
+import { parseError } from '@/services/service-errors'; 
 
 class UserService {
   async create(email: string, image: string): Promise<User> {
@@ -12,14 +14,14 @@ class UserService {
           email,
           image,
         ]);
-
-        if (!result.rows) {
-          throw Error;
-        }
         
         return result.rows[0]
     } catch (error) {
-        throw error;
+        if (error instanceof Error) {
+        throw parseError(error);
+      }
+
+      throw error;
     }
   }
 
@@ -63,6 +65,10 @@ class UserService {
 
       return user;
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -70,21 +76,25 @@ class UserService {
   async readByEmail(email: string): Promise<User | null> {
     try {
       const query = `
-        SELECT users.*, languages.name AS preferred_language_name
+        SELECT *
         FROM users
-        LEFT JOIN languages ON users.preferred_language = languages.id
         WHERE users.email = $1
       `;
 
-      const userResult = await postgresClient.query<User & { preferred_language_name: string }>(query, [email]);
+      const userResult = await postgresClient.query<UserDao>(query, [email]);
 
       if (!userResult.rows || userResult.rows.length === 0) {
         return null;
       }
 
+      const dbUser = userResult.rows[0];
       const user: User = {
-        ...userResult.rows[0],
-        preferred_language: userResult.rows[0].preferred_language_name,
+        id: dbUser.id,
+        email: dbUser.email,
+        image: dbUser.image,
+        name: dbUser.name,
+        preferred_language: dbUser.preferred_language,
+        preferred_difficulty: dbUser.preferred_difficulty,
         preferred_topics: [],
       };
 
@@ -103,6 +113,10 @@ class UserService {
 
       return user;
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -120,6 +134,10 @@ class UserService {
   
       return users;
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -151,6 +169,12 @@ class UserService {
         userId,
       ]);
     } catch (error) {
+      console.log(error)
+
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -160,6 +184,10 @@ class UserService {
       const query = 'DELETE FROM users WHERE id = $1';
       await postgresClient.query(query, [userId]);
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -176,15 +204,23 @@ class UserService {
 
       return result.rows;
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
 
   async addTopics(userId: string, topicSlugs: string[]): Promise<void> {
     try {
-      const topicIds = await this.getTopicIdsBySlugs(topicSlugs);
+      if (topicSlugs.length > 0) {
+        const topicIds = await this.getTopicIdsBySlugs(topicSlugs);
 
-      if (topicIds.length > 0) {
+        if (topicIds.length != topicSlugs.length) {
+          throw new error.BadRequestError("Invalid topic slugs")
+        }
+
         const query = `
           INSERT INTO user_topic (user_id, topic_id)
           VALUES 
@@ -193,6 +229,10 @@ class UserService {
         await postgresClient.query(query, [userId, ...topicIds]);
       }
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -222,16 +262,24 @@ class UserService {
         if (begunTransaction) {
           await postgresClient.query('ROLLBACK');
         }
-        throw error;
+        if (error instanceof Error) {
+        throw parseError(error);
+      }
+
+      throw error;
     }
 }
 
 
   async deleteTopics(userId: string, topicSlugs: string[]): Promise<void> {
     try {
-      const topicIds = await this.getTopicIdsBySlugs(topicSlugs);
+      if (topicSlugs.length > 0) {
+        const topicIds = await this.getTopicIdsBySlugs(topicSlugs);
 
-      if (topicIds.length > 0) {
+        if (topicIds.length != topicSlugs.length) {
+          throw new error.BadRequestError("Invalid topic slugs")
+        }
+
         const query = `
           DELETE FROM user_topic
           WHERE user_id = $1 AND topic_id IN (${topicIds.map((_, i) => `$${i + 2}`).join(', ')})
@@ -239,6 +287,10 @@ class UserService {
         await postgresClient.query(query, [userId, ...topicIds]);
       }
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -255,8 +307,66 @@ class UserService {
 
       return result.rows.map((row) => row.id);
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
+  }
+
+  async fetchTopicsForUser(userId: string): Promise<Topic[]> {
+    const topicsQuery = `
+        SELECT topics.*
+        FROM user_topic
+        JOIN topics ON user_topic.topic_id = topics.id
+        WHERE user_topic.user_id = $1
+    `;
+
+    const topicsResult = await postgresClient.query<Topic>(topicsQuery, [userId]);
+    return topicsResult.rows || [];
+  }
+
+  async fetchRolesForUser(userId: string): Promise<Role[]> {
+      const rolesQuery = `
+          SELECT roles.*
+          FROM user_role
+          JOIN roles ON user_role.role_id = roles.id
+          WHERE user_role.user_id = $1
+      `;
+
+      const rolesResult = await postgresClient.query<Role>(rolesQuery, [userId]);
+      return rolesResult.rows || [];
+  }
+
+  createUserFromDao(dbUser: UserDao): User {
+    return {
+        id: dbUser.id,
+        email: dbUser.email,
+        image: dbUser.image,
+        name: dbUser.name,
+        preferred_language: dbUser.preferred_language,
+        preferred_difficulty: dbUser.preferred_difficulty,
+        preferred_topics: [],
+        roles: [],  
+    };
+  }
+
+  async fetchUserDetails(dbUser: UserDao): Promise<User> {
+      const user: User = {
+        id: dbUser.id,
+        email: dbUser.email,
+        image: dbUser.image,
+        name: dbUser.name,
+        preferred_language: dbUser.preferred_language,
+        preferred_difficulty: dbUser.preferred_difficulty,
+        preferred_topics: [],
+        roles: [],  
+      }
+
+      user.preferred_topics = await this.fetchTopicsForUser(user.id);
+      user.roles = await this.fetchRolesForUser(user.id);
+      return user;
   }
 }
 
