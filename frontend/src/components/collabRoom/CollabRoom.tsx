@@ -9,13 +9,7 @@ import BottomBar from "./BottomBar";
 import { Question } from "@/@types/models/question";
 import { User } from "@/@types/user";
 import { Language } from "@/@types/language";
-
-interface Attempt {
-  attemptId: number; // karwi: string?
-  codeText: string;
-  question: Question;
-  language: Language;
-}
+import { Attempt } from "@/@types/attempt";
 
 interface CollabRoomProps {
   questionTotalList: Question[];
