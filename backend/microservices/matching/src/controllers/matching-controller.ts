@@ -6,12 +6,12 @@ import { Status } from "@/models/status";
 import ComplexityMatchingPushService from "@/services/complexity-matching-push-service";
 
 export const pushMatchRequestToQueue = async (req: Request, res: Response) => {
-  // TODO: @didy refator to use jwt token and auth service
-  const userId = res.locals.userId
+  const userId: string = res.locals.userId
   const { questionComplexity }: {questionComplexity: string} = req.body;
   const complexityPublisherService = new ComplexityMatchingPushService();
   try {
     complexityPublisherService.pushMatchingRequest(userId, questionComplexity)
+    console.log("pushed into pubsub queue")
   } catch (err) {
     // TODO: add better error validation
     res.status(400).send()
@@ -24,32 +24,18 @@ export async function getMatchingStatus(
   req: Request,
   res: Response
 ): Promise<void> {
-  // TODO: pull data from db
-  const userId = req.params.id;
-  // console.log(
-  //   "in be get matching, matching keys=",
-  //   matchingRequestCache.keys()
-  // );
-  // console.log(
-  //   "in be get matching, pair keys=",
-  //   matchingPairCache.keys()
-  // );
+  const userId: string = res.locals.userId
+  console.log(`user ${userId} attempting to get matching status`)
+  const matchingPair: {roomId: string, user1: string, user2: string} | undefined = complexityMatchingPairCache.get(userId);
+  const status = complexityMatchingRequestCache.get(userId);
 
-  // console.log("in be get matching, userid=", userId);
-
-  const matchingPair: any = complexityMatchingPairCache.get(userId);
-  // console.log("in be get matching, matchingPair=", matchingPair);
-
-  var status = complexityMatchingRequestCache.get(userId);
-  // console.log("in be get matching, status=", status);
-
-  if (matchingPair !== undefined) {
+  if (matchingPair) {
     const roomId: string | undefined = matchingPair.roomId;
-    res.status(200).json({ roomId, status: Status.paired });
+    res.status(200).json({ roomId, status: Status.Paired });
   } else if (status !== undefined) {
-    res.status(200).json({ status: Status.processing });
+    res.status(200).json({ status: Status.Processing });
   } else if (status === undefined) {
-    res.status(200).json({ status: Status.expired });
+    res.status(200).json({ status: Status.Expired });
   }
 }
 export async function getMatchingStatusWithoutParams(

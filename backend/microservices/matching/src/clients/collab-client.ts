@@ -10,14 +10,15 @@ const collabClient = axios.create({
 });
 
 const createRoom = async (userId1: string, userId2: string) => {
-  await collabClient.put(`/room/${1}`)
-  return await collabClient.post("/room", {
+  const response = await collabClient.post("/room", {
     userId1, userId2
   })
+  console.log(`Received ${JSON.stringify(response.data)} from collab-service`)
+  return response.data
 }
 
 const closeRoom = async (roomId: number) => {
-  await collabClient.put(`/${roomId}`)
+  await collabClient.put(`/room/${roomId}/close`)
 }
 
 export {
