@@ -20,6 +20,11 @@ interface CollabRoomProps {
   languageTotalList: string[];
   listOfAttempts: Attempt[];
   listOfActiveUsers: User[];
+  onDeleteAttempt: (attemptId: number) => void;
+  onCloseRoom: () => void;
+  onNewAttempt: (questionId: string) => void;
+  onCodeChange: (newCodeText: string, attemptId: number) => void;
+  onQuestionChange: (newQuestionId: string) => void;
 }
 
 interface CollabContextValue {
@@ -37,6 +42,11 @@ interface CollabContextValue {
       listOfActiveUsers: User[];
     }>
   >;
+  onDeleteAttempt: (attemptId: number) => void;
+  onCloseRoom: () => void;
+  onNewAttempt: (questionId: string) => void; // karwi: initial selected qn
+  onCodeChange: (newCodeText: string, attemptId: number) => void;
+  onQuestionChange: (newQuestionId: string, attemptId: number) => void;
 }
 
 interface CurrentAttemptContextValue {
@@ -52,6 +62,11 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   languageTotalList,
   listOfAttempts,
   listOfActiveUsers,
+  onDeleteAttempt,
+  onCloseRoom,
+  onNewAttempt,
+  onCodeChange,
+  onQuestionChange,
 }) => {
   const [state, setState] = useState({
     questionTotalList,
@@ -62,7 +77,17 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
 
   return (
-    <CollabContext.Provider value={{ state, setState }}>
+    <CollabContext.Provider
+      value={{
+        state,
+        setState,
+        onDeleteAttempt,
+        onCloseRoom,
+        onNewAttempt,
+        onCodeChange,
+        onQuestionChange,
+      }}
+    >
       <CurrentAttemptContext.Provider value={{ currentAttempt, setCurrentAttempt }}>
         <Box>
           <TopBar />
