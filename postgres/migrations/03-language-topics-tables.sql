@@ -16,8 +16,8 @@ CREATE TABLE languages (
 
 CREATE TABLE user_topic (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES users (id),
-    topic_id UUID NOT NULL REFERENCES topics (id),
+    user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    topic_id UUID NOT NULL REFERENCES topics (id) ON DELETE CASCADE,
     CONSTRAINT user_topic_unique UNIQUE (user_id, topic_id)
 );
 
