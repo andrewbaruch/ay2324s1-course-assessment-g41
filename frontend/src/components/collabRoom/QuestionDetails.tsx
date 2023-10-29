@@ -1,6 +1,6 @@
 // components/QuestionDetails.tsx
 import React from "react";
-import { Tag, Text, Box } from "@chakra-ui/react";
+import { Tag, Text, Box, VStack, Badge } from "@chakra-ui/react";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 import { OptionBase, Select, SingleValue } from "chakra-react-select";
 
@@ -8,6 +8,19 @@ interface OptionType extends OptionBase {
   value: string;
   label: string;
 }
+
+const getBadgeColorScheme = (complexity: string) => {
+  switch (complexity.toLowerCase()) {
+    case "easy":
+      return "green";
+    case "medium":
+      return "orange";
+    case "hard":
+      return "red";
+    default:
+      return "gray";
+  }
+};
 
 const QuestionDetails = () => {
   const { state, onQuestionChange, currentAttempt } = useCollabContext();
@@ -33,7 +46,7 @@ const QuestionDetails = () => {
   }));
 
   return currentAttempt ? (
-    <Box>
+    <Box rounded="md">
       <Select
         options={options}
         onChange={handleQuestionChange}
@@ -41,15 +54,25 @@ const QuestionDetails = () => {
         placeholder="Select a question"
       />
       {currentQuestion && (
-        <>
-          <Text>Difficulty: {currentQuestion.complexity}</Text>
-          <div>
+        <VStack align="start" spacing={2} mt={4}>
+          <Box display="flex" alignItems="center">
+            <Badge
+              colorScheme={getBadgeColorScheme(currentQuestion.complexity)}
+              fontSize="sm"
+              p={1}
+            >
+              {currentQuestion.complexity}
+            </Badge>
+          </Box>
+          <Box display="flex" flexWrap="wrap" gridGap={2}>
             {currentQuestion.categories.map((category, index) => (
-              <Tag key={index}>{category}</Tag>
+              <Tag key={index} colorScheme="blue">
+                {category}
+              </Tag>
             ))}
-          </div>
+          </Box>
           <Text>{currentQuestion.description}</Text>
-        </>
+        </VStack>
       )}
     </Box>
   ) : null;

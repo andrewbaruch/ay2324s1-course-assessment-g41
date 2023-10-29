@@ -1,5 +1,5 @@
 // Import necessary libraries
-import { Box, Button, SimpleGrid, Text, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Button, SimpleGrid, Text, useColorModeValue, useToast } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import Card from "src/components/card/Card";
 import { OptionBase } from "chakra-react-select";
