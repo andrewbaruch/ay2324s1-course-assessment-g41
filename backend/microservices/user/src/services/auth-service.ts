@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import postgresClient from "@/clients/postgres";
+import { parseError } from '@/services/service-errors'; 
 import { RefreshToken } from "@/models/auth";
 import { google } from "googleapis";
 
 interface AccessPayload extends jwt.JwtPayload {
   userId: string;
+  roles: string[]
 }
 
 interface RefreshPayload extends jwt.JwtPayload {
@@ -32,8 +34,8 @@ export class AuthService {
     this.jwtSecret = secret;
   }
 
-  generateAccessToken(userId: string): string {
-    return jwt.sign({ userId }, this.jwtSecret, { expiresIn: "1h" });
+  generateAccessToken(userId: string, roles: string[]): string {
+    return jwt.sign({ userId, roles }, this.jwtSecret, { expiresIn: "1h" });
   }
 
   async generateRefreshToken(userId: string): Promise<string> {
@@ -88,8 +90,8 @@ export class AuthService {
       console.log(data);
 
       return data;
-    } catch (err) {
-      console.log("Google callback failed");
+    } catch (error) {
+      throw error
     }
   }
 
@@ -99,10 +101,10 @@ export class AuthService {
   ): Promise<RefreshToken> {
     try {
       const query = `
-                INSERT INTO refresh_tokens (user_id, revoked, expiry)
-                VALUES ($1, FALSE, to_timestamp($2))
-                RETURNING *;
-            `;
+        INSERT INTO refresh_tokens (user_id, revoked, expiry)
+        VALUES ($1, FALSE, to_timestamp($2))
+        RETURNING *;
+      `;
 
       const result = await postgresClient.query<RefreshToken>(query, [
         user_id,
@@ -111,6 +113,10 @@ export class AuthService {
 
       return result.rows[0];
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -122,6 +128,10 @@ export class AuthService {
 
       return result.rows[0] || null;
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
   }
@@ -131,8 +141,45 @@ export class AuthService {
       const query = "DELETE FROM refresh_tokens WHERE id = $1";
       await postgresClient.query(query, [id]);
     } catch (error) {
+      if (error instanceof Error) {
+        throw parseError(error);
+      }
+
       throw error;
     }
+  }
+
+  async addRoleToUser(userId: string, roleId: string): Promise<void> {
+    try {
+        const query = `
+            INSERT INTO user_roles (user_id, role_id)
+            VALUES ($1, $2)
+            ON CONFLICT (user_id, role_id) DO NOTHING;
+        `;
+
+        await postgresClient.query(query, [userId, roleId]);
+    } catch (error) {
+        if (error instanceof Error) {
+            throw parseError(error);
+        }
+        throw error;
+    }
+  }
+
+  async deleteRoleFromUser(userId: string, roleId: string): Promise<void> {
+      try {
+          const query = `
+              DELETE FROM user_roles 
+              WHERE user_id = $1 AND role_id = $2;
+          `;
+
+          await postgresClient.query(query, [userId, roleId]);
+      } catch (error) {
+          if (error instanceof Error) {
+              throw parseError(error);
+          }
+          throw error;
+      }
   }
 }
 

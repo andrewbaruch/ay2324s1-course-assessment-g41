@@ -1,5 +1,11 @@
 import { MongoClient, Db, Document, Collection, ObjectId, Filter, UpdateFilter, WithId, DeleteResult } from 'mongodb';
 
+export class ConnectionError extends Error {
+  constructor(message: string) {
+      super(message);
+  }
+}
+
 export class MongoDBClient {
   private client: MongoClient;
   private db?: Db;
@@ -26,7 +32,7 @@ export class MongoDBClient {
 
   getCollection(collectionName: string): Collection {
     if (!this.db) {
-      throw new Error('Database connection not established');
+      throw new ConnectionError('Database connection not established');
     }
 
     if (!this.collections[collectionName]) {

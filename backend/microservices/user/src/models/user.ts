@@ -6,6 +6,7 @@ export interface User {
     preferred_language?: string;
     preferred_difficulty?: Difficulty;
     preferred_topics: Topic[];
+    roles: string[]
 }
 
 export enum Difficulty {
@@ -26,6 +27,12 @@ export interface Topic {
     name: string;
     slug: string;
     description: string;
+}
+
+export interface Role {
+    id: string;
+    name: string;
+    can_write_question: boolean;
 }
 
 export default User;
