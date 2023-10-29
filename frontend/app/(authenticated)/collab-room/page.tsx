@@ -14,9 +14,25 @@ const mockQuestions: Question[] = [
     title: "FizzBuzz",
     id: "1",
     description:
-      "Write a program that prints the numbers from 1 to 100. But for multiples of three print “Fizz” instead of the number and for the multiples of five print “Buzz”. For numbers which are multiples of both three and five print “FizzBuzz”.",
+      "Write a program that prints the numbers from 1 to 100. But for multiples of three print `Fizz` instead of the number and for the multiples of five print `Buzz`. For numbers which are multiples of both three and five print `FizzBuzz`.",
     categories: ["Array", "String"],
     complexity: QuestionComplexity.EASY,
+  },
+  {
+    title: "Reverse String",
+    id: "2",
+    description:
+      "Write a function that reverses a string. The input string is given as an array of characters `s`.",
+    categories: ["String"],
+    complexity: QuestionComplexity.EASY,
+  },
+  {
+    title: "Two Sum",
+    id: "3",
+    description:
+      "Given an array of integers `nums` and an integer `target`, return _indices_ of the two numbers such that they add up to `target`.",
+    categories: ["Array", "Hash Table"],
+    complexity: QuestionComplexity.MEDIUM,
   },
   // ... other questions
 ];
@@ -59,6 +75,13 @@ const mockLanguages: Language[] = [
     slug: "python",
     description: "Python is an interpreted, high-level and general-purpose programming language.",
   },
+  {
+    id: "3",
+    name: "Java",
+    slug: "java",
+    description:
+      "Java is a class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible.",
+  },
   // ... other languages
 ];
 
@@ -68,6 +91,12 @@ const mockAttempts: Attempt[] = [
     codeText: "// Your code here",
     question: mockQuestions[0],
     language: mockLanguages[0],
+  },
+  {
+    attemptId: 2,
+    codeText: "// Your code here",
+    question: mockQuestions[1],
+    language: mockLanguages[1],
   },
   // ... other attempts
 ];

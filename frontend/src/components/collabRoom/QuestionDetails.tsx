@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 import { OptionBase, Select, SingleValue } from "chakra-react-select";
+import ReactMarkdown from "react-markdown";
 
 interface OptionType extends OptionBase {
   value: string;
@@ -75,7 +76,7 @@ const QuestionDetails = () => {
               {currentQuestion.complexity}
             </Badge>
           </Box>
-          <Text>{currentQuestion.description}</Text>
+          <ReactMarkdown>{currentQuestion.description}</ReactMarkdown>
           <Accordion width="100%" allowToggle>
             <AccordionItem>
               <h2>
