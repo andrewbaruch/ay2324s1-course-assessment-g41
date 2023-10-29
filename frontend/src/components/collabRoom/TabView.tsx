@@ -1,18 +1,20 @@
 // components/TabView.tsx
 import React from "react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Box } from "@chakra-ui/react";
 import QuestionDescription from "./QuestionDescription";
 import Card from "src/components/card/Card";
 
 const TabView = () => {
   return (
-    <Card mb={{ base: "0px", "2xl": "20px" }}>
-      <Tabs>
+    <Card mb={{ base: "0px", "2xl": "20px" }} height="70vh">
+      <Tabs height="100%">
         <TabList>
           <Tab>Description</Tab>
         </TabList>
-        <TabPanels>
-          <TabPanel>
+        <TabPanels height="calc(100% - 40px)" pt={4}>
+          {/* Added padding-top */}
+          <TabPanel height="100%" p={0}>
+            {/* Retained no padding here */}
             <QuestionDescription />
           </TabPanel>
         </TabPanels>
