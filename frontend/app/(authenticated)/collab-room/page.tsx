@@ -4,10 +4,9 @@
 import React from "react";
 import { Question, QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
-import { Language } from "@/@types/language";
 import CollabRoom from "@/components/collabRoom/CollabRoom";
 import { Attempt } from "@/@types/attempt";
-import CodeEditor from "../room/page";
+import { CodeEditor } from "@/views/codeEditor";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -62,42 +61,18 @@ const mockUsers: User[] = [
   // ... other users
 ];
 
-const mockLanguages: Language[] = [
-  {
-    id: "1",
-    name: "JavaScript",
-    slug: "javascript",
-    description:
-      "JavaScript is a high-level, often just-in-time compiled, and multi-paradigm programming language.",
-  },
-  {
-    id: "2",
-    name: "Python",
-    slug: "python",
-    description: "Python is an interpreted, high-level and general-purpose programming language.",
-  },
-  {
-    id: "3",
-    name: "Java",
-    slug: "java",
-    description:
-      "Java is a class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible.",
-  },
-  // ... other languages
-];
-
 const mockAttempts: Attempt[] = [
   {
     attemptId: 1,
     codeText: "// Your code here",
     question: mockQuestions[0],
-    language: mockLanguages[0],
+    language: { label: "Plain Text", value: "plaintext" },
   },
   {
     attemptId: 2,
     codeText: "// Your code here",
     question: mockQuestions[1],
-    language: mockLanguages[1],
+    language: { label: "Plain Text", value: "plaintext" },
   },
   // ... other attempts
 ];
@@ -123,16 +98,11 @@ const handleQuestionChange = (newQuestionId: string, attemptId: number) => {
   console.log(`Question change for attempt id ${attemptId}: ${newQuestionId}`);
 };
 
-const handleLanguageChange = (newLanguageId: string, attemptId: number) => {
-  console.log(`Language change for attempt id ${attemptId}: Language ID ${newLanguageId}`);
-};
-
 // Usage
 const CollabRoomPage: React.FC = () => {
   return (
     <CollabRoom
       questionTotalList={mockQuestions}
-      languageTotalList={mockLanguages}
       listOfAttempts={mockAttempts}
       listOfActiveUsers={mockUsers}
       onDeleteAttempt={handleDeleteAttempt}
@@ -140,7 +110,6 @@ const CollabRoomPage: React.FC = () => {
       onNewAttempt={handleNewAttempt}
       onCodeChange={handleCodeChange}
       onQuestionChange={handleQuestionChange}
-      onLanguageChange={handleLanguageChange}
     >
       <CodeEditor />
     </CollabRoom>
