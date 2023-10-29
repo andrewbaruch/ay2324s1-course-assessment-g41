@@ -3,8 +3,9 @@ import authService from '@/services/auth-service';
 import userService from '@/services/user-service';
 import { StatusCodes } from 'http-status-codes';
 import { handleServiceError } from '@/controllers/error-handler';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
+const { JsonWebTokenError } = jwt;
 
 const testEmail = "example@email.com";
 

@@ -10,7 +10,7 @@ COPY microservices/matching ./
 # Install dependencies for the shared directory
 RUN cd ../../shared && npm install && cd ../microservices/matching
 # Install dependencies for the microservice
-RUN npm install
+RUN npm ci
 
 # Start your application
 CMD [ "npm", "run", "start"]

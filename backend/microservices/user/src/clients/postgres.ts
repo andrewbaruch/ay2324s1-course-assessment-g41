@@ -1,24 +1,24 @@
-import { Pool, QueryResult, QueryResultRow } from 'pg';
+import pg from 'pg';
 
 export interface PostgresError extends Error {
     code: string;
 }
 
 class PostgresClient {
-    private readonly pool: Pool;
+    private readonly pool: pg.Pool;
 
     constructor(connectionString: string) {
-        this.pool = new Pool({
+        this.pool = new pg.Pool({
             max: process.env.POSTGRES_CONN_COUNT ? parseInt(process.env.POSTGRES_CONN_COUNT) : undefined,
             connectionString: connectionString,
             idleTimeoutMillis: process.env.POSTGRES_TIMEOUT ? parseInt(process.env.POSTGRES_TIMEOUT) : undefined
         });
     }
 
-    public async query<T extends QueryResultRow>(
+    public async query<T extends pg.QueryResultRow>(
         sql: string,
         values?: any[]
-    ): Promise<QueryResult<T>> {
+    ): Promise<pg.QueryResult<T>> {
         const client = await this.pool.connect();
 
         try {
