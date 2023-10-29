@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import * as QuestionController from '@/controllers/question-controller';
 import * as AuthMiddleware from '@/middlewares/auth-middleware';
+import * as AuthorizationMiddleware from '@/middlewares/authorization-middleware';
+
 
 const router = Router();
 
@@ -9,9 +11,9 @@ router.use(AuthMiddleware.authJWT);
 
 router.get('/', QuestionController.getFilteredQuestions);
 
-router.post('/', QuestionController.createQuestion);
+router.post('/', AuthorizationMiddleware.authQuestion, QuestionController.createQuestion);
 router.get('/:id', QuestionController.getQuestionById);
-router.patch('/:id', QuestionController.updateQuestion);
-router.delete('/:id', QuestionController.deleteQuestion);
+router.patch('/:id', AuthorizationMiddleware.authQuestion, QuestionController.updateQuestion);
+router.delete('/:id', AuthorizationMiddleware.authQuestion, QuestionController.deleteQuestion);
 
 export default router;
