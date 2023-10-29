@@ -1,6 +1,17 @@
 // components/QuestionDetails.tsx
 import React from "react";
-import { Tag, Text, Box, VStack, Badge } from "@chakra-ui/react";
+import {
+  Tag,
+  Text,
+  Box,
+  VStack,
+  Badge,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from "@chakra-ui/react";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 import { OptionBase, Select, SingleValue } from "chakra-react-select";
 
@@ -64,14 +75,28 @@ const QuestionDetails = () => {
               {currentQuestion.complexity}
             </Badge>
           </Box>
-          <Box display="flex" flexWrap="wrap" gridGap={2}>
-            {currentQuestion.categories.map((category, index) => (
-              <Tag key={index} colorScheme="blue">
-                {category}
-              </Tag>
-            ))}
-          </Box>
           <Text>{currentQuestion.description}</Text>
+          <Accordion width="100%" allowToggle>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left">
+                    Related Topics
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <Box display="flex" flexWrap="wrap" gap={2}>
+                  {currentQuestion.categories.map((category, index) => (
+                    <Tag key={index} colorScheme="blue">
+                      {category}
+                    </Tag>
+                  ))}
+                </Box>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
         </VStack>
       )}
     </Box>
