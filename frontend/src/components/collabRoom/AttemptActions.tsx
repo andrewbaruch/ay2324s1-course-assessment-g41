@@ -41,7 +41,7 @@ const AttemptActions = () => {
 
   const handleNewAttempt = () => {
     if (currentAttempt) {
-      onNewAttempt(currentAttempt.question.id);
+      onNewAttempt();
     }
   };
 
