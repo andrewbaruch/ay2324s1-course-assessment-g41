@@ -1,15 +1,24 @@
 // components/CodeEditor.tsx
 import React from "react";
+import { Textarea } from "@chakra-ui/react";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
-// karwi: replace with didymus code editor
 const CodeEditor = () => {
-  const { currentAttempt } = useCollabContext();
+  const { currentAttempt, onCodeChange } = useCollabContext();
+
+  const handleCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (currentAttempt) {
+      onCodeChange(event.target.value, currentAttempt.attemptId);
+    }
+  };
 
   return (
-    <textarea
+    <Textarea
       value={currentAttempt ? currentAttempt.codeText : ""}
-      readOnly={true} // Set to readOnly as per the requirement
+      onChange={handleCodeChange}
+      width="100%"
+      height="100%"
+      resize="none"
     />
   );
 };
