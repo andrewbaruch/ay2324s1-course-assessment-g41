@@ -4,26 +4,17 @@ import { useEffect } from "react";
 import { Editor } from "@monaco-editor/react";
 
 import { Cursor } from "../../components/editor";
-import { useRoom } from "@/hooks/room/useRoom";
-import { useSharedDocument } from "@/hooks/room/useSharedDocument";
-import { useCodingLanguage } from "@/hooks/room/useCodingLanguage";
-import { Select } from "chakra-react-select";
-import { Box, Stack, useColorMode } from "@chakra-ui/react";
+import { Stack, useColorMode } from "@chakra-ui/react";
 import { codeEditorOptions, themifyCodeEditor } from "@/utils/codeEditor";
+import { useCollabContext } from "@/hooks/contexts/useCollabContext";
 
 // karwi: integrate this
 /**
  * Reference: https://liveblocks.io/examples/collaborative-code-editor/nextjs-yjs-monaco
  */
 export const CodeEditor = () => {
-  const { handleEditorMount, provider, document } = useRoom();
-  const { language, changeLanguage, supportedLanguages } = useCodingLanguage();
-  const { sharedValue: sharedLanguage }: { sharedValue: { label: string; value: string } } =
-    useSharedDocument({
-      sharedKey: "language",
-      valueToShare: language,
-      document,
-    });
+  const { handleEditorMount, provider, document, currentAttempt } = useCollabContext();
+  const language = currentAttempt?.language;
   const { colorMode } = useColorMode();
 
   useEffect(() => {
@@ -32,18 +23,11 @@ export const CodeEditor = () => {
 
   return (
     <Stack>
-      <Box w="100%" maxW={200}>
-        <Select
-          value={sharedLanguage}
-          options={supportedLanguages}
-          onChange={(newValue) => changeLanguage(newValue as { label: string; value: string })}
-        />
-      </Box>
       {provider ? <Cursor yProvider={provider} /> : null}
       <Editor
         height="60vh"
         onMount={handleEditorMount}
-        language={sharedLanguage.value}
+        language={language ? language.value : "plaintext"}
         options={codeEditorOptions}
         theme={themifyCodeEditor(colorMode)}
       />

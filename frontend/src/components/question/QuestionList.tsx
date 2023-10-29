@@ -60,12 +60,7 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
             </Tooltip>
           </HStack>
 
-          <Stack
-            borderWidth={1}
-            borderRadius={4}
-            spacing={0}
-            background="white"
-          >
+          <Stack borderWidth={1} borderRadius={4} spacing={0} background="white">
             {questions.map((q, index) =>
               index !== questions.length - 1 ? (
                 <Box
@@ -87,7 +82,7 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
                 >
                   <QuestionCard {...q} />
                 </Box>
-              )
+              ),
             )}
           </Stack>
         </>
@@ -96,9 +91,8 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
           <Stack>
             <AlertTitle>Looks like you have not saved a question!</AlertTitle>
             <AlertDescription>
-              This question repository helps you save questions you have
-              encountered from past interviews! You can also design and save
-              your own question!
+              This question repository helps you save questions you have encountered from past
+              interviews! You can also design and save your own question!
             </AlertDescription>
             <HStack>
               <Button
@@ -125,13 +119,7 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
   );
 };
 
-const QuestionCard = ({
-  title,
-  complexity,
-  id,
-  description,
-  categories,
-}: Question) => {
+const QuestionCard = ({ title, complexity, id, description, categories }: Question) => {
   return (
     <Stack spacing={4}>
       <Text fontWeight={600}>{title}</Text>
@@ -145,14 +133,7 @@ const QuestionCard = ({
 
         <HStack spacing={1}>
           {categories.map((cat) => (
-            <Badge
-              variant="outline"
-              textTransform="none"
-              px={2}
-              py={1}
-              w="fit-content"
-              key={cat}
-            >
+            <Badge variant="outline" textTransform="none" px={2} py={1} w="fit-content" key={cat}>
               {cat}
             </Badge>
           ))}

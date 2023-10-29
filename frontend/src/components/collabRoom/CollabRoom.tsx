@@ -1,5 +1,13 @@
 // pages/CollabRoom.tsx
-import React, { useState, createContext, FunctionComponent, useRef, ReactNode } from "react";
+import React, {
+  useState,
+  createContext,
+  FunctionComponent,
+  useRef,
+  ReactNode,
+  useEffect,
+} from "react";
+import * as Y from "yjs";
 import { Box } from "@chakra-ui/react";
 import Splitter, { GutterTheme } from "@devbookhq/splitter";
 import TopBar from "./TopBar";
@@ -10,11 +18,14 @@ import { Language } from "@/@types/language";
 import { Attempt } from "@/@types/attempt";
 import TabView from "./TabView";
 import styles from "./Splitter.module.css";
+import { useCodingLanguage } from "@/hooks/room/useCodingLanguage";
+import { useRoom } from "@/hooks/room/useRoom";
+import { useSharedDocument } from "@/hooks/room/useSharedDocument";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 // karwi: better name?
 interface CollabRoomPropsContextValue {
   questionTotalList: Question[];
-  languageTotalList: Language[];
   listOfAttempts: Attempt[];
   listOfActiveUsers: User[];
   onDeleteAttempt: (attemptId: number) => void;
@@ -22,7 +33,6 @@ interface CollabRoomPropsContextValue {
   onNewAttempt: () => void;
   onCodeChange: (newCodeText: string, attemptId: number) => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
-  onLanguageChange: (newLanguageId: string, attemptId: number) => void;
 }
 
 type CollabRoomProps = CollabRoomPropsContextValue & {
@@ -32,6 +42,11 @@ type CollabRoomProps = CollabRoomPropsContextValue & {
 interface CurrentAttemptContextValue {
   currentAttempt: Attempt | null;
   setCurrentAttempt: React.Dispatch<React.SetStateAction<Attempt | null>>;
+  languageTotalList: Language[];
+  onLanguageChange: (newLanguageId: Language, attemptId: number) => void;
+  handleEditorMount: (editor: any) => void;
+  provider: HocuspocusProvider | null;
+  document: Y.Doc | null;
 }
 
 type CollabContextValue = CollabRoomPropsContextValue & CurrentAttemptContextValue;
@@ -40,7 +55,6 @@ export const CollabContext = createContext<CollabContextValue | null>(null);
 
 const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   questionTotalList,
-  languageTotalList,
   listOfAttempts,
   listOfActiveUsers,
   onDeleteAttempt,
@@ -48,11 +62,28 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onNewAttempt,
   onCodeChange,
   onQuestionChange,
-  onLanguageChange,
   children,
 }) => {
-  const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
   const splitterSizesRef = useRef<number[]>([50, 50]); // assuming equal initial sizes for simplicity
+  const {
+    supportedLanguages: languageTotalList,
+    changeLanguage: onLanguageChange,
+    language,
+  } = useCodingLanguage();
+  const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
+  const { handleEditorMount, provider, document } = useRoom();
+  const { sharedValue: sharedLanguage }: { sharedValue: { label: string; value: string } } =
+    useSharedDocument({
+      sharedKey: "language",
+      valueToShare: language,
+      document,
+    });
+
+  useEffect(() => {
+    if (!currentAttempt) return;
+
+    setCurrentAttempt({ ...currentAttempt, language: sharedLanguage });
+  }, [sharedLanguage]);
 
   const handleResizeFinished = (pairIdx: number, newSizes: number[]) => {
     splitterSizesRef.current = newSizes;
@@ -74,6 +105,9 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
         // others
         currentAttempt,
         setCurrentAttempt,
+        handleEditorMount,
+        provider,
+        document,
       }}
     >
       <Box>

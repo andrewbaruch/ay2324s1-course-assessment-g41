@@ -123,7 +123,7 @@ export const MatchingForm = () => {
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
                 getMatchingStatus(data.userId)
                   .then((response) => {
-                    console.log(response)
+                    console.log(response);
                     const responseStatus = response.status;
                     console.log("in frontend, status code", response);
                     if (intervalId && responseStatus == Status.paired) {
@@ -174,23 +174,23 @@ export const MatchingForm = () => {
                 <Spinner />
               </AlertDialogBody>
             ) : (
-                <>
-                  <AlertDialogBody>
-                    There seems to be no other peers :(
+              <>
+                <AlertDialogBody>
+                  There seems to be no other peers :(
                   <Spacer />
                   Do try again in a few minutes!
                 </AlertDialogBody>
 
-                  <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={onClose}>
-                      Cancel
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancel
                   </Button>
-                    {/* <Button onClick={onClose} ml={3}>
+                  {/* <Button onClick={onClose} ml={3}>
                     Try again
                   </Button> */}
-                  </AlertDialogFooter>
-                </>
-              )}
+                </AlertDialogFooter>
+              </>
+            )}
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>

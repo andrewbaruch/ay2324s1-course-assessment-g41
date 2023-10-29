@@ -1,8 +1,6 @@
 export interface Language {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
+  label: string;
+  value: string;
 }
 
 export type LanguageRequest = Partial<Language>;

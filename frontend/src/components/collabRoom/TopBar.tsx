@@ -1,6 +1,6 @@
 // components/TopBar.tsx
 import React from "react";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 import { OptionBase, Select, SingleValue } from "chakra-react-select";
 
@@ -16,29 +16,25 @@ const TopBar = () => {
     if (!selectedOption) {
       return;
     }
-    const newLanguageSlug = selectedOption.value;
-    if (currentAttempt) {
-      onLanguageChange(newLanguageSlug, currentAttempt.attemptId);
-    }
+    // TODO: refactor to include attempt id
+    // if (currentAttempt) {
+    // onLanguageChange(selectedOption, currentAttempt.attemptId);
+    onLanguageChange(selectedOption, 0);
+    // }
   };
-
   const currentLanguage = currentAttempt?.language;
-  const options = languageTotalList.map((language) => ({
-    value: language.slug,
-    label: language.name,
-  }));
+  const options = languageTotalList;
 
   return (
     <Flex align="center" justify="flex-start" pb={4}>
-      <Select
-        options={options}
-        onChange={handleLanguageChange}
-        value={
-          currentLanguage ? { value: currentLanguage.slug, label: currentLanguage.name } : null
-        }
-        placeholder="Select language"
-        maxWidth="200px"
-      />
+      <Box w="100%" maxW={200}>
+        <Select
+          options={options}
+          onChange={handleLanguageChange}
+          value={currentLanguage}
+          placeholder="Select language"
+        />
+      </Box>
       {/* Other components or elements can go here, and they will be positioned to the right of the Select component */}
     </Flex>
   );
