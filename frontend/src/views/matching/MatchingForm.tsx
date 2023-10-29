@@ -4,18 +4,9 @@ import {
   FormLabel,
   Input,
   Select,
-  Textarea,
   Stack,
   Text,
   Button,
-  Tab,
-  Tabs,
-  TabList,
-  TabPanel,
-  TabPanels,
-  CheckboxGroup,
-  Checkbox,
-  SimpleGrid,
   FormErrorMessage,
   useToast,
   Spinner,
@@ -26,11 +17,9 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
   Spacer,
 } from "@chakra-ui/react";
 
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import React from "react";
 import { QuestionComplexity } from "@/@types/models/question";
@@ -50,7 +39,6 @@ export const MatchingForm = () => {
     trigger,
     formState: { errors },
   } = useForm({});
-  // const { goToCodingPage } = useHeaderTab();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
@@ -140,7 +128,7 @@ export const MatchingForm = () => {
                       return;
                     }
                   })
-                  .catch((e) => {
+                  .catch((e: Error) => {
                     throw new Error("Polling cancelled due to API error");
                   });
               }, 1000);
