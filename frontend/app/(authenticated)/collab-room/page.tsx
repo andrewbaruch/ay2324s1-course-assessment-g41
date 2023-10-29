@@ -7,6 +7,7 @@ import { User } from "@/@types/user";
 import { Language } from "@/@types/language";
 import CollabRoom from "@/components/collabRoom/CollabRoom";
 import { Attempt } from "@/@types/attempt";
+import CodeEditor from "../room/page";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -110,8 +111,8 @@ const handleCloseRoom = () => {
   console.log("Close room");
 };
 
-const handleNewAttempt = (questionId: string) => {
-  console.log(`New attempt for question id ${questionId}`);
+const handleNewAttempt = () => {
+  console.log("New attempt");
 };
 
 const handleCodeChange = (newCodeText: string, attemptId: number) => {
@@ -140,7 +141,9 @@ const CollabRoomPage: React.FC = () => {
       onCodeChange={handleCodeChange}
       onQuestionChange={handleQuestionChange}
       onLanguageChange={handleLanguageChange}
-    />
+    >
+      <CodeEditor />
+    </CollabRoom>
   );
 };
 

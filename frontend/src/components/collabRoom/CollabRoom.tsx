@@ -1,8 +1,7 @@
 // pages/CollabRoom.tsx
-import React, { useState, createContext, FunctionComponent, useRef } from "react";
+import React, { useState, createContext, FunctionComponent, useRef, ReactNode } from "react";
 import { Box } from "@chakra-ui/react";
 import Splitter, { GutterTheme } from "@devbookhq/splitter";
-import CodeEditor from "./CodeEditor";
 import TopBar from "./TopBar";
 import BottomBar from "./BottomBar";
 import { Question } from "@/@types/models/question";
@@ -12,7 +11,8 @@ import { Attempt } from "@/@types/attempt";
 import TabView from "./TabView";
 import styles from "./Splitter.module.css";
 
-interface CollabRoomProps {
+// karwi: better name?
+interface CollabRoomPropsContextValue {
   questionTotalList: Question[];
   languageTotalList: Language[];
   listOfAttempts: Attempt[];
@@ -25,12 +25,16 @@ interface CollabRoomProps {
   onLanguageChange: (newLanguageId: string, attemptId: number) => void;
 }
 
+type CollabRoomProps = CollabRoomPropsContextValue & {
+  children: ReactNode;
+};
+
 interface CurrentAttemptContextValue {
   currentAttempt: Attempt | null;
   setCurrentAttempt: React.Dispatch<React.SetStateAction<Attempt | null>>;
 }
 
-type CollabContextValue = CollabRoomProps & CurrentAttemptContextValue;
+type CollabContextValue = CollabRoomPropsContextValue & CurrentAttemptContextValue;
 
 export const CollabContext = createContext<CollabContextValue | null>(null);
 
@@ -45,6 +49,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onCodeChange,
   onQuestionChange,
   onLanguageChange,
+  children,
 }) => {
   const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
   const splitterSizesRef = useRef<number[]>([50, 50]); // assuming equal initial sizes for simplicity
@@ -79,7 +84,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
           initialSizes={splitterSizesRef.current}
           onResizeFinished={handleResizeFinished}
         >
-          <CodeEditor />
+          {children}
           <TabView />
         </Splitter>
         <BottomBar />
