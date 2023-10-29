@@ -129,8 +129,8 @@ export const MatchingForm = () => {
                     if (intervalId && responseStatus == Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
-                      router.push(`/collabroom`);
-                      // router.push(`/collabroom/${response.roomId}`);
+                      router.push(`/collab-room`);
+                      // router.push(`/collab-room/${response.roomId}`);
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {
@@ -174,23 +174,23 @@ export const MatchingForm = () => {
                 <Spinner />
               </AlertDialogBody>
             ) : (
-              <>
-                <AlertDialogBody>
-                  There seems to be no other peers :(
+                <>
+                  <AlertDialogBody>
+                    There seems to be no other peers :(
                   <Spacer />
                   Do try again in a few minutes!
                 </AlertDialogBody>
 
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onClose}>
-                    Cancel
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                      Cancel
                   </Button>
-                  {/* <Button onClick={onClose} ml={3}>
+                    {/* <Button onClick={onClose} ml={3}>
                     Try again
                   </Button> */}
-                </AlertDialogFooter>
-              </>
-            )}
+                  </AlertDialogFooter>
+                </>
+              )}
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
