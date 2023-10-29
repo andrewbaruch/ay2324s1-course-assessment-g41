@@ -11,6 +11,7 @@ import { Select } from "chakra-react-select";
 import { Box, Stack, useColorMode } from "@chakra-ui/react";
 import { codeEditorOptions, themifyCodeEditor } from "@/utils/codeEditor";
 
+// karwi: integrate this
 /**
  * Reference: https://liveblocks.io/examples/collaborative-code-editor/nextjs-yjs-monaco
  */

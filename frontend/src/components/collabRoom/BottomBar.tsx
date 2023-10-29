@@ -14,8 +14,7 @@ import {
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const BottomBar = () => {
-  const { state, onCloseRoom } = useCollabContext();
-  const { listOfActiveUsers } = state;
+  const { listOfActiveUsers, onCloseRoom } = useCollabContext();
 
   const [isCloseRoomModalOpen, setIsCloseRoomModalOpen] = useState(false);
   const onCloseCloseRoomModal = () => setIsCloseRoomModalOpen(false);

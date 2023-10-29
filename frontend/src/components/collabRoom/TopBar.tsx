@@ -10,8 +10,7 @@ interface OptionType extends OptionBase {
 }
 
 const TopBar = () => {
-  const { state, currentAttempt, onLanguageChange } = useCollabContext();
-  const { languageTotalList } = state;
+  const { languageTotalList, currentAttempt, onLanguageChange } = useCollabContext();
 
   const handleLanguageChange = (selectedOption: SingleValue<OptionType>) => {
     if (!selectedOption) {

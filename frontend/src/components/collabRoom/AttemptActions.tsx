@@ -17,7 +17,7 @@ import { DeleteIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const AttemptActions = () => {
-  const { state, onNewAttempt, onDeleteAttempt, setCurrentAttempt, currentAttempt } =
+  const { listOfAttempts, onNewAttempt, onDeleteAttempt, setCurrentAttempt, currentAttempt } =
     useCollabContext();
   const [currentPage, setCurrentPage] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -26,13 +26,13 @@ const AttemptActions = () => {
 
   const handlePageChange = useCallback(
     (pageIndex: number) => {
-      const selectedAttempt = state.listOfAttempts[pageIndex];
+      const selectedAttempt = listOfAttempts[pageIndex];
       if (selectedAttempt) {
         setCurrentAttempt(selectedAttempt);
         setCurrentPage(pageIndex);
       }
     },
-    [state.listOfAttempts, setCurrentAttempt],
+    [listOfAttempts, setCurrentAttempt],
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const AttemptActions = () => {
           <IconButton
             aria-label="Next Page"
             icon={<ChevronRightIcon />}
-            isDisabled={currentPage === state.listOfAttempts.length - 1}
+            isDisabled={currentPage === listOfAttempts.length - 1}
             onClick={() => handlePageChange(currentPage + 1)}
           />
         </Flex>

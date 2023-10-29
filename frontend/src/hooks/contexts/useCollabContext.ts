@@ -1,20 +1,14 @@
 import { useContext } from "react";
-import { CollabContext, CurrentAttemptContext } from "../../components/collabRoom/CollabRoom";
+import { CollabContext } from "../../components/collabRoom/CollabRoom";
 
 export const useCollabContext = () => {
   const collabContext = useContext(CollabContext);
-  const currentAttemptContext = useContext(CurrentAttemptContext);
 
   if (collabContext === null) {
     throw new Error("useCollabContext must be used within a CollabContext.Provider");
   }
 
-  if (currentAttemptContext === null) {
-    throw new Error("useCollabContext must be used within a CurrentAttemptContext.Provider");
-  }
-
   return {
     ...collabContext,
-    ...currentAttemptContext,
   };
 };

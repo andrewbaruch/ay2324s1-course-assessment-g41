@@ -25,29 +25,14 @@ interface CollabRoomProps {
   onLanguageChange: (newLanguageId: string, attemptId: number) => void;
 }
 
-interface CollabContextValue {
-  state: {
-    questionTotalList: Question[];
-    languageTotalList: Language[];
-    listOfAttempts: Attempt[];
-    listOfActiveUsers: User[];
-  };
-  onDeleteAttempt: (attemptId: number) => void;
-  onCloseRoom: () => void;
-  onNewAttempt: (questionId: string) => void;
-  onCodeChange: (newCodeText: string, attemptId: number) => void;
-  onQuestionChange: (newQuestionId: string, attemptId: number) => void;
-  onLanguageChange: (newLanguageId: string, attemptId: number) => void;
-}
-
-// karwi: consolidate contexts
 interface CurrentAttemptContextValue {
   currentAttempt: Attempt | null;
   setCurrentAttempt: React.Dispatch<React.SetStateAction<Attempt | null>>;
 }
 
+type CollabContextValue = CollabRoomProps & CurrentAttemptContextValue;
+
 export const CollabContext = createContext<CollabContextValue | null>(null);
-export const CurrentAttemptContext = createContext<CurrentAttemptContextValue | null>(null);
 
 const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   questionTotalList,
@@ -61,32 +46,34 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onQuestionChange,
   onLanguageChange,
 }) => {
-  // karwi: flatten states?
-  const state = { questionTotalList, languageTotalList, listOfAttempts, listOfActiveUsers };
   const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
 
   return (
     <CollabContext.Provider
       value={{
-        state,
+        questionTotalList,
+        languageTotalList,
+        listOfAttempts,
+        listOfActiveUsers,
         onDeleteAttempt,
         onCloseRoom,
         onNewAttempt,
         onCodeChange,
         onQuestionChange,
         onLanguageChange,
+        // others
+        currentAttempt,
+        setCurrentAttempt,
       }}
     >
-      <CurrentAttemptContext.Provider value={{ currentAttempt, setCurrentAttempt }}>
-        <Box>
-          <TopBar />
-          <Splitter gutterTheme={GutterTheme.Light} gutterClassName={styles.splitterContainer}>
-            <CodeEditor />
-            <TabView />
-          </Splitter>
-          <BottomBar />
-        </Box>
-      </CurrentAttemptContext.Provider>
+      <Box>
+        <TopBar />
+        <Splitter gutterTheme={GutterTheme.Light} gutterClassName={styles.splitterContainer}>
+          <CodeEditor />
+          <TabView />
+        </Splitter>
+        <BottomBar />
+      </Box>
     </CollabContext.Provider>
   );
 };

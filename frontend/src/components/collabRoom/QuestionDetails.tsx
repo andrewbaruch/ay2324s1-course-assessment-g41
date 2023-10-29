@@ -35,8 +35,7 @@ const getBadgeColorScheme = (complexity: string) => {
 };
 
 const QuestionDetails = () => {
-  const { state, onQuestionChange, currentAttempt } = useCollabContext();
-  const { questionTotalList } = state;
+  const { questionTotalList, onQuestionChange, currentAttempt } = useCollabContext();
 
   const handleQuestionChange = (selectedOption: SingleValue<OptionType>) => {
     if (!selectedOption) {
