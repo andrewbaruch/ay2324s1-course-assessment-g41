@@ -7,7 +7,6 @@ import AttemptActions from "./AttemptActions";
 const QuestionDescription = () => {
   return (
     <Flex direction="column" height="100%" overflow="hidden">
-      {/* Added overflow */}
       <Box flex="1" overflowY="auto">
         <QuestionDetails />
       </Box>

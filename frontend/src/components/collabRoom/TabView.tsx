@@ -12,9 +12,7 @@ const TabView = () => {
           <Tab>Description</Tab>
         </TabList>
         <TabPanels height="calc(100% - 40px)" pt={4}>
-          {/* Added padding-top */}
           <TabPanel height="100%" p={0}>
-            {/* Retained no padding here */}
             <QuestionDescription />
           </TabPanel>
         </TabPanels>
