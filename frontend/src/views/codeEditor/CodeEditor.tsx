@@ -32,7 +32,7 @@ export const CodeEditor = () => {
 
   return (
     <Stack>
-      <Box w="fit-content" minW="300px">
+      <Box w="100%" maxW={200}>
         <Select
           value={sharedLanguage}
           options={supportedLanguages}
