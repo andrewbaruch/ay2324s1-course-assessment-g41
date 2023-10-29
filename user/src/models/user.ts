@@ -6,7 +6,7 @@ export interface User {
     preferred_language?: string;
     preferred_difficulty?: Difficulty;
     preferred_topics: Topic[];
-    roles: Role[]
+    roles: string[]
 }
 
 export enum Difficulty {

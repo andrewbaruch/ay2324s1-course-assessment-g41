@@ -39,8 +39,8 @@ export async function googleAuth(req: Request, res: Response): Promise<void> {
       user = await userService.create(testEmail, "");
     }
 
-    const accessToken = await authService.generateAccessToken(user!.id);
-    const refreshToken = await authService.generateRefreshToken(user!.id);
+    const accessToken = await authService.generateAccessToken(user.id, user.roles);
+    const refreshToken = await authService.generateRefreshToken(user.id);
 
     res.cookie(accessTokenKey, accessToken, cookieConfig);
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
@@ -67,7 +67,7 @@ export async function googleRedirect(
       user = await userService.create(userInfo.email, userInfo.picture);
     }
 
-    const accessToken = await authService.generateAccessToken(user!.id);
+    const accessToken = await authService.generateAccessToken(user!.id, user.roles);
     const refreshToken = await authService.generateRefreshToken(user!.id);
 
     res.cookie(accessTokenKey, accessToken, cookieConfig);
@@ -94,9 +94,16 @@ export async function refresh(req: Request, res: Response): Promise<void> {
         res.status(StatusCodes.UNAUTHORIZED).send()
       }
 
+      let user = await userService.read(decodedToken.userId);
+
+      if (!user) {
+        res.status(StatusCodes.BAD_REQUEST).send()
+        return
+      }
+
       // sync delete, if failed dont continue
       await authService.deleteRefreshToken(decodedToken.id);
-      const accessToken = authService.generateAccessToken(decodedToken.userId);
+      const accessToken = authService.generateAccessToken(user?.email, user?.roles);
       const refreshToken = await authService.generateRefreshToken(
         decodedToken.userId
       );

@@ -6,6 +6,7 @@ import { google } from "googleapis";
 
 interface AccessPayload extends jwt.JwtPayload {
   userId: string;
+  roles: string[]
 }
 
 interface RefreshPayload extends jwt.JwtPayload {
@@ -33,8 +34,8 @@ export class AuthService {
     this.jwtSecret = secret;
   }
 
-  generateAccessToken(userId: string): string {
-    return jwt.sign({ userId }, this.jwtSecret, { expiresIn: "1h" });
+  generateAccessToken(userId: string, roles: string[]): string {
+    return jwt.sign({ userId, roles }, this.jwtSecret, { expiresIn: "1h" });
   }
 
   async generateRefreshToken(userId: string): Promise<string> {

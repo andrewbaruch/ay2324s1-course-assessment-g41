@@ -4,18 +4,6 @@ export interface PostgresError extends Error {
     code: string;
 }
 
-// export class PostgresError extends Error {
-//     code?: string | number;
-
-//     constructor(message: string, code?: string | number) {
-//         super(message);
-//         this.name = "PostgresError";
-//         this.code = code;
-
-//         Object.setPrototypeOf(this, PostgresError.prototype);
-//     }
-// }
-
 class PostgresClient {
     private readonly pool: Pool;
 

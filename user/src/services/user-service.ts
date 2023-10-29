@@ -289,6 +289,18 @@ class UserService {
       return rolesResult.rows || [];
   }
 
+  async fetchRoleNamessForUser(userId: string): Promise<string[]> {
+    const rolesQuery = `
+        SELECT roles.name
+        FROM user_role
+        JOIN roles ON user_role.role_id = roles.id
+        WHERE user_role.user_id = $1
+    `;
+
+    const rolesResult = await postgresClient.query<{name: string}>(rolesQuery, [userId]);
+    return rolesResult.rows.map(row => row.name) || [];
+  }
+
   createUserFromDao(dbUser: UserDao): User {
     return {
         id: dbUser.id,
@@ -315,7 +327,7 @@ class UserService {
       }
 
       user.preferred_topics = await this.fetchTopicsForUser(user.id);
-      user.roles = await this.fetchRolesForUser(user.id);
+      user.roles = await this.fetchRoleNamessForUser(user.id);
       return user;
   }
 }

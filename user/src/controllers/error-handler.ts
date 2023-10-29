@@ -1,9 +1,10 @@
 import * as errors from '@/services/service-errors'; 
 import { Response } from 'express';
-import { OAuthError } from './auth-controller';
+import { OAuthError } from '@/controllers/auth-controller';
 import { StatusCodes } from 'http-status-codes';
 
 export function handleServiceError(err: any, res: Response): void {
+    console.log(err)
     if (err instanceof errors.BadRequestError) {
         res.status(StatusCodes.BAD_REQUEST);
     } else if (err instanceof errors.DataNotFoundError) {
