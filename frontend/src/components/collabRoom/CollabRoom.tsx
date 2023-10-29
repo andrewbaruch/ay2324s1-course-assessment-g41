@@ -1,5 +1,5 @@
 // pages/CollabRoom.tsx
-import React, { useState, createContext, FunctionComponent } from "react";
+import React, { useState, createContext, FunctionComponent, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import Splitter, { GutterTheme } from "@devbookhq/splitter";
 import CodeEditor from "./CodeEditor";
@@ -47,6 +47,11 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onLanguageChange,
 }) => {
   const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
+  const splitterSizesRef = useRef<number[]>([50, 50]); // assuming equal initial sizes for simplicity
+
+  const handleResizeFinished = (pairIdx: number, newSizes: number[]) => {
+    splitterSizesRef.current = newSizes;
+  };
 
   return (
     <CollabContext.Provider
@@ -68,7 +73,12 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
     >
       <Box>
         <TopBar />
-        <Splitter gutterTheme={GutterTheme.Light} gutterClassName={styles.splitterContainer}>
+        <Splitter
+          gutterTheme={GutterTheme.Light}
+          gutterClassName={styles.splitterContainer}
+          initialSizes={splitterSizesRef.current}
+          onResizeFinished={handleResizeFinished}
+        >
           <CodeEditor />
           <TabView />
         </Splitter>
