@@ -1,7 +1,7 @@
 // pages/CollabRoom.tsx
 import React, { useState, createContext, FunctionComponent } from "react";
 import { Box } from "@chakra-ui/react";
-import Splitter from "@devbookhq/splitter";
+import Splitter, { GutterTheme } from "@devbookhq/splitter";
 import CodeEditor from "./CodeEditor";
 import TopBar from "./TopBar";
 import BottomBar from "./BottomBar";
@@ -10,6 +10,7 @@ import { User } from "@/@types/user";
 import { Language } from "@/@types/language";
 import { Attempt } from "@/@types/attempt";
 import TabView from "./TabView";
+import styles from "./Splitter.module.css";
 
 interface CollabRoomProps {
   questionTotalList: Question[];
@@ -31,14 +32,6 @@ interface CollabContextValue {
     listOfAttempts: Attempt[];
     listOfActiveUsers: User[];
   };
-  setState: React.Dispatch<
-    React.SetStateAction<{
-      questionTotalList: Question[];
-      languageTotalList: Language[];
-      listOfAttempts: Attempt[];
-      listOfActiveUsers: User[];
-    }>
-  >;
   onDeleteAttempt: (attemptId: number) => void;
   onCloseRoom: () => void;
   onNewAttempt: (questionId: string) => void;
@@ -68,19 +61,14 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onQuestionChange,
   onLanguageChange,
 }) => {
-  const [state, setState] = useState({
-    questionTotalList,
-    languageTotalList,
-    listOfAttempts,
-    listOfActiveUsers,
-  });
+  // karwi: flatten states?
+  const state = { questionTotalList, languageTotalList, listOfAttempts, listOfActiveUsers };
   const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
 
   return (
     <CollabContext.Provider
       value={{
         state,
-        setState,
         onDeleteAttempt,
         onCloseRoom,
         onNewAttempt,
@@ -92,7 +80,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
       <CurrentAttemptContext.Provider value={{ currentAttempt, setCurrentAttempt }}>
         <Box>
           <TopBar />
-          <Splitter>
+          <Splitter gutterTheme={GutterTheme.Light} gutterClassName={styles.splitterContainer}>
             <CodeEditor />
             <TabView />
           </Splitter>
