@@ -1,6 +1,18 @@
-// components/AttemptActions.tsx
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Stack, IconButton, Text, Flex, Box } from "@chakra-ui/react";
+import {
+  Button,
+  IconButton,
+  Text,
+  Flex,
+  Box,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogCloseButton,
+} from "@chakra-ui/react";
 import { DeleteIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
@@ -8,6 +20,9 @@ const AttemptActions = () => {
   const { state, onNewAttempt, onDeleteAttempt, setCurrentAttempt, currentAttempt } =
     useCollabContext();
   const [currentPage, setCurrentPage] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const onCloseDeleteModal = () => setIsDeleteModalOpen(false);
+  const cancelRef = React.useRef(null);
 
   const handlePageChange = useCallback(
     (pageIndex: number) => {
@@ -32,6 +47,7 @@ const AttemptActions = () => {
 
   const handleDeleteAttempt = (attemptId: number) => {
     onDeleteAttempt(attemptId);
+    onCloseDeleteModal();
   };
 
   return (
@@ -53,13 +69,44 @@ const AttemptActions = () => {
           />
         </Flex>
         {currentAttempt && (
-          <IconButton
-            aria-label="Delete Attempt"
-            icon={<DeleteIcon />}
-            onClick={() => handleDeleteAttempt(currentAttempt.attemptId)}
-            colorScheme="red"
-            variant="outline"
-          />
+          <>
+            <IconButton
+              aria-label="Delete Attempt"
+              icon={<DeleteIcon />}
+              onClick={() => setIsDeleteModalOpen(true)}
+              colorScheme="red"
+              variant="outline"
+            />
+            <AlertDialog
+              isOpen={isDeleteModalOpen}
+              leastDestructiveRef={cancelRef}
+              onClose={onCloseDeleteModal}
+            >
+              <AlertDialogOverlay>
+                <AlertDialogContent>
+                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                    Delete Attempt
+                  </AlertDialogHeader>
+                  <AlertDialogCloseButton />
+                  <AlertDialogBody>
+                    Are you sure you want to delete this attempt? This action cannot be undone.
+                  </AlertDialogBody>
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onCloseDeleteModal}>
+                      Cancel
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={() => handleDeleteAttempt(currentAttempt.attemptId)}
+                      ml={3}
+                    >
+                      Delete
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
+          </>
         )}
         <Button colorScheme="blue" onClick={handleNewAttempt}>
           New Attempt
