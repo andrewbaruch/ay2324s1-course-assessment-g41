@@ -4,18 +4,9 @@ import {
   FormLabel,
   Input,
   Select,
-  Textarea,
   Stack,
   Text,
   Button,
-  Tab,
-  Tabs,
-  TabList,
-  TabPanel,
-  TabPanels,
-  CheckboxGroup,
-  Checkbox,
-  SimpleGrid,
   FormErrorMessage,
   useToast,
   Spinner,
@@ -26,11 +17,9 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
   Spacer,
 } from "@chakra-ui/react";
 
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import React from "react";
 import { QuestionComplexity } from "@/@types/models/question";
@@ -50,7 +39,6 @@ export const MatchingForm = () => {
     trigger,
     formState: { errors },
   } = useForm({});
-  // const { goToCodingPage } = useHeaderTab();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
@@ -123,14 +111,14 @@ export const MatchingForm = () => {
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
                 getMatchingStatus(data.userId)
                   .then((response) => {
-                    console.log(response)
+                    console.log(response);
                     const responseStatus = response.status;
                     console.log("in frontend, status code", response);
                     if (intervalId && responseStatus == Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
-                      router.push(`/collabroom`);
-                      // router.push(`/collabroom/${response.roomId}`);
+                      router.push(`/collab-room`);
+                      // router.push(`/collab-room/${response.roomId}`);
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {
@@ -140,7 +128,7 @@ export const MatchingForm = () => {
                       return;
                     }
                   })
-                  .catch((e) => {
+                  .catch((e: Error) => {
                     throw new Error("Polling cancelled due to API error");
                   });
               }, 1000);

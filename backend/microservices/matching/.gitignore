@@ -34,9 +34,3 @@ key.json
 # Ignore built ts files
 dist
 /dist
-
-# ignore yarn.lock
-yarn.lock
-
-# ignore package.lock
-package-lock.json

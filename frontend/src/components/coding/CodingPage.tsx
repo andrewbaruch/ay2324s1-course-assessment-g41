@@ -19,11 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { QuestionDetails } from "../question/QuestionDetails";
-import {
-  Question,
-  QuestionCategories,
-  QuestionComplexity,
-} from "@/types/models/question";
+import { Question, QuestionCategories, QuestionComplexity } from "@/types/models/question";
 import { ComplexityBadge } from "../complexity";
 import { CodeEditor } from "./CodeEditor";
 
@@ -57,10 +53,7 @@ export const CodingPage = (codingQuestion: Question) => {
       <QuestionDetails
         title={"title"}
         complexity={QuestionComplexity.EASY}
-        categories={[
-          QuestionCategories.BIT_OPERATION,
-          QuestionCategories.DIVIDE_AND_CONQUER,
-        ]}
+        categories={[QuestionCategories.BIT_OPERATION, QuestionCategories.DIVIDE_AND_CONQUER]}
         description={"description"}
         id={-1}
         isPreview={true}

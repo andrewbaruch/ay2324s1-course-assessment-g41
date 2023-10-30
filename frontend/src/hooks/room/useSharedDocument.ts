@@ -10,10 +10,10 @@ export const useSharedDocument = ({
   valueToShare: any;
   document: Doc | null;
 }) => {
-  const [sharedValue, setSharedValue] = useState(valueToShare);
+  const [sharedValue, setSharedValue] = useState({ label: "Plain Text", value: "plaintext" });
   useEffect(() => {
     if (!doc) return;
-
+    console.log("detect language change");
     // shared data type
     // reference: https://docs.yjs.dev/getting-started/working-with-shared-types
     const ymap = doc.getMap("language");

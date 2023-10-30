@@ -18,7 +18,10 @@ export const useCodingLanguage = () => {
     );
   }, [monaco]);
 
-  const changeLanguage = (selectedLanguage: { label: string; value: string }) => {
+  const changeLanguage = (
+    selectedLanguage: { label: string; value: string },
+    attemptId: number,
+  ) => {
     setLanguage(selectedLanguage);
   };
 
