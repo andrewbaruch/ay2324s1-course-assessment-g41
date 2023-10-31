@@ -2,6 +2,7 @@
 const ROOTS_USER = "/user";
 const ROOT_QUESTION = "/question";
 const ROOT_COLLAB = "/collaboration";
+const ROOT_MATCHING = "/matching";
 
 export const BE_API = {
   auth: {
@@ -19,6 +20,9 @@ export const BE_API = {
   },
   questions: {
     root: `${ROOT_QUESTION}/question`,
+  },
+  matching: {
+    request: `${ROOT_MATCHING}/request`
   },
   collaboration: {
     broadcast: `${ROOT_COLLAB}/broadcast`,

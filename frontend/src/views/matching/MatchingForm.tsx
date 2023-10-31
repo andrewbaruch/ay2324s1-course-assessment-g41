@@ -117,7 +117,10 @@ export const MatchingForm = () => {
                     if (intervalId && responseStatus == Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
-                      router.push(`/collab-room`);
+                      if (response.roomId) {
+                        router.push(`/collab-room/${response.roomId}`);
+                      }
+
                       // router.push(`/collab-room/${response.roomId}`);
                       return;
                     }

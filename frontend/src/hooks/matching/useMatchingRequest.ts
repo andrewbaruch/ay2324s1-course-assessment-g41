@@ -1,6 +1,6 @@
 import { QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
-import MatchingService from "@/services/matchingService";
+import MatchingService from "@/services/matching";
 import { use } from "react";
 
 export const useMatching = () => {
@@ -34,11 +34,11 @@ export const useMatching = () => {
   // }
 
   const sendMatchingRequest = (user: String, complexity: QuestionComplexity): Promise<void> => {
-    return MatchingService.setUpPairCoding(user, complexity);
+    return MatchingService.setUpPairCoding(complexity);
   };
 
   const getMatchingStatus = (user: String) => {
-    return MatchingService.getMatchingStatus(user);
+    return MatchingService.getMatchingStatus();
   };
 
   return {
