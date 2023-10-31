@@ -25,7 +25,7 @@ export const CodeEditor = () => {
     <Stack>
       {provider ? <Cursor yProvider={provider} /> : null}
       <Editor
-        height="60vh"
+        height="70vh"
         onMount={handleEditorMount}
         language={language ? language.value : "plaintext"}
         options={codeEditorOptions}
