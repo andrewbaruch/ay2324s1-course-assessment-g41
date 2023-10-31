@@ -99,7 +99,7 @@ const handleQuestionChange = (newQuestionId: string, attemptId: number) => {
 };
 
 // Usage
-const CollabRoomPage: React.FC = () => {
+const CollabRoomPage = ({ params }: { params: { roomId: string } }) => {
   return (
     <CollabRoom
       questionTotalList={mockQuestions}
@@ -110,6 +110,7 @@ const CollabRoomPage: React.FC = () => {
       onNewAttempt={handleNewAttempt}
       onCodeChange={handleCodeChange}
       onQuestionChange={handleQuestionChange}
+      roomName={params.roomId}
     >
       <CodeEditor />
     </CollabRoom>
