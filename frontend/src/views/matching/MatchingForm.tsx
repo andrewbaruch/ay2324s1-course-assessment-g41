@@ -67,10 +67,10 @@ export const MatchingForm = () => {
       </Text>
 
       <Stack spacing={2} display="flex" px={0}>
-        <FormControl>
+        {/* <FormControl>
           <FormLabel htmlFor="userId">User Id</FormLabel>
           <Input placeholder="User Id" defaultValue="1" {...register("userId")} />
-        </FormControl>
+        </FormControl> */}
         <FormControl isInvalid={errors.complexity ? true : false}>
           <FormLabel htmlFor="complexity">Complexity</FormLabel>
           <Select
@@ -106,10 +106,10 @@ export const MatchingForm = () => {
             onOpen();
             setIsLoading(true);
 
-            sendMatchingRequest(data.userId, data.complexity).then(async () => {
+            sendMatchingRequest(data.complexity).then(async () => {
               await new Promise((r) => setTimeout(r, 1000));
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
-                getMatchingStatus(data.userId)
+                getMatchingStatus()
                   .then((response) => {
                     console.log(response);
                     const responseStatus = response.status;
