@@ -90,7 +90,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
     try {
       const decodedToken = authService.verifyRefreshToken(token);
 
-      const tokenStore = await authService.readRefreshToken(decodedToken.id);
+      const tokenStore = await authService.readRefreshToken(decodedToken.tokenId);
       if (!tokenStore || tokenStore.revoked) {
         res.status(StatusCodes.UNAUTHORIZED).send()
       }
@@ -103,7 +103,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
       }
 
       // sync delete, if failed dont continue
-      await authService.deleteRefreshToken(decodedToken.id);
+      await authService.deleteRefreshToken(decodedToken.tokenId);
       const accessToken = authService.generateAccessToken(user?.email, user?.roles);
       const refreshToken = await authService.generateRefreshToken(
         decodedToken.userId
