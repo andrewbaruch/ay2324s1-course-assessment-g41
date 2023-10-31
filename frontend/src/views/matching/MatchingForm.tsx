@@ -67,10 +67,10 @@ export const MatchingForm = () => {
       </Text>
 
       <Stack spacing={2} display="flex" px={0}>
-        {/* <FormControl>
+        <FormControl>
           <FormLabel htmlFor="userId">User Id</FormLabel>
           <Input placeholder="User Id" defaultValue="1" {...register("userId")} />
-        </FormControl> */}
+        </FormControl>
         <FormControl isInvalid={errors.complexity ? true : false}>
           <FormLabel htmlFor="complexity">Complexity</FormLabel>
           <Select
@@ -106,10 +106,10 @@ export const MatchingForm = () => {
             onOpen();
             setIsLoading(true);
 
-            sendMatchingRequest(data.complexity).then(async () => {
+            sendMatchingRequest(data.userId, data.complexity).then(async () => {
               await new Promise((r) => setTimeout(r, 1000));
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
-                getMatchingStatus()
+                getMatchingStatus(data.userId)
                   .then((response) => {
                     console.log(response);
                     const responseStatus = response.status;
@@ -117,7 +117,10 @@ export const MatchingForm = () => {
                     if (intervalId && responseStatus == Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
-                      router.push(`/collab-room`);
+                      if (response.roomId) {
+                        router.push(`/collab-room/${response.roomId}`);
+                      }
+
                       // router.push(`/collab-room/${response.roomId}`);
                       return;
                     }
@@ -162,23 +165,23 @@ export const MatchingForm = () => {
                 <Spinner />
               </AlertDialogBody>
             ) : (
-                <>
-                  <AlertDialogBody>
-                    There seems to be no other peers :(
+              <>
+                <AlertDialogBody>
+                  There seems to be no other peers :(
                   <Spacer />
                   Do try again in a few minutes!
                 </AlertDialogBody>
 
-                  <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={onClose}>
-                      Cancel
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancel
                   </Button>
-                    {/* <Button onClick={onClose} ml={3}>
+                  {/* <Button onClick={onClose} ml={3}>
                     Try again
                   </Button> */}
-                  </AlertDialogFooter>
-                </>
-              )}
+                </AlertDialogFooter>
+              </>
+            )}
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>

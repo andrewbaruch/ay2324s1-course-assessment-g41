@@ -33,6 +33,7 @@ interface CollabRoomPropsContextValue {
   onNewAttempt: () => void;
   onCodeChange: (newCodeText: string, attemptId: number) => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
+  roomName: string;
 }
 
 type CollabRoomProps = CollabRoomPropsContextValue & {
@@ -62,6 +63,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onNewAttempt,
   onCodeChange,
   onQuestionChange,
+  roomName,
   children,
 }) => {
   const splitterSizesRef = useRef<number[]>([50, 50]); // assuming equal initial sizes for simplicity
@@ -71,7 +73,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
     language,
   } = useCodingLanguage();
   const [currentAttempt, setCurrentAttempt] = useState<Attempt | null>(null);
-  const { handleEditorMount, provider, document } = useRoom();
+  const { handleEditorMount, provider, document } = useRoom({ roomName });
   const { sharedValue: sharedLanguage }: { sharedValue: { label: string; value: string } } =
     useSharedDocument({
       sharedKey: "language",
@@ -108,6 +110,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
         handleEditorMount,
         provider,
         document,
+        roomName
       }}
     >
       <Box>

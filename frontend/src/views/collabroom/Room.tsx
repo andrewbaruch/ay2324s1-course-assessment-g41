@@ -1,36 +1,11 @@
 import {
-  Heading,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
-  Textarea,
   Stack,
   Text,
-  Button,
-  Tab,
-  Tabs,
-  TabList,
-  TabPanel,
-  TabPanels,
-  CheckboxGroup,
-  Checkbox,
-  SimpleGrid,
-  FormErrorMessage,
   useToast,
-  Spinner,
   useDisclosure,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  AlertDialogCloseButton,
 } from "@chakra-ui/react";
 
 import React from "react";
-import { QuestionComplexity } from "@/@types/models/question";
 import { useForm } from "react-hook-form";
 // import { useHeaderTab } from "@/hooks/useHeaderTabs";
 
@@ -44,9 +19,6 @@ export const Room = () => {
     formState: { errors },
   } = useForm({});
   // const { goToCodingPage } = useHeaderTab();
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
 
   return (
     <Stack

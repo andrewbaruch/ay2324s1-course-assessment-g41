@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RoomService } from "@/services/room";
 
-export const useRoom = () => {
+export const useRoom = ({ roomName }: { roomName: string }) => {
   const [editor, setEditor] = useState<any>(null);
   const [roomService, setRoomService] = useState<RoomService | null>(null);
 
@@ -11,7 +11,7 @@ export const useRoom = () => {
     }
 
     // once editor is mounted, initialise the room service to bind editor to websocket broadcast
-    const room = new RoomService("test", editor);
+    const room = new RoomService(roomName, editor);
     setRoomService(room);
   }, [editor]);
 
