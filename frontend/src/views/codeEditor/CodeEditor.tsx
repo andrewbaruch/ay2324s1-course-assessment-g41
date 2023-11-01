@@ -26,7 +26,7 @@ export const CodeEditor: React.FC<Props> = ({ onEditorMount, provider, document 
 
   useEffect(() => {
     return () => document?.destroy();
-  }, [document]);
+  }, []);
 
   return (
     <Stack>
