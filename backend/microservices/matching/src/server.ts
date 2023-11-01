@@ -1,5 +1,5 @@
-import bodyParser from 'body-parser';
-import cors from 'cors';
+import bodyParser from "body-parser";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
 import routes from "@/routes/matching-router";
@@ -18,19 +18,21 @@ class Server {
 
     this.port = port;
     this.app = express();
-    this.configMiddleware()
+    // this.configMiddleware()
     this.configRouter();
     // this.start();
     this.runOnStart();
   }
 
   private configMiddleware() {
-    this.app.use(bodyParser.urlencoded({ extended: true }))
-    this.app.use(bodyParser.json())
-    this.app.use(cookieParser())
-    this.app.use(cors({
-      origin: '*',
-    }));
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(bodyParser.json());
+    this.app.use(cookieParser());
+    this.app.use(
+      cors({
+        origin: "*",
+      })
+    );
   }
 
   private configRouter() {

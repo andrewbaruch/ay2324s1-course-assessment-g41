@@ -18,6 +18,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Spacer,
+  Progress,
 } from "@chakra-ui/react";
 
 import { useState } from "react";
@@ -26,7 +27,6 @@ import { QuestionComplexity } from "@/@types/models/question";
 import { useForm } from "react-hook-form";
 import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
-import useGetIdentity from "@/hooks/auth/useGetIdentity";
 import { useRouter } from "next/navigation";
 import { Status } from "@/@types/status";
 
@@ -39,12 +39,14 @@ export const MatchingForm = () => {
     trigger,
     formState: { errors },
   } = useForm({});
+  const requestExpiryTimeInSeconds: number = 30;
+
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
-  // const { identity, loading, loaded, error } = useGetIdentity();
+  const [progressValue, setProgressValue] = useState(100);
   const router = useRouter();
 
   return (
@@ -99,21 +101,29 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
-            // TODO: uncomment the hook call useGetIdentity() above and the router.push change to the commented one to use the roomId instead.
-
-            // console.log(identity, loading, loaded, error);
             console.log(data);
             onOpen();
             setIsLoading(true);
 
             sendMatchingRequest(data.userId, data.complexity).then(async () => {
-              await new Promise((r) => setTimeout(r, 1000));
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
+                setProgressValue((prevProgress) => {
+                  if (intervalId && prevProgress <= 0) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    setIsLoading(false);
+                    return 0;
+                  } else {
+                    return prevProgress - (1 / requestExpiryTimeInSeconds) * 100;
+                  }
+                });
+
                 getMatchingStatus(data.userId)
                   .then((response) => {
                     console.log(response);
                     const responseStatus = response.status;
                     console.log("in frontend, status code", response);
+
                     if (intervalId && responseStatus == Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
@@ -121,7 +131,6 @@ export const MatchingForm = () => {
                         router.push(`/collab-room/${response.roomId}`);
                       }
 
-                      // router.push(`/collab-room/${response.roomId}`);
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {
@@ -162,7 +171,8 @@ export const MatchingForm = () => {
 
             {isLoading ? (
               <AlertDialogBody>
-                <Spinner />
+                {/* <Spinner /> */}
+                <Progress value={progressValue} />
               </AlertDialogBody>
             ) : (
               <>
