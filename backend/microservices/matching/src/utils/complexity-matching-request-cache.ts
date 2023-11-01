@@ -1,12 +1,15 @@
-// import NodeCache from "node-cache";
+import Redis from "ioredis";
 
-// const complexityMatchingRequestCache = new NodeCache();
+const complexityMatchingRequestCacheUrl =
+  process.env.MATCHING_REQUEST_REDIS_URL;
 
-// export default complexityMatchingRequestCache;
+if (!complexityMatchingRequestCacheUrl) {
+  console.log("Missing env variable complexityMatchingRequestCacheUrl");
+  process.exit();
+}
 
-import Redis from "ioredis"
-
-const complexityMatchingRequestCache = new Redis("rediss://default:e840999abd7046a39bf40c6aaf69faf9@quality-llama-43887.upstash.io:43887");
+const complexityMatchingRequestCache = new Redis(
+  complexityMatchingRequestCacheUrl
+);
 
 export default complexityMatchingRequestCache;
-

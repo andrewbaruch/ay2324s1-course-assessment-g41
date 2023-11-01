@@ -26,7 +26,7 @@ export async function getMatchingStatus(
   const matchingPair:
     | { roomId: string; user1: string; user2: string }
     | undefined = await complexityMatchingPairCache.get(userId);
-  const status = complexityMatchingRequestCache.get(userId);
+  const status = await complexityMatchingRequestCache.get(userId);
 
   if (matchingPair) {
     const roomId: string | undefined = matchingPair.roomId;

@@ -73,12 +73,12 @@ class ComplexitySubscriber {
         // update matchingPairCache
         console.log(
           "matched pair, inserting into cache",
-          complexityMatchingPairCache.set(user1.userId, {
+          await complexityMatchingPairCache.set(user1.userId, {
             userId2: user2.userId,
             complexity: complexity,
             roomId: room.name,
           }),
-          complexityMatchingPairCache.set(user2.userId, {
+          await complexityMatchingPairCache.set(user2.userId, {
             userId2: user1.userId,
             complexity: complexity,
             roomId: room.name,
