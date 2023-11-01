@@ -69,10 +69,6 @@ export const MatchingForm = () => {
       </Text>
 
       <Stack spacing={2} display="flex" px={0}>
-        <FormControl>
-          <FormLabel htmlFor="userId">User Id</FormLabel>
-          <Input placeholder="User Id" defaultValue="1" {...register("userId")} />
-        </FormControl>
         <FormControl isInvalid={errors.complexity ? true : false}>
           <FormLabel htmlFor="complexity">Complexity</FormLabel>
           <Select
@@ -105,12 +101,15 @@ export const MatchingForm = () => {
             onOpen();
             setIsLoading(true);
 
-            sendMatchingRequest(data.userId, data.complexity).then(async () => {
+            sendMatchingRequest(data.complexity).then(async () => {
+              await new Promise((r) => setTimeout(r, 1000));
+
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
                 setProgressValue((prevProgress) => {
                   if (intervalId && prevProgress <= 0) {
                     clearInterval(intervalId);
                     intervalId = null;
+                    onOpen();
                     setIsLoading(false);
                     return 0;
                   } else {
@@ -118,7 +117,7 @@ export const MatchingForm = () => {
                   }
                 });
 
-                getMatchingStatus(data.userId)
+                getMatchingStatus()
                   .then((response) => {
                     console.log(response);
                     const responseStatus = response.status;
@@ -186,9 +185,6 @@ export const MatchingForm = () => {
                   <Button ref={cancelRef} onClick={onClose}>
                     Cancel
                   </Button>
-                  {/* <Button onClick={onClose} ml={3}>
-                    Try again
-                  </Button> */}
                 </AlertDialogFooter>
               </>
             )}

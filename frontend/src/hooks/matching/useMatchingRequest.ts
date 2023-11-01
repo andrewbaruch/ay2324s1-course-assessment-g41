@@ -4,40 +4,11 @@ import MatchingService from "@/services/matching";
 import { use } from "react";
 
 export const useMatching = () => {
-  // function startPolling(callApiFn, testFn, doFn, time) {
-  //   let intervalId = setInterval(() => {
-  //     callApiFn()
-  //       .then((data) => {
-  //         if (intervalId && testFn(data)) {
-
-  //           stopPolling();
-  //           doFn(data);
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         stopPolling();
-  //         throw new Error("Polling cancelled due to API error");
-  //       });
-  //   }, time);
-
-  //   function stopPolling() {
-  //     if (intervalId) {
-  //       console.log(new Date(), "Stopping polling...");
-  //       clearInterval(intervalId);
-  //       intervalId = null;
-  //     } else {
-  //       console.log(new Date(), "Polling was already stopped...");
-  //     }
-  //   }
-
-  //   return stopPolling;
-  // }
-
-  const sendMatchingRequest = (user: String, complexity: QuestionComplexity): Promise<void> => {
+  const sendMatchingRequest = (complexity: QuestionComplexity): Promise<void> => {
     return MatchingService.setUpPairCoding(complexity);
   };
 
-  const getMatchingStatus = (user: String) => {
+  const getMatchingStatus = () => {
     return MatchingService.getMatchingStatus();
   };
 
