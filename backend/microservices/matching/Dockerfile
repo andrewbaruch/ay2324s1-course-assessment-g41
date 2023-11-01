@@ -1,14 +1,14 @@
 FROM node:lts
 
 # Set the working directory
-WORKDIR /home/microservices/collaboration
+WORKDIR /home/microservices/matching
 
 # Copy the shared and microservices directories
 COPY shared ../../shared
-COPY microservices/collaboration ./
+COPY microservices/matching ./
 
 # Install dependencies for the shared directory
-RUN cd ../../shared && npm ci && cd ../microservices/collaboration
+RUN cd ../../shared && npm ci && cd ../microservices/matching
 # Install dependencies for the microservice
 RUN npm ci
 
