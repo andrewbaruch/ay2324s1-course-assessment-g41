@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import ControlledSelect from "@/components/form/ControlledSelect";
 import ControlledInput from "@/components/form/ControlledInput";
 import { updateTopics } from "@/services/topics";
+import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 
 type PreFormInput = Omit<UserRequest, "preferred_difficulty" | "preferred_topics">;
 type IFormInput = PreFormInput & {
@@ -52,7 +53,7 @@ function toUserRequest(input: IFormInput): UserRequest {
 
 export default function GeneralInformation(props: { [x: string]: any }) {
   const { ...rest } = props;
-  const { languages } = useLanguages();
+  const { supportedLanguages: languages } = useGetLanguages();
   const { topics } = useTopics();
   const toast = useToast();
   const { identity } = useGetIdentity();
@@ -146,9 +147,9 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             label="Preferred Language"
             rules={{ required: false }}
             options={
-              languages?.data.map((language) => ({
-                value: language.id,
-                label: language.name,
+              languages.map((language) => ({
+                value: language.value,
+                label: language.label,
               })) || []
             }
             placeholder="Select option"

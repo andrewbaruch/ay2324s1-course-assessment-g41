@@ -7,6 +7,9 @@ import { User } from "@/@types/user";
 import CollabRoom from "@/components/collabRoom/CollabRoom";
 import { Attempt } from "@/@types/attempt";
 import { CodeEditor } from "@/views/codeEditor";
+import { useRoom } from "@/hooks/room/useRoom";
+import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
+import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -98,20 +101,38 @@ const handleQuestionChange = (newQuestionId: string, attemptId: number) => {
   console.log(`Question change for attempt id ${attemptId}: ${newQuestionId}`);
 };
 
+const handleAttemptChange = (newAttemptId: number) => {
+  console.log(`Change attempt to ${newAttemptId}`);
+};
+
+const handleLanguageChange = (newLanguageValue: string, attemptId: number) => {
+  console.log(`Question change for attempt id ${attemptId}: ${newLanguageValue}`);
+};
+
 // Usage
 const CollabRoomPage: React.FC = () => {
+  const { supportedLanguages } = useGetLanguages();
+
+  const { handleEditorMount, provider, document } = useRoom();
+
+  const currentAttempt = useGetCurrentAttempt(document);
+
   return (
     <CollabRoom
       questionTotalList={mockQuestions}
+      languageTotalList={supportedLanguages}
       listOfAttempts={mockAttempts}
       listOfActiveUsers={mockUsers}
+      currentAttempt={currentAttempt}
       onDeleteAttempt={handleDeleteAttempt}
       onCloseRoom={handleCloseRoom}
       onNewAttempt={handleNewAttempt}
       onCodeChange={handleCodeChange}
       onQuestionChange={handleQuestionChange}
+      onAttemptChange={handleAttemptChange}
+      onLanguageChange={handleLanguageChange}
     >
-      <CodeEditor />
+      <CodeEditor document={document} provider={provider} onEditorMount={handleEditorMount} />
     </CollabRoom>
   );
 };

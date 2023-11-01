@@ -1,12 +1,14 @@
 import { useMonaco } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 
-export const useCodingLanguage = () => {
-  const [language, setLanguage] = useState({ label: "Plain Text", value: "plaintext" });
+export interface MonacoLanguage {
+  label: string;
+  value: string;
+}
+
+export const useGetLanguages = () => {
   const monaco = useMonaco();
-  const [supportedLanguages, setSupportedLanguages] = useState<{ label: string; value: string }[]>(
-    [],
-  );
+  const [supportedLanguages, setSupportedLanguages] = useState<MonacoLanguage[]>([]);
 
   useEffect(() => {
     if (!monaco) return;
@@ -18,16 +20,7 @@ export const useCodingLanguage = () => {
     );
   }, [monaco]);
 
-  const changeLanguage = (
-    selectedLanguage: { label: string; value: string },
-    attemptId: number,
-  ) => {
-    setLanguage(selectedLanguage);
-  };
-
   return {
-    language,
-    changeLanguage,
     supportedLanguages,
   };
 };
