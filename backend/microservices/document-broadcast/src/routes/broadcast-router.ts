@@ -1,14 +1,17 @@
-import { Extension, onAuthenticatePayload, onStoreDocumentPayload } from "@hocuspocus/server";
-import * as AuthController from "@/controllers/auth"
-import * as StoreController from "@/controllers/store"
+import { Extension, onAuthenticatePayload, onChangePayload, onStoreDocumentPayload } from "@hocuspocus/server";
+import * as BroadcastController from "@/controllers/broadcast-controller";
 
 class BroadcastRouter implements Extension {
   async onAuthenticate(data: onAuthenticatePayload) {
-    AuthController.authenticateUser(data)
+    BroadcastController.authenticateUser(data)
   }
 
   async onStoreDocument(data: onStoreDocumentPayload) {
-    StoreController.saveAttempt(data)
+    BroadcastController.saveAttempt(data)
+  }
+
+  async onChange(data: onChangePayload) {
+    BroadcastController.handleChangeData(data)
   }
 }
 
