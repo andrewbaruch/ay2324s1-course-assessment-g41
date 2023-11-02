@@ -18,8 +18,11 @@ services:
   user:
     container_name: user
     build:
-      dockerfile: ./microservices/user/Dockerfile.dev
+      dockerfile: ./microservices/user/Dockerfile.local
       context: ./backend
+    volumes:
+      - ./backend/microservices/user:/home/microservices/user/
+      - /home/microservices/user/node_modules
     ports:
       - 8080:3000
     restart: on-failure
@@ -31,8 +34,11 @@ services:
   question:
     container_name: question
     build:
-      dockerfile: ./microservices/question/Dockerfile.dev
+      dockerfile: ./microservices/question/Dockerfile.local
       context: ./backend
+    volumes:
+      - ./backend/microservices/question:/home/microservices/question/
+      - /home/microservices/question/node_modules
     ports:
       - 3001:3000
     restart: on-failure
@@ -40,20 +46,6 @@ services:
       - backend
     environment:
       <<: *common-variables
-
-  collaboration:
-    container_name: collaboration
-    build:
-      dockerfile: ./microservices/collaboration/Dockerfile.dev
-      context: ./backend
-    ports:
-      - 5001:3000
-    restart: on-failure
-    networks:
-      - backend
-    environment:
-      <<: *common-variables
-      SERVER_PORT: 3000
 
   postgres:
     container_name: postgres
@@ -68,22 +60,6 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    networks:
-      - backend
-
-  postgres-collab:
-    container_name: postgres-collab
-    build:
-      context: ./postgres-collab
-      dockerfile: Dockerfile
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - postgres-collab:/var/lib/postgresql/data
-    ports:
-      - "5433:5432" # Use a different port for the new instance, e.g., 5433
     networks:
       - backend
 
@@ -128,26 +104,10 @@ services:
     networks:
       - backend
 
-  matching:
-    container_name: matching
-    build:
-      dockerfile: ./microservices/matching/Dockerfile.dev
-      context: ./backend
-    ports:
-      - 7001:3000
-    restart: on-failure
-    networks:
-      - backend
-    environment: 
-      <<: *common-variables
-      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
-      COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
-
   nginx:
     depends_on:
       - client
       - user
-      - matching
     restart: always
     build:
       dockerfile: Dockerfile.dev
@@ -172,5 +132,4 @@ services:
 
 volumes:
   postgres:
-  postgres-collab:
   mongo:
