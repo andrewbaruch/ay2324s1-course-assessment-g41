@@ -23,8 +23,8 @@ services:
       dockerfile: ./microservices/user/Dockerfile.local
       context: ./backend
     volumes:
-      - ./backend/microservices/user:/home/node/app/
-      - /home/node/app/node_modules
+      - ./backend/microservices/user:/home/microservices/user/
+      - /home/microservices/user/node_modules
     ports:
       - 8080:3000
     restart: on-failure
@@ -39,8 +39,8 @@ services:
       dockerfile: ./microservices/question/Dockerfile.local
       context: ./backend
     volumes:
-      - ./backend/microservices/question:/home/node/app/
-      - /home/node/app/node_modules
+      - ./backend/microservices/question:/home/microservices/question/
+      - /home/microservices/question/node_modules
     ports:
       - 3001:3000
     restart: on-failure
@@ -55,8 +55,8 @@ services:
       dockerfile: ./microservices/collaboration/Dockerfile.local
       context: ./backend
     volumes:
-      - ./backend/microservices/collaboration:/home/node/app/
-      - /home/node/app/node_modules
+      - ./backend/microservices/collaboration:/home/microservices/collaboration/
+      - /home/microservices/collaboration/node_modules
     ports:
       - 5001:3000
     restart: on-failure
@@ -145,8 +145,8 @@ services:
       dockerfile: ./microservices/matching/Dockerfile.dev
       context: ./backend
     volumes:
-      - ./backend/microservices/matching:/home/node/app/
-      - /home/node/app/node_modules
+      - ./backend/microservices/matching:/home/microservices/matching/
+      - /home/microservices/matching/node_modules
     ports:
       - 7001:3000
     restart: on-failure
@@ -154,7 +154,7 @@ services:
       - backend
     environment:
       <<: *common-variables
-      GOOGLE_APPLICATION_CREDENTIALS: "/home/node/app/key.json"
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
       COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
 
   nginx:
