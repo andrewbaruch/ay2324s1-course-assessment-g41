@@ -9,7 +9,7 @@ x-common-variables: &common-variables
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
   ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
   SERVER_PORT: 3000
-  MATCHING_REQUEST_REDIS_URL: redis://default:e840999abd7046a39bf40c6aaf69faf9@quality-llama-43887.upstash.io:43887
+  MATCHING_REQUEST_REDIS_URL: rediss://default:e840999abd7046a39bf40c6aaf69faf9@quality-llama-43887.upstash.io:43887
   MATCHING_PAIR_REDIS_URL: rediss://default:9ed22128c2b945b78ff7fd840679a80a@sought-meerkat-43858.upstash.io:43858
 
 networks:

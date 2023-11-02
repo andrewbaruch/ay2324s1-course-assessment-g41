@@ -6,7 +6,12 @@ import { Status } from "@/models/status";
 import ComplexityMatchingPushService from "@/services/complexity-matching-push-service";
 
 export const pushMatchRequestToQueue = async (req: Request, res: Response) => {
-  const userId: string = res.locals.userId;
+  // const userId: string = res.locals.userId;
+  const { userId }: { userId: string } = req.body;
+  console.log("in push request");
+  console.log(userId);
+  console.log("in push request");
+
   const { questionComplexity }: { questionComplexity: string } = req.body;
   const complexityPublisherService = new ComplexityMatchingPushService();
   try {
@@ -22,7 +27,13 @@ export async function getMatchingStatus(
   req: Request,
   res: Response
 ): Promise<void> {
-  const userId: string = res.locals.userId;
+  // const userId: string = res.locals.userId;
+
+  const { userId }: { userId: string } = req.body;
+  console.log("in get request");
+  console.log(userId);
+  console.log("in get request");
+
   const matchingPair:
     | { roomId: string; user1: string; user2: string }
     | undefined = await complexityMatchingPairCache.get(userId);
