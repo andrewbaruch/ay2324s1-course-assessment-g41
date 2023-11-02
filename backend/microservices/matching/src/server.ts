@@ -48,6 +48,7 @@ class Server {
 
   private runOnStart() {
     console.log("Running pubsub subscriber on server start");
+    console.log("woohoo==============");
     const complexitySubscriber = new ComplexitySubscriber();
     complexitySubscriber.start();
   }

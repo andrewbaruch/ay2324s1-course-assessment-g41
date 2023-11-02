@@ -5,12 +5,28 @@ import complexityMatchingPairCache from "@/utils/complexity-matching-pair-cache"
 import { Status } from "@/models/status";
 import ComplexityMatchingPushService from "@/services/complexity-matching-push-service";
 
+export const removeMatchingPair = async (req: Request, res: Response) => {
+  const userId: string = res.locals.userId;
+  // const { userId }: { userId: string } = req.body;
+  // console.log("in delete request");
+  // console.log(userId);
+  // console.log("in delete request");
+
+  try {
+    await complexityMatchingPairCache.del(userId);
+  } catch (err) {
+    // TODO: add better error validation
+    res.status(400).send();
+  }
+  res.status(200).send();
+};
+
 export const pushMatchRequestToQueue = async (req: Request, res: Response) => {
-  // const userId: string = res.locals.userId;
-  const { userId }: { userId: string } = req.body;
-  console.log("in push request");
-  console.log(userId);
-  console.log("in push request");
+  const userId: string = res.locals.userId;
+  // const { userId }: { userId: string } = req.body;
+  // console.log("in push request");
+  // console.log(userId);
+  // console.log("in push request");
 
   const { questionComplexity }: { questionComplexity: string } = req.body;
   const complexityPublisherService = new ComplexityMatchingPushService();
@@ -27,12 +43,12 @@ export async function getMatchingStatus(
   req: Request,
   res: Response
 ): Promise<void> {
-  // const userId: string = res.locals.userId;
+  const userId: string = res.locals.userId;
 
-  const { userId }: { userId: string } = req.body;
-  console.log("in get request");
-  console.log(userId);
-  console.log("in get request");
+  // const { userId }: { userId: string } = req.body;
+  // console.log("in get request");
+  // console.log(userId);
+  // console.log("in get request");
 
   const matchingPair:
     | { roomId: string; user1: string; user2: string }

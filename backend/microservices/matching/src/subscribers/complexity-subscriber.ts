@@ -21,8 +21,6 @@ class ComplexitySubscriber {
   }
 
   start() {
-    // complexityMatchingRequestCache.flushAll();
-    // complexityMatchingPairCache.flushAll();
     this.pubSubClient.subscribeToTopic(
       MATCHING_REQUEST_TOPIC_SUBSCRIPTION,
       (message) =>
@@ -36,10 +34,6 @@ class ComplexitySubscriber {
   ) {
     message.ack();
     try {
-      // console.log("=======================================");
-      // console.log(complexityMatchingRequestCache.keys());
-      // console.log(complexityMatchingPairCache.keys());
-
       console.log("=======================================");
       console.log(`Received message ${message.id}:`);
       console.log(`\tData: ${message.data}`);
@@ -56,6 +50,7 @@ class ComplexitySubscriber {
 
       const complexity =
         complexityMatchingPullService.registerRequestForMatch(parsedData);
+
       // add to request cache
       await complexityMatchingRequestCache.set(parsedData.userId, complexity);
       await complexityMatchingRequestCache.expire(
