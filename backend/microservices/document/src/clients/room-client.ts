@@ -2,7 +2,7 @@ import axios from "axios";
 // TODO: implement service registry to retrieve collab service endpoint
 const { COLLAB_SERVICE_ENDPOINT } = process.env
 
-const collabClient = axios.create({
+const roomClient = axios.create({
   baseURL: COLLAB_SERVICE_ENDPOINT,
   headers: {
     'Content-Type': 'application/json',
@@ -10,7 +10,7 @@ const collabClient = axios.create({
 });
 
 const doesUserHaveAccessToRoom = async (userId: string, roomName: string) => {
-  const response = await collabClient.get(`/room/${roomName}/access`, {
+  const response = await roomClient.get(`/room/${roomName}/access`, {
     data: {
       userId
     }
@@ -22,7 +22,7 @@ const doesUserHaveAccessToRoom = async (userId: string, roomName: string) => {
 }
 
 const isRoomOpen = async (roomName: string) => {
-  const response = await collabClient.get(`/room/${roomName}/status`)
+  const response = await roomClient.get(`/room/${roomName}/status`)
   console.log(`Received ${JSON.stringify(response.data)} from collab-service`)
   const { isOpen }: { isOpen: boolean } = response.data
   if (!isOpen) {

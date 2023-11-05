@@ -3,15 +3,14 @@ import { Language } from "@/models/language";
 
 class AttemptPublisher {
   private readonly pubSubClient: PubSubClient;
-  private readonly attemptTopic: string;
+  private readonly attemptTopic: string = "ATTEMPT_TOPIC";
 
   constructor() {
     this.pubSubClient = new PubSubClient();
-    this.attemptTopic = "ATTEMPT_TOPIC"
   }
 
-  publishToTopic({ attemptId, roomId, text, language }: { attemptId: string, roomId: string, text: string, language: Language }) {
-    const data = JSON.stringify({ attemptId, roomId, text, language })
+  publishToTopic({ attemptId, roomName, text, language }: { attemptId: string, roomName: string, text: string, language: Language }) {
+    const data = JSON.stringify({ attemptId, roomName, text, language })
     this.pubSubClient.publishToTopic(this.attemptTopic, data)
   }
 }
