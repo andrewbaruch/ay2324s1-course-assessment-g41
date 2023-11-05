@@ -64,6 +64,23 @@ services:
       <<: *common-variables
       SERVER_PORT: 3000
 
+  document:
+    container_name: document
+    build:
+      dockerfile: ./microservices/document/Dockerfile.local
+      context: ./backend
+    volumes:
+      - ./backend/microservices/document:/home/microservices/document/
+      - /home/microservices/document/node_modules
+    ports:
+      - 5002:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      <<: *common-variables
+      SERVER_PORT: 3000
+
   postgres:
     container_name: postgres
     build:
