@@ -15,9 +15,9 @@ const saveAttempt = (data: onStoreDocumentPayload) => {
 }
 
 const authenticateUser = async (data: onAuthenticatePayload) => {
-  const token = data.token
-  const userId = AuthService.verifyUserExists(token)
-  await AuthService.verifyUserBelongsInRoom(userId, data.documentName)
+  // const token = data.token
+  // const userId = AuthService.verifyUserExists(token)
+  // await AuthService.verifyUserBelongsInRoom(userId, data.documentName)
 }
 
 const handleChangeData = async (data: onChangePayload) => {

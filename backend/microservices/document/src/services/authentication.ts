@@ -1,4 +1,3 @@
-import { onAuthenticatePayload } from "@hocuspocus/server";
 import { verifyAccessToken } from "../../../../shared/lib/verifyAccessToken";
 
 const verifyUserExists = (token: string) => {

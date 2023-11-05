@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node build.mjs && node dist/microservices/document-broadcast/src/index.mjs",
+    "start": "node build.mjs && node dist/microservices/document/src/index.mjs",
     "dev": "nodemon --inspect -e ts --watch ./ --watch ../../packages --exec npm start",
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s src -o dist"
   },

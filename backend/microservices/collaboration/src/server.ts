@@ -9,7 +9,7 @@ import roomRouter from './routes/room-router';
 export class Server {
   private app
   private port
-  private broadcastServer: BroadcastServer
+  // private broadcastServer: BroadcastServer
   
   constructor() {
     const port = process.env.SERVER_PORT
@@ -31,7 +31,7 @@ export class Server {
     this.port = port
     const { app } = expressWebsockets(express())
     this.app = app
-    this.broadcastServer = new BroadcastServer(parseInt(port))
+    // this.broadcastServer = new BroadcastServer(parseInt(port))
     this.configMiddleware()
     this.configRouter()
   }
@@ -54,9 +54,9 @@ export class Server {
   private configRouter() {
     // let websocket and express server share the same instance
     // websocket requests will be routed to wsServer
-    this.app.ws('/broadcast', (websocket, request, context) => {
-      this.broadcastServer.handleConnection(websocket, request, context)
-    })
+    // this.app.ws('/broadcast', (websocket, request, context) => {
+    //   this.broadcastServer.handleConnection(websocket, request, context)
+    // })
 
     this.app.use('/room', roomRouter)
   }
