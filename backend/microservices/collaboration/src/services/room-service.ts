@@ -1,27 +1,28 @@
 import { Room } from "../models/room"
 import { generateSlug } from "random-word-slugs";
+import * as Knex from "knex"
 import { knexPgClient } from "@/clients/pg-knex";
 
 export class RoomService {
-  static async openRoom(roomId: number, userId: string) {
-    if (!RoomService.doesUserHaveAccessToRoom(userId, roomId)) {
+  static async openRoom(roomName: string, userId: string) {
+    if (!RoomService.doesUserHaveAccessToRoom(userId, roomName)) {
       throw new Error(`This user does not have access to the room.`)
     }
-    const updatedRoom = await knexPgClient("Room").where("id", roomId).update({
+    const updatedRoom = await knexPgClient("Room").where("name", roomName).update({
       isOpen: true
     }, ["id", "isOpen", "name"])
     console.log("updated room", updatedRoom)
   }
 
-  static async closeRoom(roomId: number, userId: string) {
-    if (!RoomService.doesUserHaveAccessToRoom(userId, roomId)) {
+  static async closeRoom(roomName: string, userId: string) {
+    if (!RoomService.doesUserHaveAccessToRoom(userId, roomName)) {
       throw new Error(`This user does not have access to the room.`)
     }
 
-    console.log('closing room', roomId)
+    console.log('closing room', roomName)
     
     // set isOpen to false
-    const updatedRoom = await knexPgClient("Room").where("id", roomId).update({
+    const updatedRoom = await knexPgClient("Room").where("name", roomName).update({
       isOpen: false
     }, ["id", "isOpen", "name"])
 
@@ -30,7 +31,6 @@ export class RoomService {
   }
 
   static async createRoom(userId1: string, userId2: string) {
-    RoomService.validateUsers(userId1, userId2);
     const { roomName } = await RoomService.generateRoomName();
     console.log('write into db')
     const room: Room[] = await knexPgClient("Room").insert({
@@ -41,23 +41,28 @@ export class RoomService {
     return { room: room[0] }
   }
 
-  // TODO: @didy update validation logic on integration with user service
-  private static validateUsers(user1: string, user2: string) {
-    console.log('validate users', user1, user2)
-  }
-
-  private static async doesUserHaveAccessToRoom(userId: string, roomId: number) {
-    if (!userId || !roomId) {
-      console.log("missing arguments", userId, roomId)
+  static async isRoomOpen(roomName: string) {
+    const record: Room[] = await knexPgClient("Room").where("name", roomName);
+    if (record.length === 0) {
       return false;
     }
     
-    const record: Room[] = await knexPgClient("Room").where({
-      id: roomId,
-    })
-    const room: Room = record[0]
+    const { isOpen } = record[0];
+    return isOpen;
+  }
 
-    return (room.userId1 === userId || room.userId2 === userId)
+  static async doesUserHaveAccessToRoom(userId: string, roomName: string) {
+    if (!userId || !roomName) {
+      console.log("missing arguments", userId, roomName)
+      return false;
+    }
+    
+    const record: Room[] = await knexPgClient("Room").where("name", roomName).where((builder: any) => {
+      builder.where("userId1", userId).orWhere("userId2", userId)
+    })
+
+    console.log('query result', record)
+    return record.length > 0;
   }
 
   private static async generateRoomName() {

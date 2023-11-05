@@ -14,10 +14,33 @@ const saveAttempt = (data: onStoreDocumentPayload) => {
   })
 }
 
-const authenticateUser = async (data: onAuthenticatePayload) => {
-  // const token = data.token
-  // const userId = AuthService.verifyUserExists(token)
-  // await AuthService.verifyUserBelongsInRoom(userId, data.documentName)
+const parseCookie = (cookieString: string) => {
+  if (!process.env.ACCESS_COOKIE_KEY) {
+    console.log("Missing ACCESS_COOKIE_KEY")
+    process.exit()
+  }
+  const accessTokenKey = process.env.ACCESS_COOKIE_KEY
+  const cookies = new Map<string, string>();
+  cookieString.split(';').forEach(cookie => {
+    const parts = cookie.split('=');
+    const name = parts[0].trim();
+    const value = parts[1];
+    cookies.set(name, value)
+  });
+  return Object.fromEntries(cookies)[accessTokenKey];
+}
+
+const checkAuthForUser = async (data: onAuthenticatePayload) => {
+  const token = parseCookie(data.requestHeaders.cookie || "");
+  const userId = AuthService.verifyUserExists(token)
+  const promiseVerifications = [AuthService.verifyUserBelongsInRoom(userId, data.documentName), AuthService.verifyRoomIsOpen(data.documentName)] 
+  try {
+    await Promise.all(promiseVerifications)
+  } catch (err) {
+    // at least one verification failed
+    console.error("Authorization error", err)
+    throw err;
+  }
 }
 
 const handleChangeData = async (data: onChangePayload) => {
@@ -35,6 +58,6 @@ const handleChangeData = async (data: onChangePayload) => {
 
 export {
   saveAttempt,
-  authenticateUser,
+  checkAuthForUser,
   handleChangeData
 }

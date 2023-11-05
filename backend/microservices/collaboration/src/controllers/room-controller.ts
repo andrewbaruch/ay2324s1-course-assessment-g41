@@ -10,14 +10,38 @@ export async function createRoom(req: Request, res: Response) {
 }
 
 export async function closeRoom(req: Request, res: Response) {
-  const { roomId } = req.params
+  const { roomName } = req.params
   const userId: string = res.locals.userId
-  await RoomService.closeRoom(parseInt(roomId), userId)
+  await RoomService.closeRoom(roomName, userId)
   res.status(200).send()
 }
 
 export async function openRoom(req: Request, res: Response) {
-  const { roomId } = req.params
+  const { roomName } = req.params
   const userId: string = res.locals.userId
-  await RoomService.openRoom(parseInt(roomId), userId)
+  await RoomService.openRoom(roomName, userId)
+  res.status(200).send()
+}
+
+export async function checkUserInRoom(req: Request, res: Response) {
+  const { roomName } = req.params;
+  const { userId }: { userId: string } = req.body
+  try {
+    await RoomService.doesUserHaveAccessToRoom(userId, roomName)
+    res.status(200).send()
+  } catch (err) {
+    res.status(403).send()
+  }
+}
+
+export async function isRoomOpen(req: Request, res: Response) {
+  const { roomName } = req.params;
+  try {
+    const isOpen = await RoomService.isRoomOpen(roomName)
+    res.status(200).json({
+      isOpen
+    })
+  } catch (err) {
+    res.status(400).send()
+  }
 }

@@ -23,6 +23,10 @@ class BroadcastServer {
       console.log("Missing JWT secret for decryption")
       process.exit()
     }
+
+    if (!process.env.COLLAB_SERVICE_ENDPOINT) {
+      console.log("Missing connection to Collab Endpoint - operations involving collab service will not work")
+    }
     this.port = parseInt(port)
     this.broadcastWebsocketServer = this.createAndConfigureWebsocketServer()
   }
@@ -41,13 +45,13 @@ class BroadcastServer {
       onListen: async (data) => {
         console.log(`Broadcast server is listening on port "${data.port}"!`);
       },
-      onStoreDocument: async (data) => {
-        this.emitEvent(`SAVING_DOCUMENT_${data.documentName}`)
-        await broadcastRouter.onStoreDocument(data)
-        this.emitEvent(`SAVED_DOCUMENT_${data.documentName}`)
-      },
+      // onStoreDocument: async (data) => {
+      //   this.emitEvent(`SAVING_DOCUMENT_${data.documentName}`)
+      //   await broadcastRouter.onStoreDocument(data)
+      //   this.emitEvent(`SAVED_DOCUMENT_${data.documentName}`)
+      // },
       onAuthenticate: broadcastRouter.onAuthenticate,
-      onChange: broadcastRouter.onChange,
+      // onChange: broadcastRouter.onChange,
     })
   }
   

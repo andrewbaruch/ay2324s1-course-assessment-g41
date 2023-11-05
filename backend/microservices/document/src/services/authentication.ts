@@ -1,4 +1,5 @@
 import { verifyAccessToken } from "../../../../shared/lib/verifyAccessToken";
+import * as CollabClient from "@/clients/collab-client"
 
 const verifyUserExists = (token: string) => {
   if (!process.env.JWT_SECRET) {
@@ -9,11 +10,16 @@ const verifyUserExists = (token: string) => {
   return userId
 }
 
-const verifyUserBelongsInRoom = (userId: string, roomId: string) => {
-  // TODO
+const verifyUserBelongsInRoom = async (userId: string, roomName: string) => {
+  return await CollabClient.doesUserHaveAccessToRoom(userId, roomName)
+}
+
+const verifyRoomIsOpen = async (roomName: string) => {
+  return await CollabClient.isRoomOpen(roomName)
 }
 
 export {
   verifyUserBelongsInRoom,
-  verifyUserExists
+  verifyUserExists,
+  verifyRoomIsOpen
 }

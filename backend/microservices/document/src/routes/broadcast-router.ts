@@ -3,15 +3,15 @@ import * as BroadcastController from "@/controllers/broadcast-controller";
 
 class BroadcastRouter implements Extension {
   async onAuthenticate(data: onAuthenticatePayload) {
-    BroadcastController.authenticateUser(data)
+    await BroadcastController.checkAuthForUser(data)
   }
 
   async onStoreDocument(data: onStoreDocumentPayload) {
-    BroadcastController.saveAttempt(data)
+    await BroadcastController.saveAttempt(data)
   }
 
   async onChange(data: onChangePayload) {
-    BroadcastController.handleChangeData(data)
+    await BroadcastController.handleChangeData(data)
   }
 }
 
