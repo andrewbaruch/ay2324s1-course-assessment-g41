@@ -3,6 +3,7 @@ const ROOTS_USER = "/user";
 const ROOT_QUESTION = "/question";
 const ROOT_COLLAB = "/collaboration";
 const ROOT_MATCHING = "/matching";
+const ROOT_DOCUMENT = "/document";
 
 export const BE_API = {
   auth: {
@@ -25,9 +26,9 @@ export const BE_API = {
     request: `${ROOT_MATCHING}/request`
   },
   collaboration: {
-    broadcast: `${ROOT_COLLAB}/broadcast`,
     room: `${ROOT_COLLAB}/room`,
   },
+  document: ROOT_DOCUMENT,
   topics: `${ROOTS_USER}/topics`,
   languages: `${ROOTS_USER}/languages`,
 };

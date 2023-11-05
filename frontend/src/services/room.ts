@@ -24,7 +24,7 @@ export class RoomService {
     // Connect to peers with WebSocket
     let yProvider: HocuspocusProvider = new HocuspocusProvider({
       url: `${process.env.NEXT_PUBLIC_HOST_API_KEY?.replace("http://", "ws://")}/${
-        BE_API.collaboration.broadcast
+        BE_API.document
       }`,
       name: roomName, // room name
       document: yDoc,
