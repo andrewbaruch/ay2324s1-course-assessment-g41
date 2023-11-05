@@ -80,6 +80,7 @@ services:
     environment:
       <<: *common-variables
       SERVER_PORT: 3000
+      COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
 
   postgres:
     container_name: postgres
