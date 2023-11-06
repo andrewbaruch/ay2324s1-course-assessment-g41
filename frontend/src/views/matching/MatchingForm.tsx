@@ -171,7 +171,7 @@ export const MatchingForm = () => {
             {isLoading ? (
               <AlertDialogBody>
                 {/* <Spinner /> */}
-                <Progress value={progressValue} />
+                <Progress value={progressValue}  width="25"/>
               </AlertDialogBody>
             ) : (
               <>
