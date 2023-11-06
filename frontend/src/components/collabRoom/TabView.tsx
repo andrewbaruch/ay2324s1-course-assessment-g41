@@ -6,7 +6,7 @@ import Card from "src/components/card/Card";
 
 const TabView = () => {
   return (
-    <Card mb={{ base: "0px", "2xl": "20px" }} height="70vh">
+    <Card mb={{ base: "0px", "2xl": "20px" }} height="60vh">
       <Tabs height="100%">
         <TabList>
           <Tab>Description</Tab>

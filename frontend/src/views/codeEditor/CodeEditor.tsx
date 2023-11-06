@@ -32,7 +32,7 @@ export const CodeEditor: React.FC<Props> = ({ onEditorMount, provider, document 
     <Stack>
       {provider ? <Cursor yProvider={provider} /> : null}
       <Editor
-        height="70vh"
+        height="60vh"
         onMount={onEditorMount}
         language={language ? language.value : "plaintext"}
         options={codeEditorOptions}
