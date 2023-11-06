@@ -1,14 +1,14 @@
 import { Room } from "../models/room"
 import { generateSlug } from "random-word-slugs";
-import * as Knex from "knex"
-import { knexPgClient } from "@/clients/pg-knex";
+import { RoomTable, RoomUserTable } from "@/clients/pg-knex";
+import { RoomUser } from "@/models/room-user";
 
 export class RoomService {
   static async openRoom(roomName: string, userId: string) {
     if (!RoomService.doesUserHaveAccessToRoom(userId, roomName)) {
       throw new Error(`This user does not have access to the room.`)
     }
-    const updatedRoom = await knexPgClient("Room").where("name", roomName).update({
+    const updatedRoom = await RoomTable.where("name", roomName).update({
       isOpen: true
     }, ["id", "isOpen", "name"])
     console.log("updated room", updatedRoom)
@@ -22,7 +22,7 @@ export class RoomService {
     console.log('closing room', roomName)
     
     // set isOpen to false
-    const updatedRoom = await knexPgClient("Room").where("name", roomName).update({
+    const updatedRoom = await RoomTable.where("name", roomName).update({
       isOpen: false
     }, ["id", "isOpen", "name"])
 
@@ -33,20 +33,27 @@ export class RoomService {
   static async createRoom(userId1: string, userId2: string) {
     const { roomName } = await RoomService.generateRoomName();
     console.log('write into db')
-    const room: Room[] = await knexPgClient("Room").insert({
-      userId1, userId2, name: roomName
-    }, ["id", "name", "userId1", "userId2", "isOpen"])
+    const room: Room[] = await RoomTable.insert({
+      name: roomName
+    }, ["id", "name", "isOpen"])
     
-    console.log('complete db insertion', room[0])
+    const roomUser1: RoomUser[] = await RoomUserTable.insert({
+      roomName, userId: userId1,
+    }, ["id", "roomName", "userId"])
+    const roomUser2: RoomUser[] = await RoomUserTable.insert({
+      roomName, userId: userId2,
+    }, ["id", "roomName", "userId"])
+
+    console.log('complete db insertion', room[0], roomUser1[0], roomUser2[0])
     return { room: room[0] }
   }
 
   static async isRoomOpen(roomName: string) {
-    const record: Room[] = await knexPgClient("Room").where("name", roomName);
+    const record: Room[] = await RoomTable.where("name", roomName);
     if (record.length === 0) {
       return false;
     }
-    
+
     const { isOpen } = record[0];
     return isOpen;
   }
@@ -57,9 +64,7 @@ export class RoomService {
       return false;
     }
     
-    const record: Room[] = await knexPgClient("Room").where("name", roomName).where((builder: any) => {
-      builder.where("userId1", userId).orWhere("userId2", userId)
-    })
+    const record: RoomUser[] = await RoomUserTable.where("roomName", roomName).andWhere("userId", userId);
 
     console.log('query result', record)
     return record.length > 0;
@@ -70,7 +75,7 @@ export class RoomService {
     let slug = "";
     while (true) {
       slug = generateSlug()
-      const room = await knexPgClient("Room").where("name", slug).first() as Room
+      const room = await RoomTable.where("name", slug).first() as Room
       console.log('retrieved room', room)
       if (!room) {
         console.log('generated room name', slug)

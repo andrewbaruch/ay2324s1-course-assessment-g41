@@ -8,6 +8,8 @@ export const knexPgClient = require('knex')({
   // set min to 0 so all idle connections can be terminated
   pool: { min: 0, max: 10 },
   ...knexSnakeCaseMappers({ underscoreBeforeDigits: true })
-})
+});
 
+export const RoomTable = knexPgClient("Room");
 
+export const RoomUserTable = knexPgClient("RoomUser");
