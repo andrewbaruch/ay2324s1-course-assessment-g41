@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deployment
+  labels:
+    app: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user
+        image: user
+        ports:
+        - containerPort: 3000
+        env:
+        - name: ACCESS_COOKIE_KEY
+          value: EXAMPLE_PEERPREPACCESSTOKEN
+        - name: EXE_ENV
+          value: DEV
+        - name: JWT_SECRET
+          value: EXAMPLE_SECRERT
+        - name: MONGO
+          value: mongodb://user:password@mongo:27017
+        - name: POSTGRES
+          value: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
+        - name: POSTGRES_COLLAB
+          value: postgresql://postgres:postgres@postgres-collab:5432/postgres?connect_timeout=300
+        - name: REFRESH_COOKIE_KEY
+          value: EXAMPLE_PEERPREPREFRESHTOKEN
+        - name: SERVER_PORT
+          value: "3000"
+        resources:
+          requests: 
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

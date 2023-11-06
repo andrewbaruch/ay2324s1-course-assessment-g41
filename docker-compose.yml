@@ -8,7 +8,7 @@ x-common-variables: &common-variables
   JWT_SECRET: EXAMPLE_SECRERT # pass around JWT secret so each service can verify user TODO: add to github secrets on deployment
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
   ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
-  SERVER_PORT: 3000  
+  SERVER_PORT: 3000
 
 networks:
   frontend:

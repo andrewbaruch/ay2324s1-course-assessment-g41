@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global-config
+data:
+  EXE_ENV: PROD
+  JWT_SECRET: EXAMPLE_SECRERT

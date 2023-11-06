@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collaboration-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: collaboration
+  template:
+    metadata:
+      labels:
+        app: collaboration
+    spec:
+      containers:
+      - name: collaboration
+        image: collaboration:latest 
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: collaboration-config
+        resources:
+          requests: 
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      restartPolicy: Always
