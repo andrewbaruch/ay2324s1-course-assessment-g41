@@ -106,7 +106,7 @@ class UserService {
     }
   }
 
-  async update(userId: string, fieldsToUpdate: Partial<UserDao>): Promise<void> {
+  async update(userId: string, fieldsToUpdate: Partial<UserDao>): Promise<User | null> {
     try {
       const query = `
         UPDATE users
@@ -125,7 +125,7 @@ class UserService {
         preferred_difficulty = fieldsToUpdate.preferred_difficulty
       }
         
-      const updatedRows = await postgresClient.query(query, [
+      const { rows: updatedRows } = await postgresClient.query(query, [
         fieldsToUpdate.name ?? null,
         fieldsToUpdate.email ?? null,
         fieldsToUpdate.image ?? null,
@@ -134,7 +134,11 @@ class UserService {
         userId,
       ]);
 
-      if (updatedRows.length)
+      if (updatedRows.length > 0) {
+        const updatedUser = updatedRows[0] as User;
+        return updatedUser;
+      }
+      return null;
     } catch (error) {
       console.log(error)
 

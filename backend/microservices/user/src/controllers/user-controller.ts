@@ -44,8 +44,13 @@ export async function updateUser(req: Request, res: Response) {
     const userId = res.locals.userId;
     const updatedUser = req.body as Partial<UserDao>; // Partial to allow updating only specific fields
     try {
-        await userService.update(userId, updatedUser);
-        res.status(StatusCodes.OK).send();
+        let updatedUserFromDb = await userService.update(userId, updatedUser);
+        if (!updatedUserFromDb) {
+            res.status(StatusCodes.OK).send();
+            return
+        }
+        const { id, ...publicUpdatedUserFromDb } = updatedUserFromDb;
+        res.status(StatusCodes.OK).json({ ...publicUpdatedUserFromDb });
     } catch (error) {
         handleServiceError(error, res)
         res.send();
