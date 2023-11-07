@@ -58,7 +58,6 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   const toast = useToast();
   const { identity } = useGetIdentity();
   const callLogout = useLogout()
-  const [hasUpdated, setHasUpdated] = useState();
 
   console.log("[form values]", toIFormInput(identity));
 
@@ -92,7 +91,8 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   const { run: updateUserProfile } = useRequest(runUpdates, {
     manual: true,
     onSuccess: (result, params) => {
-      reset(toIFormInput(identity)); // Reset form state after submission is successful
+      const updatedUser = result[0].data;
+      reset(toIFormInput(updatedUser)); // Reset form state after submission is successful
       toast({
         title: "Profile Update Success",
         description: "Your profile has been updated successfully!",
