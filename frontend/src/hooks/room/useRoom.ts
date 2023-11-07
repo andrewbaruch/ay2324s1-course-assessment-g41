@@ -10,6 +10,12 @@ export const useRoom = ({ roomName }: { roomName: string }) => {
       return;
     }
 
+    if (roomService !== null) {
+      // keep one client connection per user
+      // TODO: keep in global state management
+      return;
+    }
+
     // once editor is mounted, initialise the room service to bind editor to websocket broadcast
     const room = new RoomService(roomName, editor);
     setRoomService(room);

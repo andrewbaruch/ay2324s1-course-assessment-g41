@@ -29,6 +29,8 @@ import { useMatching } from "@/hooks/matching/useMatchingRequest";
 import useGetIdentity from "@/hooks/auth/useGetIdentity";
 import { useRouter } from "next/navigation";
 import { Status } from "@/@types/status";
+import authorizedAxios from "@/utils/axios/authorizedAxios";
+import { BE_API } from "@/utils/api";
 
 export const MatchingForm = () => {
   const {
@@ -118,10 +120,12 @@ export const MatchingForm = () => {
                       clearInterval(intervalId);
                       intervalId = null;
                       if (response.roomId) {
-                        router.push(`/collab-room/${response.roomId}`);
+                        authorizedAxios.put(`${BE_API.collaboration.room}/${response.roomId}/status/open`).then(res => {
+                          router.push(`/collab-room/${response.roomId}`);
+                        }).catch(err => {
+                          router.push('/dashboard');
+                        });
                       }
-
-                      // router.push(`/collab-room/${response.roomId}`);
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {

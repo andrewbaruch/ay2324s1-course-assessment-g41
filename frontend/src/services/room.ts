@@ -23,14 +23,20 @@ export class RoomService {
 
     // Connect to peers with WebSocket
     let yProvider: HocuspocusProvider = new HocuspocusProvider({
-      url: `${process.env.NEXT_PUBLIC_HOST_API_KEY?.replace("http://", "ws://")}/${
-        BE_API.document
-      }`,
-      name: roomName, // room name
-      document: yDoc,
-    });
-
+        url: `${process.env.NEXT_PUBLIC_HOST_API_KEY?.replace("http://", "ws://")}${
+          BE_API.document
+        }`,
+        name: roomName, // room name
+        document: yDoc,
+        token: this.shouldAuthRoom()
+      });
+    
     return { document: yDoc, provider: yProvider };
+  }
+
+  private shouldAuthRoom() {
+    const val = process.env.NEXT_PUBLIC_SHOULD_AUTH_ROOM
+    return (val && val === "true") ? val : undefined
   }
 
   private bindDocumentToMonacoEditor(editor: monaco.editor.IStandaloneCodeEditor) {
