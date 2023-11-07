@@ -4,6 +4,7 @@ x-common-variables: &common-variables
   POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
   POSTGRES_COLLAB: postgresql://postgres:postgres@postgres-collab:5432/postgres?connect_timeout=300
   MONGO: mongodb://user:password@mongo:27017
+  MONGO_HISTORY: mongodb://user:password@mongo-history:27017
   EXE_ENV: DEV
   JWT_SECRET: EXAMPLE_SECRERT # pass around JWT secret so each service can verify user TODO: add to github secrets on deployment
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
@@ -63,6 +64,22 @@ services:
     environment:
       <<: *common-variables
       SERVER_PORT: 3000
+
+  history:
+    container_name: history
+    build:
+      dockerfile: ./microservices/history/Dockerfile.local
+      context: ./backend
+    volumes:
+      - ./backend/microservices/history:/home/microservices/history/
+      - /home/microservices/history/node_modules
+    ports:
+      - 5003:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      <<: *common-variables
 
   document:
     container_name: document
@@ -142,6 +159,23 @@ services:
       - 27017:27017
     networks:
       - backend
+  
+  mongo-history:
+    container_name: mongo-history
+    build:
+      context: ./mongo-history
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=admin
+    volumes:
+      - mongo:/data/db
+    ports:
+      - 64000:27017
+    networks:
+      - backend
 
   mongo-express:
     image: mongo-express
@@ -204,3 +238,4 @@ volumes:
   postgres:
   postgres-collab:
   mongo:
+  mongo-history:
