@@ -13,12 +13,12 @@ import { useCollabContext } from "@/hooks/contexts/useCollabContext";
  * Reference: https://liveblocks.io/examples/collaborative-code-editor/nextjs-yjs-monaco
  */
 export const CodeEditor = () => {
-  const { handleEditorMount, provider, document, currentAttempt } = useCollabContext();
+  const { handleEditorMount, provider, currentAttempt } = useCollabContext();
   const language = currentAttempt?.language;
   const { colorMode } = useColorMode();
 
   useEffect(() => {
-    return () => document?.destroy();
+    return () => provider?.disconnect()
   }, []);
 
   return (
