@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 const { JsonWebTokenError } = jwt;
 
 const testEmail = "example@email.com";
+const testAdminEmail = "cs3219testadm@gmail.com"
 
 const cookieConfig = {
   httpOnly: true,
@@ -73,6 +74,10 @@ export async function googleRedirect(
 
     res.cookie(accessTokenKey, accessToken, cookieConfig);
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
+
+    if (process.env.EXE_ENV === "DEV" && userInfo.email === testAdminEmail) {
+      await authService.addRoleToUserByName(user.id, "Admin")
+    }
 
     res.redirect(loginRedirectURL);
   } catch (error) {

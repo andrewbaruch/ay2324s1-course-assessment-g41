@@ -166,6 +166,23 @@ export class AuthService {
     }
   }
 
+  async addRoleToUserByName(userId: string, roleName: string): Promise<void> {
+    try {
+        const query = `
+            INSERT INTO user_roles (user_id, role_id)
+            VALUES ($1, (SELECT id FROM roles WHERE name = $2))
+            ON CONFLICT (user_id, role_id) DO NOTHING;
+        `;
+
+        await postgresClient.query(query, [userId, roleName]);
+    } catch (error) {
+        if (error instanceof Error) {
+            throw parseError(error);
+        }
+        throw error;
+    }
+}
+
   async deleteRoleFromUser(userId: string, roleId: string): Promise<void> {
       try {
           const query = `
