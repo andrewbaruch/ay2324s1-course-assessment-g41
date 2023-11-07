@@ -4,33 +4,12 @@ import userService from '@/services/user-service';
 import { StatusCodes } from 'http-status-codes';
 import { handleServiceError } from '@/controllers/error-handler';
 import jwt from 'jsonwebtoken';
+import { cookieConfig } from '@/constants/cookie-config';
+import { accessTokenKey, loginRedirectURL, refreshTokenKey } from '@/constants/token';
 
 const { JsonWebTokenError } = jwt;
 
 const testEmail = "example@email.com";
-
-const cookieConfig = {
-  httpOnly: true,
-  maxAge: 60 * 60 * 24 * 30,
-};
-
-if (!process.env.LOGIN_REDIRECT_URL) {
-  console.log("Missing LOGIN_REDIRECT_URL");
-  process.exit();
-}
-const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
-
-if (!process.env.ACCESS_COOKIE_KEY) {
-  console.log("Missing ACCESS_COOKIE_KEY");
-  process.exit();
-}
-const accessTokenKey = process.env.ACCESS_COOKIE_KEY;
-
-if (!process.env.REFRESH_COOKIE_KEY) {
-  console.log("Missing REFRESH_COOKIE_KEY");
-  process.exit();
-}
-const refreshTokenKey = process.env.REFRESH_COOKIE_KEY;
 
 export async function googleAuth(req: Request, res: Response): Promise<void> {
   if (process.env.EXE_ENV === "DEV" && process.env.SKIP_LOGIN_AUTH === "TRUE") {
