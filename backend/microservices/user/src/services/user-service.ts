@@ -8,14 +8,28 @@ class UserService {
   async create(email: string, image: string): Promise<User> {
     try {
         const query =
-          'INSERT INTO users (email, image) VALUES ($1, $2) RETURNING *;';
+          'INSERT INTO users (name, email, image) VALUES ($1, $2, $3) RETURNING *;';
 
-        const result = await postgresClient.query<User>(query, [
+        const result = await postgresClient.query<UserDao>(query, [
+          email,
           email,
           image,
         ]);
+
+        const dbUser = result.rows[0]
+
+        const user: User = {
+          id: dbUser.id,
+          email: dbUser.email,
+          image: dbUser.image,
+          name: dbUser.name,
+          preferred_language: dbUser.preferred_language,
+          preferred_difficulty: dbUser.preferred_difficulty,
+          preferred_topics: [],
+          roles: [],  
+        }
         
-        return result.rows[0]
+        return user
     } catch (error) {
         if (error instanceof Error) {
         throw parseError(error);

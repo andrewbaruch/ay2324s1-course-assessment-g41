@@ -68,8 +68,8 @@ export async function googleRedirect(
       user = await userService.create(userInfo.email, userInfo.picture);
     }
 
-    const accessToken = await authService.generateAccessToken(user!.id, user.roles);
-    const refreshToken = await authService.generateRefreshToken(user!.id);
+    const accessToken = await authService.generateAccessToken(user.id, user.roles);
+    const refreshToken = await authService.generateRefreshToken(user.id);
 
     res.cookie(accessTokenKey, accessToken, cookieConfig);
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
