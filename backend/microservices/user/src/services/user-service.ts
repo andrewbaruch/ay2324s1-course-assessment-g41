@@ -116,7 +116,8 @@ class UserService {
           image = COALESCE($3, image),
           preferred_language = COALESCE($4, preferred_language),
           preferred_difficulty = COALESCE($5, preferred_difficulty)
-        WHERE id = $6;
+        WHERE id = $6
+        RETURNING *;
       `;
 
       let preferred_difficulty = null
@@ -124,7 +125,7 @@ class UserService {
         preferred_difficulty = fieldsToUpdate.preferred_difficulty
       }
         
-      await postgresClient.query(query, [
+      const updatedRows = await postgresClient.query(query, [
         fieldsToUpdate.name ?? null,
         fieldsToUpdate.email ?? null,
         fieldsToUpdate.image ?? null,
@@ -132,6 +133,8 @@ class UserService {
         preferred_difficulty,
         userId,
       ]);
+
+      if (updatedRows.length)
     } catch (error) {
       console.log(error)
 

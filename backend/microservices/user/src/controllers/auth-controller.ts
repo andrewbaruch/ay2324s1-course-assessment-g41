@@ -5,7 +5,13 @@ import { StatusCodes } from 'http-status-codes';
 import { handleServiceError } from '@/controllers/error-handler';
 import jwt from 'jsonwebtoken';
 import { cookieConfig } from '@/constants/cookie-config';
-import { accessTokenKey, loginRedirectURL, refreshTokenKey } from '@/constants/token';
+import { accessTokenKey, refreshTokenKey } from '@/constants/token';
+
+if (!process.env.LOGIN_REDIRECT_URL) {
+  console.log("Missing LOGIN_REDIRECT_URL");
+  process.exit();
+}
+export const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
 
 const { JsonWebTokenError } = jwt;
 
