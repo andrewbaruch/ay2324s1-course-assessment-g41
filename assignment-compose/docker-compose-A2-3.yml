@@ -26,6 +26,7 @@ services:
       - backend
     environment:
       <<: *common-variables
+      LOGIN_REDIRECT_URL: http://localhost:3000/dashboard
 
   question:
     container_name: question
