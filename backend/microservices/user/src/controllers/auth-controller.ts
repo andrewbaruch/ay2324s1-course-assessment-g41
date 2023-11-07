@@ -47,6 +47,7 @@ export async function googleAuth(req: Request, res: Response): Promise<void> {
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
 
     res.status(StatusCodes.OK).json(user)
+    return
   }
 
   const authUrl = authService.getGoogleAuthURL();
