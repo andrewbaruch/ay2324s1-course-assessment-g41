@@ -21,6 +21,7 @@
     "fs": "^0.0.1-security",
     "glob": "^10.3.10",
     "jsonwebtoken": "^9.0.0",
+    "mongoose": "^8.0.0",
     "objection": "^3.1.2",
     "path": "^0.12.7",
     "tscpaths": "^0.0.9"

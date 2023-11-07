@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import express from 'express'
+import attemptRouter from "@/routes/attempt-router";
 
 export class Server {
   private app
@@ -11,6 +12,11 @@ export class Server {
     const port = process.env.SERVER_PORT
     if (!port) {
       console.log("Missing env varibale SERVER_PORT")
+      process.exit()
+    }
+
+    if (!process.env.MONGO_HISTORY || !process.env.MONGO_DBNAME) {
+      console.log("Missing env varibale MONGO or MONGO_DBNAME")
       process.exit()
     }
 
@@ -36,7 +42,7 @@ export class Server {
   }
 
   private configRouter() {
-    // this.app.use('/room', roomRouter)
+    this.app.use('/history', attemptRouter)
   }
 }
 
