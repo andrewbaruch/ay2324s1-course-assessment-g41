@@ -7,10 +7,6 @@ import ComplexityMatchingPushService from "@/services/complexity-matching-push-s
 
 export const removeMatchingPair = async (req: Request, res: Response) => {
   const userId: string = res.locals.userId;
-  // const { userId }: { userId: string } = req.body;
-  // console.log("in delete request");
-  // console.log(userId);
-  // console.log("in delete request");
 
   try {
     await complexityMatchingPairCache.del(userId);
@@ -23,10 +19,6 @@ export const removeMatchingPair = async (req: Request, res: Response) => {
 
 export const pushMatchRequestToQueue = async (req: Request, res: Response) => {
   const userId: string = res.locals.userId;
-  // const { userId }: { userId: string } = req.body;
-  // console.log("in push request");
-  // console.log(userId);
-  // console.log("in push request");
 
   const { questionComplexity }: { questionComplexity: string } = req.body;
   const complexityPublisherService = new ComplexityMatchingPushService();
@@ -44,11 +36,6 @@ export async function getMatchingStatus(
   res: Response
 ): Promise<void> {
   const userId: string = res.locals.userId;
-
-  // const { userId }: { userId: string } = req.body;
-  // console.log("in get request");
-  // console.log(userId);
-  // console.log("in get request");
 
   const matchingPair:
     | { roomId: string; user1: string; user2: string }

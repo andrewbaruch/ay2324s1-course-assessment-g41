@@ -42,7 +42,9 @@ class ComplexitySubscriber {
       const parsedData = JSON.parse(message.data.toString());
 
       if (
-        complexityMatchingPullService.isUserAlreadyMatched(parsedData.userId)
+        await complexityMatchingPullService.isUserAlreadyMatched(
+          parsedData.userId
+        )
       ) {
         console.log(`${parsedData.userId} is already matched`);
         return;
@@ -65,20 +67,24 @@ class ComplexitySubscriber {
         await complexityMatchingPullService.matchUsersIfMoreThanTwo(complexity);
 
       if (room) {
-        // update matchingPairCache
-        console.log(
-          "matched pair, inserting into cache",
-          await complexityMatchingPairCache.set(user1.userId, {
+        const insertUser1 = await complexityMatchingPairCache.set(
+          user1.userId,
+          {
             userId2: user2.userId,
             complexity: complexity,
             roomId: room.name,
-          }),
-          await complexityMatchingPairCache.set(user2.userId, {
+          }
+        );
+        const insertUser2 = await complexityMatchingPairCache.set(
+          user2.userId,
+          {
             userId2: user1.userId,
             complexity: complexity,
             roomId: room.name,
-          })
+          }
         );
+        // update matchingPairCache
+        console.log("matched pair, inserting into cache");
       }
       console.log(
         `matchingpairs=${JSON.stringify(

@@ -1,6 +1,7 @@
 import { MATCHING_REQUEST_VALID_DURATION_IN_SECONDS } from "@/constants/matching-request";
 import * as CollabClient from "@/clients/collab-client";
 import { QuestionComplexity } from "@/models/question";
+import complexityMatchingPairCache from "@/utils/complexity-matching-pair-cache";
 
 class ComplexityMatchingPullService {
   readonly matchingPairs: Record<string, string> = {};
@@ -22,8 +23,11 @@ class ComplexityMatchingPullService {
     }
   }
 
-  public isUserAlreadyMatched(userId: string) {
-    return userId in this.matchingPairs;
+  public async isUserAlreadyMatched(userId: string) {
+    const matchingPair:
+      | { roomId: string; user1: string; user2: string }
+      | undefined = await complexityMatchingPairCache.get(userId);
+    return matchingPair != undefined;
   }
 
   public registerRequestForMatch(requestForMatchData: any) {
@@ -68,7 +72,7 @@ class ComplexityMatchingPullService {
     const user1: any = this.dequeuedPairs[complexity].shift();
     const user2: any = this.dequeuedPairs[complexity].shift();
 
-    // send to matching topic, store matching pair
+    // get room from collab service, store matching pair
     const matchingTopicData: string = JSON.stringify({
       userId1: user1.userId,
       userId2: user2.userId,

@@ -100,6 +100,7 @@ export const MatchingForm = () => {
             console.log(data);
             onOpen();
             setIsLoading(true);
+            setProgressValue(() => 100);
 
             sendMatchingRequest(data.complexity).then(async () => {
               await new Promise((r) => setTimeout(r, 1000));
@@ -170,8 +171,7 @@ export const MatchingForm = () => {
 
             {isLoading ? (
               <AlertDialogBody>
-                {/* <Spinner /> */}
-                <Progress value={progressValue} />
+                <Progress value={progressValue} width="25" />
               </AlertDialogBody>
             ) : (
               <>
