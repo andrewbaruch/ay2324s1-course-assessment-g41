@@ -2,10 +2,9 @@ version: "3.8"
 
 x-common-variables: &common-variables
   POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
-  POSTGRES_COLLAB: postgresql://postgres:postgres@postgres-collab:5432/postgres?connect_timeout=300
   MONGO: mongodb://user:password@mongo:27017
   EXE_ENV: DEV
-  JWT_SECRET: EXAMPLE_SECRERT # pass around JWT secret so each service can verify user TODO: add to github secrets on deployment
+  JWT_SECRET: EXAMPLE_SECRERT 
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
   ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
   SERVER_PORT: 3000  
@@ -19,10 +18,7 @@ services:
     container_name: user
     build:
       dockerfile: ./microservices/user/Dockerfile.local
-      context: ./backend
-    volumes:
-      - ./backend/microservices/user:/home/microservices/user/
-      - /home/microservices/user/node_modules
+      context: ../backend
     ports:
       - 8080:3000
     restart: on-failure
@@ -35,10 +31,7 @@ services:
     container_name: question
     build:
       dockerfile: ./microservices/question/Dockerfile.local
-      context: ./backend
-    volumes:
-      - ./backend/microservices/question:/home/microservices/question/
-      - /home/microservices/question/node_modules
+      context: ../backend
     ports:
       - 3001:3000
     restart: on-failure
@@ -50,7 +43,7 @@ services:
   postgres:
     container_name: postgres
     build:
-      context: ./postgres
+      context: ../postgres
       dockerfile: Dockerfile
     restart: always
     environment:
@@ -78,7 +71,7 @@ services:
   mongo:
     container_name: mongo
     build:
-      context: ./mongo
+      context: ../mongo
       dockerfile: Dockerfile
     restart: always
     environment:
@@ -110,8 +103,8 @@ services:
       - user
     restart: always
     build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
+      dockerfile: Dockerfile.A2
+      context: ../nginx
     ports:
       - "3000:80"
     networks:
@@ -121,14 +114,9 @@ services:
   client:
     build:
       dockerfile: Dockerfile.local
-      context: ./frontend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      context: ../frontend
     networks:
       - frontend
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 
 volumes:
   postgres:
