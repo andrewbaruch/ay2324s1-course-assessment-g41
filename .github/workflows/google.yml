@@ -4,11 +4,8 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_ID: cs3219-group41
+  PROJECT_ID: cs3219-402414
   GAR_LOCATION: asia-southeast1
-  GKE_CLUSTER: cluster-1    # TODO: update to cluster name
-  GKE_ZONE: us-central1-c   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: gke-test # TODO: update to deployment name
   REPOSITORY: peerprepimages
   USER_IMAGE: user
   QUESTIONS_IMAGE: questions
