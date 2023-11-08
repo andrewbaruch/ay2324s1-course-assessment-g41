@@ -1,16 +1,13 @@
-db.auth('user', 'password')
+db.auth('user', 'password');
 
-db = db.getSiblingDB('test')
+db = db.getSiblingDB('test');
 
 db.createUser({
   user: 'test-user',
   pwd: 'test-password',
-  roles: [
-    {
-      role: 'root',
-      db: 'test',
-    },
-  ],
+  roles: [{ 
+    role: 'dbOwner', db: 'test' 
+  }],
 });
 
 db.createCollection('questions');
