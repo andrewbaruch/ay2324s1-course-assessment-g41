@@ -1,5 +1,5 @@
 // Import necessary libraries
-import { Button, SimpleGrid, Text, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Box, Button, SimpleGrid, Text, useColorModeValue, useToast } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import Card from "src/components/card/Card";
 import { OptionBase } from "chakra-react-select";
@@ -180,7 +180,8 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             }
             placeholder="Select option"
           />
-          <ControlledSelect
+          <Box />
+          {/* <ControlledSelect
             control={control}
             name="preferred_topics"
             id="topics"
@@ -194,7 +195,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             }
             placeholder="Select option"
             isMulti
-          />
+          /> */}
           <ControlledSelect
             control={control}
             name="preferred_difficulty"
