@@ -1,0 +1,150 @@
+# This workflow will build a docker container, publish it to Google Container Registry, and deploy it to GKE when there is a push to the "master" branch.
+#
+# To configure this workflow:
+#
+# 1. Ensure that your repository contains the necessary configuration for your Google Kubernetes Engine cluster, including deployment.yml, kustomization.yml, service.yml, etc.
+#
+# 2. Create and configure a Workload Identity Provider for GitHub (https://github.com/google-github-actions/auth#setting-up-workload-identity-federation)
+#
+# 3. Change the values for the GAR_LOCATION, GKE_ZONE, GKE_CLUSTER, IMAGE, REPOSITORY and DEPLOYMENT_NAME environment variables (below).
+#
+# For more support on how to run the workflow, please visit https://github.com/google-github-actions/setup-gcloud/tree/master/example-workflows/gke-kustomize
+
+name: Build and Deploy to GKE
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GAR_LOCATION: asia-southeast1
+  GKE_CLUSTER: cluster-1    # TODO: update to cluster name
+  GKE_ZONE: us-central1-c   # TODO: update to cluster zone
+  DEPLOYMENT_NAME: gke-test # TODO: update to deployment name
+  REPOSITORY: asia-southeast1-docker.pkg.dev
+  USER_IMAGE: user
+  QUESTIONS_IMAGE: questions
+  MATCHING_IMAGE: matching
+  COLLAB_IMAGE: collab
+  CLIENT_IMAGE: client
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Configure Workload Identity Federation and generate an access token.
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        token_format: 'access_token'
+        workload_identity_provider: 'https://iam.googleapis.com/projects/390163572398/locations/global/workloadIdentityPools/githubaction/providers/testprovider'
+        service_account: 'githubactions@cs3219-group41.iam.gserviceaccount.com'
+
+    # Alternative option - authentication via credentials json
+    # - id: 'auth'
+    #   uses: 'google-github-actions/auth@v0'
+    #   with:
+    #     credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: Docker configuration
+      run: |-
+        echo ${{steps.auth.outputs.access_token}} | docker login -u oauth2accesstoken --password-stdin https://$GAR_LOCATION-docker.pkg.dev
+    # Get the GKE credentials so we can deploy to the cluster
+    # - name: Set up GKE credentials
+    #   uses: google-github-actions/get-gke-credentials@v0
+    #   with:
+    #     cluster_name: ${{ env.GKE_CLUSTER }}
+    #     location: ${{ env.GKE_ZONE }}
+
+    # Build the Docker image
+    - name: Build User
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$USER_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          ./backend/microservices/user
+          
+    - name: Build Questions
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$QUESTIONS_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          ./backend/microservices/question
+
+    - name: Build Matching
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$MATCHING_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          ./backend/microservices/matching
+          
+    - name: Build Collab
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$COLLAB_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          ./backend/microservices/collaboration
+
+    - name: Build Client
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          ./frontend/
+    
+    # Push the Docker image to Google Artifact Registry
+    - name: Publish User
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$USER_IMAGE:$GITHUB_SHA"
+
+    - name: Publish Questions
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$QUESTIONS_IMAGE:$GITHUB_SHA"
+
+     # Push the Docker image to Google Artifact Registry
+    - name: Publish Matching
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$MATCHING_IMAGE:$GITHUB_SHA"
+
+    - name: Publish Collab
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$COLLAB_IMAGE:$GITHUB_SHA"
+
+    - name: Publish Client
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_COLLAB:$GITHUB_SHA"
+  
+    # Set up kustomize
+    - name: Set up Kustomize
+      run: |-
+        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
+    
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        # replacing the image name in the k8s template
+        ./kustomize edit set image LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/USER_IMAGE:TAG=$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$USER_IMAGE:$GITHUB_SHA
+        ./kustomize edit set image LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/QUESTION_IMAGE:TAG=$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$QUESTION_IMAGE:$GITHUB_SHA
+        ./kustomize edit set image LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/COLLAB_IMAGE:TAG=$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$COLLAB_IMAGE:$GITHUB_SHA
+        ./kustomize edit set image LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/MATCHING_IMAGE:TAG=$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$MATCHING_IMAGE:$GITHUB_SHA
+        ./kustomize edit set image LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/CLIENT_COLLAB:TAG=$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_COLLAB:$GITHUB_SHA
+        ./kustomize build . | kubectl apply -f -
+        kubectl rollout status deployment/$DEPLOYMENT_NAME
+        kubectl get services -o wide
