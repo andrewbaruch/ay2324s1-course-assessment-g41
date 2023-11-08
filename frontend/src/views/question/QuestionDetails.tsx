@@ -109,14 +109,14 @@ export const QuestionDetails = ({
       )}
     </Flex>
   ) : (
-    <QuestionForm
-      question={{
-        title,
-        complexity,
-        description,
-        id,
-        categories,
-      }}
-    />
-  );
+      <QuestionForm
+        question={{
+          title,
+          complexity,
+          description,
+          id,
+          categories,
+        }}
+      />
+    );
 };
