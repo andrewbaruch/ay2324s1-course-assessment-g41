@@ -7,12 +7,13 @@ import { parseCookie } from "@/utils/parseCookie";
 
 const saveAttempt = (data: onStoreDocumentPayload) => {
   const { documentName } = data
-  const ymap = data.document.getMap()
-  const attemptId = ymap.get("attemptId") as string
-  const text = ymap.get("text") as string
-  const language = ymap.get("language") as Language
+  const ymap = data.document.getMap();
+  const attemptId = ymap.get("attemptId") as string;
+  const text = ymap.get("text") as string;
+  const language = ymap.get("language") as Language;
+  const questionId = ymap.get("questionId") as string;
   AttemptService.saveAttempt({
-    attemptId, text, language, roomName: documentName
+    attemptId, text, language, roomName: documentName, questionId
   })
 }
 

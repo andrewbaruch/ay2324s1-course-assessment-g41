@@ -5,6 +5,7 @@ interface AttemptMessageData {
   attemptId: string;
   language: Language;
   text: string;
+  questionId: string;
 }
 
 export default AttemptMessageData;

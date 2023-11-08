@@ -24,8 +24,8 @@ class AttemptSubscriber {
       console.log(`\tData: ${message.data}`);
       console.log(`\tAttributes: ${message.attributes}`);
 
-      const { attemptId, text, language, roomName } = JSON.parse(message.data.toString()) as AttemptMessageData;
-      await AttemptService.saveAttemptToDatabase({ attemptId, text, language, roomName });  
+      const { attemptId, text, language, roomName, questionId } = JSON.parse(message.data.toString()) as AttemptMessageData;
+      await AttemptService.upsertAttempt({ attemptId, text, language, roomName, questionId });  
     } catch (err) {
       // allow graceful timeout from waiting
       console.error(`message ${message.id} has an error:`, err)

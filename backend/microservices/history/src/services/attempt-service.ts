@@ -1,7 +1,7 @@
 import AttemptMessageData from "@/models/attempt-message-data";
 import AttemptModel from "@/models/attempt";
 
-const saveAttemptToDatabase = async (attemptData: AttemptMessageData) => {
+const upsertAttempt = async (attemptData: AttemptMessageData) => {
   const options = {
     upsert: true
   }
@@ -23,6 +23,6 @@ const findAttemptFromDatabase = async (attemptId: string) => {
 }
 
 export {
-  saveAttemptToDatabase,
+  upsertAttempt,
   findAttemptFromDatabase
 };

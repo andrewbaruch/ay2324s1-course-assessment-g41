@@ -9,8 +9,8 @@ class AttemptPublisher {
     this.pubSubClient = PubSubClient;
   }
 
-  publishToTopic({ attemptId, roomName, text, language }: { attemptId: string, roomName: string, text: string, language: Language }) {
-    const data = JSON.stringify({ attemptId, roomName, text, language })
+  publishToTopic({ attemptId, roomName, text, language, questionId }: { attemptId: string, roomName: string, text: string, language: Language, questionId: string }) {
+    const data = JSON.stringify({ attemptId, roomName, text, language, questionId })
     this.pubSubClient.publishToTopic(this.attemptTopic, data)
   }
 }
