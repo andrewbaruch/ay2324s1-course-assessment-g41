@@ -31,6 +31,22 @@ services:
     environment:
       <<: *common-variables
 
+  videostreaming:
+    container_name: videostreaming
+    build:
+      dockerfile: ./microservices/videostreaming/Dockerfile.local
+      context: ./backend
+    volumes:
+      - ./backend/microservices/videostreaming:/home/node/app/
+      - /home/node/app/node_modules
+    ports:
+      - 8083:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      <<: *common-variables
+
   question:
     container_name: question
     build:
@@ -128,7 +144,7 @@ services:
   mongo-express:
     image: mongo-express
     ports:
-      - "8081:8081"
+      - "8082380823
     environment:
       - ME_CONFIG_MONGODB_URL="mongo://user:password@mongo:27017/"
       - ME_CONFIG_MONGODB_SERVER=mongo
