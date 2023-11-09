@@ -1,7 +1,7 @@
 "use client";
 
 // pages/CollabRoomPage.tsx
-import React from "react";
+import React, { useMemo } from "react";
 import { Question, QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
 import CollabRoom from "@/components/collabRoom/CollabRoom";
@@ -11,6 +11,7 @@ import { useRoom } from "@/hooks/room/useRoom";
 import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
 import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 import { VideoContextProvider } from "@/contexts/VideoContextProvider";
+import { WebSocketSignalingClient } from "@/videoClients/webSocketSignalingClient";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -118,8 +119,12 @@ const CollabRoomPage: React.FC = () => {
 
   const currentAttempt = useGetCurrentAttempt(document);
 
+  const signalingClient = useMemo(() => {
+    return new WebSocketSignalingClient("wss://example.com/signaling");
+  }, []);
+
   return (
-    <VideoContextProvider>
+    <VideoContextProvider signalingClient={signalingClient}>
       <CollabRoom
         questionTotalList={mockQuestions}
         languageTotalList={supportedLanguages}

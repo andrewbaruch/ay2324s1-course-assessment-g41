@@ -1,4 +1,5 @@
 // context/VideoContextProvider.tsx
+import { SignalingClient } from "@/@types/video";
 import React, {
   createContext,
   useContext,
@@ -14,7 +15,8 @@ interface VideoContextValue {
   remoteStream: MediaStream | null;
   startLocalStream: () => Promise<void>;
   stopLocalStream: () => void;
-  connectToRemoteStream: () => Promise<void>;
+  // karwi: clean up using the returned callback
+  connectToRemoteStream: () => Promise<() => void>;
   isCameraOn: boolean;
   isMicrophoneOn: boolean;
   toggleCamera: () => void;
@@ -33,9 +35,13 @@ export const useVideoContext = () => {
 
 interface VideoContextProviderProps {
   children: ReactNode;
+  signalingClient: SignalingClient;
 }
 
-export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ children }) => {
+export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
+  children,
+  signalingClient,
+}) => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
@@ -118,13 +124,79 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
 
   const connectToRemoteStream = useCallback(async () => {
-    // Logic to connect to a remote stream
-    // This is often done using WebRTC or other streaming technologies
-    // For example, you might set up a peer connection and then set the remote stream
-    // once you receive it on that connection
-    // const remoteStream = await someFunctionToGetRemoteStream();
-    // setRemoteStream(remoteStream);
-  }, []);
+    // Assume that signalingClient has methods to handle signaling
+    // This would connect to your signaling server and join a specific room
+    await signalingClient.connect();
+
+    // Create a new RTCPeerConnection
+    const peerConnection = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: "stun:stun.l.google.com:19302", // Using Google's public STUN server
+        },
+        // ... You can add more STUN/TURN servers as needed
+      ],
+    });
+
+    // Set up event handlers for peer connection
+    peerConnection.ontrack = (event) => {
+      // Set the remote stream
+      setRemoteStream(event.streams[0]);
+    };
+
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        // Send the ICE candidate to the remote peer via your signaling service
+        signalingClient.sendIceCandidate(event.candidate);
+      }
+    };
+
+    // Add local stream tracks to the peer connection
+    localStream?.getTracks().forEach((track) => {
+      peerConnection.addTrack(track, localStream);
+    });
+
+    // Create an offer
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+
+    // Send the offer to the remote peer via your signaling service
+    signalingClient.sendOffer(offer);
+
+    // Listen for the answer from the remote peer
+    signalingClient.onAnswer(async (answer) => {
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    });
+
+    // Listen for ICE candidates from the remote peer
+    signalingClient.onIceCandidate(async (candidate) => {
+      if (candidate) {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+      }
+    });
+
+    // Handle the negotiationneeded event (in case renegotiation is needed)
+    peerConnection.onnegotiationneeded = async () => {
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      signalingClient.sendOffer(offer);
+    };
+
+    // Handle connection state changes
+    peerConnection.onconnectionstatechange = () => {
+      if (peerConnection.connectionState === "connected") {
+        // Peers are connected and ready to communicate
+        console.log("Peers connected!");
+      }
+    };
+
+    // Clean up the peer connection when the component unmounts or the connection is closed
+    return () => {
+      peerConnection.close();
+    };
+
+    // Note: You would also need to handle disconnects and cleanup peerConnection when done
+  }, [localStream, signalingClient]);
 
   // The rest of your context provider remains the same
   return (
