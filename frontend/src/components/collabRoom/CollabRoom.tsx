@@ -40,6 +40,7 @@ type CollabRoomProps = CollabRoomPropsContextValue & {
 type CollabContextValue = CollabRoomPropsContextValue;
 export const CollabContext = createContext<CollabContextValue | null>(null);
 
+// karwi: check that listOfActiveUsers.len <= 2
 const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   questionTotalList,
   languageTotalList,
