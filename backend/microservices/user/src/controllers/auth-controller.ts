@@ -11,20 +11,11 @@ const { JsonWebTokenError } = jwt;
 const testEmail = "example@email.com";
 const testAdminEmail = "cs3219testadm@gmail.com"
 
-const cookieConfig = {
-  httpOnly: true,
-  maxAge: 60 * 60 * 24 * 30,
-};
-
 if (!process.env.LOGIN_REDIRECT_URL) {
   console.log("Missing LOGIN_REDIRECT_URL");
   process.exit();
 }
 export const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
-
-const { JsonWebTokenError } = jwt;
-
-const testEmail = "example@email.com";
 
 export async function googleAuth(req: Request, res: Response): Promise<void> {
   if (process.env.EXE_ENV === "DEV" && process.env.SKIP_LOGIN_AUTH === "TRUE") {
@@ -70,7 +61,7 @@ export async function googleRedirect(
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
 
     if (process.env.EXE_ENV === "DEV" && userInfo.email === testAdminEmail) {
-      await authService.addRoleToUserByName(user.id, "Admin")
+      await authService.addRoleToUserByName(user.id, "ADMIN")
     }
 
     res.redirect(loginRedirectURL);
