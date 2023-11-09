@@ -3,7 +3,7 @@ import React from "react";
 import { Flex, Text, Box, useColorModeValue } from "@chakra-ui/react";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 import VideoStream from "./VideoStream";
-import { useVideoContext } from "src/contexts/VideoContextProvider";
+import { useVideoContext } from "@/contexts/VideoContext";
 
 interface IUser {
   id: string;

@@ -10,7 +10,7 @@ import { CodeEditor } from "@/views/codeEditor";
 import { useRoom } from "@/hooks/room/useRoom";
 import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
 import { useGetLanguages } from "@/hooks/room/useGetLanguages";
-import { VideoContextProvider } from "@/contexts/VideoContextProvider";
+import { VideoContextProvider } from "@/contexts/VideoContext";
 import { WebSocketSignalingClient } from "@/videoClients/webSocketSignalingClient";
 
 // Mock Data

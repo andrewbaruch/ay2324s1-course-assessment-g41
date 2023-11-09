@@ -9,7 +9,7 @@ import { User } from "@/@types/user";
 import { Attempt } from "@/@types/attempt";
 import TabView from "./TabView";
 import styles from "./Splitter.module.css";
-import { VideoContextProvider } from "@/contexts/VideoContextProvider";
+import { VideoContextProvider } from "@/contexts/VideoContext";
 
 interface CollabRoomLanguage {
   label: string;
