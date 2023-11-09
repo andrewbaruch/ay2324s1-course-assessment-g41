@@ -4,7 +4,8 @@ import userService from '@/services/user-service';
 import { StatusCodes } from 'http-status-codes';
 import { handleServiceError } from '@/controllers/error-handler';
 import jwt from 'jsonwebtoken';
-
+import { cookieConfig } from '@/constants/cookie-config';
+import { accessTokenKey, refreshTokenKey } from '@/constants/token';
 const { JsonWebTokenError } = jwt;
 
 const testEmail = "example@email.com";
@@ -19,19 +20,11 @@ if (!process.env.LOGIN_REDIRECT_URL) {
   console.log("Missing LOGIN_REDIRECT_URL");
   process.exit();
 }
-const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
+export const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
 
-if (!process.env.ACCESS_COOKIE_KEY) {
-  console.log("Missing ACCESS_COOKIE_KEY");
-  process.exit();
-}
-const accessTokenKey = process.env.ACCESS_COOKIE_KEY;
+const { JsonWebTokenError } = jwt;
 
-if (!process.env.REFRESH_COOKIE_KEY) {
-  console.log("Missing REFRESH_COOKIE_KEY");
-  process.exit();
-}
-const refreshTokenKey = process.env.REFRESH_COOKIE_KEY;
+const testEmail = "example@email.com";
 
 export async function googleAuth(req: Request, res: Response): Promise<void> {
   if (process.env.EXE_ENV === "DEV" && process.env.SKIP_LOGIN_AUTH === "TRUE") {
@@ -48,6 +41,7 @@ export async function googleAuth(req: Request, res: Response): Promise<void> {
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
 
     res.status(StatusCodes.OK).json(user)
+    return
   }
 
   const authUrl = authService.getGoogleAuthURL();
@@ -69,8 +63,8 @@ export async function googleRedirect(
       user = await userService.create(userInfo.email, userInfo.picture);
     }
 
-    const accessToken = await authService.generateAccessToken(user!.id, user.roles);
-    const refreshToken = await authService.generateRefreshToken(user!.id);
+    const accessToken = await authService.generateAccessToken(user.id, user.roles);
+    const refreshToken = await authService.generateRefreshToken(user.id);
 
     res.cookie(accessTokenKey, accessToken, cookieConfig);
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
