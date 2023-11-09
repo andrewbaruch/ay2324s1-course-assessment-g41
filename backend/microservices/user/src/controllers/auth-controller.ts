@@ -6,16 +6,17 @@ import { handleServiceError } from '@/controllers/error-handler';
 import jwt from 'jsonwebtoken';
 import { cookieConfig } from '@/constants/cookie-config';
 import { accessTokenKey, refreshTokenKey } from '@/constants/token';
+import { User } from "@/models/user";
+const { JsonWebTokenError } = jwt;
+
+const testEmail = "example@email.com";
+const testAdminEmail = "cs3219testadm@gmail.com"
 
 if (!process.env.LOGIN_REDIRECT_URL) {
   console.log("Missing LOGIN_REDIRECT_URL");
   process.exit();
 }
 export const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
-
-const { JsonWebTokenError } = jwt;
-
-const testEmail = "example@email.com";
 
 export async function googleAuth(req: Request, res: Response): Promise<void> {
   if (process.env.EXE_ENV === "DEV" && process.env.SKIP_LOGIN_AUTH === "TRUE") {
@@ -52,6 +53,11 @@ export async function googleRedirect(
 
     if (!user) {
       user = await userService.create(userInfo.email, userInfo.picture);
+    }
+
+    if (process.env.EXE_ENV === "DEV" && userInfo.email === testAdminEmail) {
+      await authService.addRoleToUserByName(user.id, "ADMIN");
+      user = await userService.readByEmail(user.email) as User;
     }
 
     const accessToken = await authService.generateAccessToken(user.id, user.roles);

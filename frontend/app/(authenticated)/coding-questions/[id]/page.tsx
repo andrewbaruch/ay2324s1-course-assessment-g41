@@ -4,9 +4,11 @@ import { Question } from "@/@types/models/question";
 import QuestionService from "@/services/question";
 import { QuestionDetails } from "@/views/question";
 import { useEffect, useState } from "react";
+import useHasQuestionWritePerms from "@/hooks/questions/useHasQuestionWritePerms";
 
 const QuestionDetailsPage = ({ params }: { params: { id: string } }) => {
   const [question, setQuestion] = useState<Question | null>(null);
+  const { hasWritePerms } = useHasQuestionWritePerms();
 
   useEffect(() => {
     QuestionService.getQuestion(params.id).then((q) => {
@@ -14,7 +16,7 @@ const QuestionDetailsPage = ({ params }: { params: { id: string } }) => {
     });
   }, [params]);
 
-  return <QuestionDetails {...(question as Question)} isPreview={false} />;
+  return <QuestionDetails {...(question as Question)} isPreview={false} hasWritePerms={hasWritePerms} />;
 };
 
 export default QuestionDetailsPage;

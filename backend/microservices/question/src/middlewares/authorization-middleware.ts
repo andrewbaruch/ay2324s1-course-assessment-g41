@@ -8,7 +8,7 @@ export function authQuestion(req: Request, res: Response, next: Function) {
 
   const roles = res.locals.roles
 
-  if (roles.includes("Admin")) {
+  if (roles.includes("ADMIN")) {
     next()
   } else {
     res.status(403).send()
