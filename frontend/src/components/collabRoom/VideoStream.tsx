@@ -65,12 +65,14 @@ const VideoStream: React.FC<VideoStreamProps> = ({
             icon={isCameraOn ? <MdVideocam /> : <MdVideocamOff />}
             onClick={onToggleCamera}
             size="sm"
+            variant="ghost"
           />
           <IconButton
             aria-label="Toggle microphone"
             icon={isMicrophoneOn ? <MdMic /> : <MdMicOff />}
             onClick={onToggleMicrophone}
             size="sm"
+            variant="ghost"
           />
         </Flex>
       </Box>
