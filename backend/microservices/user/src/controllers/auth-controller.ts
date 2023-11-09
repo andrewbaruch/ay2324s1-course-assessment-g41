@@ -6,6 +6,7 @@ import { handleServiceError } from '@/controllers/error-handler';
 import jwt from 'jsonwebtoken';
 import { cookieConfig } from '@/constants/cookie-config';
 import { accessTokenKey, refreshTokenKey } from '@/constants/token';
+import { User } from "@/models/user";
 const { JsonWebTokenError } = jwt;
 
 const testEmail = "example@email.com";
@@ -54,15 +55,16 @@ export async function googleRedirect(
       user = await userService.create(userInfo.email, userInfo.picture);
     }
 
+    if (process.env.EXE_ENV === "DEV" && userInfo.email === testAdminEmail) {
+      await authService.addRoleToUserByName(user.id, "ADMIN");
+      user = await userService.readByEmail(user.email) as User;
+    }
+
     const accessToken = await authService.generateAccessToken(user.id, user.roles);
     const refreshToken = await authService.generateRefreshToken(user.id);
 
     res.cookie(accessTokenKey, accessToken, cookieConfig);
     res.cookie(refreshTokenKey, refreshToken, cookieConfig);
-
-    if (process.env.EXE_ENV === "DEV" && userInfo.email === testAdminEmail) {
-      await authService.addRoleToUserByName(user.id, "ADMIN")
-    }
 
     res.redirect(loginRedirectURL);
   } catch (error) {
