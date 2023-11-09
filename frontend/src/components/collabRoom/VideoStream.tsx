@@ -27,6 +27,7 @@ const VideoStream: React.FC<VideoStreamProps> = ({
   // Set up local video stream
   useEffect(() => {
     if (localVideoRef.current) {
+      console.log("karwi: localStream:", localStream);
       localVideoRef.current.srcObject = localStream;
     }
   }, [localStream]);
@@ -34,6 +35,7 @@ const VideoStream: React.FC<VideoStreamProps> = ({
   // Set up remote video stream
   useEffect(() => {
     if (remoteVideoRef.current) {
+      console.log("karwi: remoteStream:", remoteStream);
       remoteVideoRef.current.srcObject = remoteStream;
     }
   }, [remoteStream]);
