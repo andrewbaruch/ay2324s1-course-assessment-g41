@@ -10,6 +10,7 @@ import { CodeEditor } from "@/views/codeEditor";
 import { useRoom } from "@/hooks/room/useRoom";
 import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
 import { useGetLanguages } from "@/hooks/room/useGetLanguages";
+import { VideoContextProvider } from "@/contexts/VideoContextProvider";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -118,22 +119,24 @@ const CollabRoomPage: React.FC = () => {
   const currentAttempt = useGetCurrentAttempt(document);
 
   return (
-    <CollabRoom
-      questionTotalList={mockQuestions}
-      languageTotalList={supportedLanguages}
-      listOfAttempts={mockAttempts}
-      listOfActiveUsers={mockUsers}
-      currentAttempt={currentAttempt}
-      onDeleteAttempt={handleDeleteAttempt}
-      onCloseRoom={handleCloseRoom}
-      onNewAttempt={handleNewAttempt}
-      onCodeChange={handleCodeChange}
-      onQuestionChange={handleQuestionChange}
-      onAttemptChange={handleAttemptChange}
-      onLanguageChange={handleLanguageChange}
-    >
-      <CodeEditor document={document} provider={provider} onEditorMount={handleEditorMount} />
-    </CollabRoom>
+    <VideoContextProvider>
+      <CollabRoom
+        questionTotalList={mockQuestions}
+        languageTotalList={supportedLanguages}
+        listOfAttempts={mockAttempts}
+        listOfActiveUsers={mockUsers}
+        currentAttempt={currentAttempt}
+        onDeleteAttempt={handleDeleteAttempt}
+        onCloseRoom={handleCloseRoom}
+        onNewAttempt={handleNewAttempt}
+        onCodeChange={handleCodeChange}
+        onQuestionChange={handleQuestionChange}
+        onAttemptChange={handleAttemptChange}
+        onLanguageChange={handleLanguageChange}
+      >
+        <CodeEditor document={document} provider={provider} onEditorMount={handleEditorMount} />
+      </CollabRoom>
+    </VideoContextProvider>
   );
 };
 
