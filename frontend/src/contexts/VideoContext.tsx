@@ -56,9 +56,9 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   const handleError = useCallback(
     (error: unknown, message: string) => {
       if (error instanceof Event) {
-        console.error("karwi: streaming: Error event:", error);
+        console.error("VideoContext: Error event:", error);
       } else {
-        console.error("karwi: streaming: Error object:", error);
+        console.error("VideoContext: Error object:", error);
       }
 
       toast({
