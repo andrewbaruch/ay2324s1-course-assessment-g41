@@ -26,11 +26,9 @@ import { QuestionComplexity } from "@/@types/models/question";
 import { useForm } from "react-hook-form";
 import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
-import useGetIdentity from "@/hooks/auth/useGetIdentity";
 import { useRouter } from "next/navigation";
 import { Status } from "@/@types/status";
-import authorizedAxios from "@/utils/axios/authorizedAxios";
-import { BE_API } from "@/utils/api";
+import { openRoom } from "@/services/room";
 
 export const MatchingForm = () => {
   const {
@@ -46,7 +44,6 @@ export const MatchingForm = () => {
   const cancelRef = React.useRef();
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
-  // const { identity, loading, loaded, error } = useGetIdentity();
   const router = useRouter();
 
   return (
@@ -101,10 +98,6 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
-            // TODO: uncomment the hook call useGetIdentity() above and the router.push change to the commented one to use the roomId instead.
-
-            // console.log(identity, loading, loaded, error);
-            console.log(data);
             onOpen();
             setIsLoading(true);
 
@@ -120,9 +113,16 @@ export const MatchingForm = () => {
                       clearInterval(intervalId);
                       intervalId = null;
                       if (response.roomId) {
-                        authorizedAxios.put(`${BE_API.collaboration.room}/${response.roomId}/status/open`).then(res => {
+                        openRoom(response.roomId).then(res => {
                           router.push(`/collab-room/${response.roomId}`);
                         }).catch(err => {
+                          toast({
+                            description: err?.message || "Unknown error occured. Please try again later.",
+                            status: "error",
+                            isClosable: true,
+                            duration: 3000,
+                            position: "bottom",
+                          })
                           router.push('/dashboard');
                         });
                       }
