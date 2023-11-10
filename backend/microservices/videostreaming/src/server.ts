@@ -26,7 +26,8 @@ class Server {
       server: this.httpServer,
       path: '/signaling',
     });
-    this.redisClient = createClient();
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+    this.redisClient = createClient({ url: redisUrl });
     this.port = port;
     this.configMiddleware();
     this.configWebSocket();
@@ -38,7 +39,12 @@ class Server {
     this.app.use(cors({ origin: '*' }));
 
     // Connect to Redis
-    await this.redisClient.connect();
+    try {
+      await this.redisClient.connect();
+      console.log('Connected to Redis');
+    } catch (error) {
+      console.error('Failed to connect to Redis:', error);
+    }
   }
 
   private configWebSocket() {
