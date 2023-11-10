@@ -13,7 +13,7 @@ import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 import { VideoContextProvider } from "@/contexts/VideoContext";
 import { WebSocketSignalingClient } from "@/videoClients/default";
 import useRoomAccess from "@/hooks/guards/useRoomAccess";
-import { HOST_API } from "@/config";
+import { HOST_WEBSOCKET_API } from "@/config";
 import { BE_API } from "@/utils/api";
 
 // Mock Data
@@ -115,12 +115,14 @@ const handleLanguageChange = (newLanguageValue: string, attemptId: number) => {
 };
 
 interface CollabRoomContainerProps {
-  roomId: string;
+  params: { id: string };
 }
 
 // Usage
-const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ roomId }) => {
-  useRoomAccess(roomId);
+const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => {
+  const { id } = params;
+
+  useRoomAccess(id);
 
   const { supportedLanguages } = useGetLanguages();
 
@@ -129,9 +131,10 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ roomId }) => 
   const currentAttempt = useGetCurrentAttempt(document);
 
   const signalingClient = useMemo(() => {
-    const signalingUrl = `${HOST_API}${BE_API.video.signaling}?roomId=${roomId}`;
+    const signalingUrl = `${HOST_WEBSOCKET_API}${BE_API.video.signaling}?roomId=${id}`;
+    console.log("karwi: signalingUrl:", signalingUrl);
     return new WebSocketSignalingClient(signalingUrl);
-  }, [roomId]);
+  }, [id]);
 
   return (
     <VideoContextProvider signalingClient={signalingClient}>
