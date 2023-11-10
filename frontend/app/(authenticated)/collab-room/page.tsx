@@ -11,7 +11,7 @@ import { useRoom } from "@/hooks/room/useRoom";
 import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
 import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 import { VideoContextProvider } from "@/contexts/VideoContext";
-import { WebSocketSignalingClient } from "@/videoClients/webSocketSignalingClient";
+import { WebSocketSignalingClient } from "@/videoClients/default";
 
 // Mock Data
 const mockQuestions: Question[] = [
