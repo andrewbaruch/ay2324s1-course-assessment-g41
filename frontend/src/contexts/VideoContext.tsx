@@ -181,24 +181,30 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
 
   const connectToRemoteStream = useCallback(async () => {
     const attemptReconnect = async (maxAttempts: number, delay: number): Promise<void> => {
+      console.log("karwi: attemptReconnect");
       for (let i = 0; i < maxAttempts; i++) {
         try {
+          console.log("karwi: 1");
           await signalingClient.connect();
+          console.log("karwi: 2");
           toast({ title: "Reconnected", status: "success", duration: 3000 });
+          console.log("karwi: 3");
           return;
         } catch (error) {
+          console.log("karwi: 4");
           if (i < maxAttempts - 1) {
             await new Promise((resolve) => setTimeout(resolve, delay));
           }
         }
       }
+      console.log("karwi: 5");
       handleError(new Error("Failed to reconnect"), "Could not re-establish connection.");
     };
 
     try {
       // Establishing connection with the signaling server
       await signalingClient.connect();
-      toast({ title: "Connecting...", status: "info", duration: 3000 });
+      toast({ title: "Connected", status: "success", duration: 3000 });
 
       // Setting up the peer connection
       const peerConnection = new RTCPeerConnection({

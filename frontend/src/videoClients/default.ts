@@ -1,7 +1,7 @@
 import { SignalingClient } from "@/@types/video";
 
 export class WebSocketSignalingClient implements SignalingClient {
-  private socket: WebSocket;
+  private socket: WebSocket | null = null;
 
   // Add more properties and methods as needed for event handling
   private offerCallback?: (offer: RTCSessionDescriptionInit, peerId: string) => void;
@@ -12,18 +12,11 @@ export class WebSocketSignalingClient implements SignalingClient {
   private peerDisconnectedCallback?: (peerId: string) => void;
 
   constructor(private url: string) {
-    this.socket = new WebSocket(url);
+    // Store the URL but don't initialize the WebSocket here
+  }
 
-    // Set up WebSocket event handlers
-    this.socket.onopen = () => {
-      console.log("Signaling client connected");
-    };
-
-    this.socket.onerror = (event) => {
-      console.error("WebSocket error:", event);
-    };
-
-    this.socket.onmessage = (event) => {
+  private setupWebSocket(socket: WebSocket): void {
+    socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       switch (data.type) {
         case "offer":
@@ -44,36 +37,47 @@ export class WebSocketSignalingClient implements SignalingClient {
       }
     };
 
-    this.socket.onclose = () => {
+    socket.onclose = () => {
       this.disconnectCallback?.();
-      console.log("Signaling client disconnected");
     };
   }
 
   async connect(): Promise<void> {
-    if (this.socket.readyState !== this.socket.OPEN) {
-      return new Promise((resolve, reject) => {
-        this.socket.onopen = () => resolve();
-        this.socket.onerror = (event) => reject(event);
-      });
-    }
+    // Initialize the WebSocket connection
+    this.socket = new WebSocket(this.url);
+
+    // Set up the event handlers
+    this.setupWebSocket(this.socket);
+
+    return new Promise((resolve, reject) => {
+      if (this.socket) {
+        this.socket.onopen = () => {
+          console.log("WebSocket connected");
+          resolve();
+        };
+        this.socket.onerror = (event) => {
+          console.error("WebSocket connection error:", event);
+          reject(event);
+        };
+      }
+    });
   }
 
   async disconnect(): Promise<void> {
-    this.socket.close();
+    this.socket?.close();
   }
 
   async sendOffer(offer: RTCSessionDescriptionInit): Promise<void> {
-    this.socket.send(JSON.stringify({ type: "offer", offer }));
+    this.socket?.send(JSON.stringify({ type: "offer", offer }));
   }
 
   // Implement the rest of the methods...
   async sendAnswer(answer: RTCSessionDescriptionInit): Promise<void> {
-    this.socket.send(JSON.stringify({ type: "answer", answer }));
+    this.socket?.send(JSON.stringify({ type: "answer", answer }));
   }
 
   async sendIceCandidate(candidate: RTCIceCandidate): Promise<void> {
-    this.socket.send(JSON.stringify({ type: "ice-candidate", candidate }));
+    this.socket?.send(JSON.stringify({ type: "ice-candidate", candidate }));
   }
 
   onOffer(callback: (offer: RTCSessionDescriptionInit, peerId: string) => void): void {
