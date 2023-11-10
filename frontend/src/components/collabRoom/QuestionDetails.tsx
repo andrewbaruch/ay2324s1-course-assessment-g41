@@ -48,7 +48,7 @@ const QuestionDetails = () => {
   };
 
   const currentQuestion = questionTotalList.find(
-    (question) => question.id === currentAttempt?.question.id,
+    (question) => question.id === currentAttempt?.question?.id,
   );
 
   const options = questionTotalList.map((question) => ({

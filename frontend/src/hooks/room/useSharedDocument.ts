@@ -22,7 +22,7 @@ export const useGetDocumentValue = ({
       setVal(e?.target._map.get(sharedKey)?.content.getContent()[0]);
     });
 
-  }, [sharedKey, document])
+  }, [sharedKey, document, document?.get(sharedKey), val])
 
   return {
     sharedValue: val

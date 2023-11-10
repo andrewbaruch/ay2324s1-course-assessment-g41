@@ -11,8 +11,12 @@ export const upsertDocumentValue = ({
   }): void => {
   if (!document) return;
   
+  console.log('document', document)
   const ymap = document.getMap(sharedKey);
+  console.log('ymap', ymap)
   document.transact(() => {
-      ymap.set(sharedKey, valueToUpdate);
+    console.log('transacting', ymap)
+    ymap.set(sharedKey, valueToUpdate);
   });
+  ymap.get(sharedKey)
 }

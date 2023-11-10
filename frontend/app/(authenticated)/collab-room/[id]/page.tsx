@@ -7,7 +7,7 @@ import { User } from "@/@types/user";
 import CollabRoom from "@/components/collabRoom/CollabRoom";
 import { Attempt } from "@/@types/attempt";
 import { CodeEditor } from "@/views/codeEditor";
-import { useRoom } from "@/hooks/room/useRoom";
+import { useDocumentProvider } from "@/hooks/room/useDocumentProvider";
 import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
 import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 import { VideoContextProvider } from "@/contexts/VideoContext";
@@ -18,6 +18,8 @@ import { BE_API } from "@/utils/api";
 import { Doc } from "yjs";
 import { upsertDocumentValue } from "@/utils/document";
 import { HocuspocusProvider } from "@hocuspocus/provider";
+import { Language } from "@/@types/language";
+import { usePushUsersInRoom, useGetUsersInRoom } from "@/hooks/room/useUsersInRoom";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -46,30 +48,6 @@ const mockQuestions: Question[] = [
     complexity: QuestionComplexity.MEDIUM,
   },
   // ... other questions
-];
-
-const mockUsers: User[] = [
-  {
-    id: "user1",
-    email: "user1@example.com",
-    image: null,
-    name: "User One",
-    preferred_language: "JavaScript",
-    preferred_difficulty: 2,
-    preferred_topics: null,
-    roles: null,
-  },
-  {
-    id: "user2",
-    email: "user2@example.com",
-    image: null,
-    name: "User Two",
-    preferred_language: "Python",
-    preferred_difficulty: 2,
-    preferred_topics: null,
-    roles: null,
-  },
-  // ... other users
 ];
 
 const mockAttempts: Attempt[] = [
@@ -119,8 +97,13 @@ const handleAttemptChange = (newAttemptId: number) => {
   console.log(`Change attempt to ${newAttemptId}`);
 };
 
-const handleLanguageChange = (newLanguageValue: string, attemptId: number) => {
+const handleLanguageChange = (document: Doc | null, newLanguageValue: Language, attemptId: number) => {
   console.log(`Question change for attempt id ${attemptId}: ${newLanguageValue}`);
+  upsertDocumentValue({
+    sharedKey: "language",
+    valueToUpdate: newLanguageValue,
+    document
+  })
 };
 
 interface CollabRoomContainerProps {
@@ -135,9 +118,12 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
 
   const { supportedLanguages } = useGetLanguages();
 
-  const { handleEditorMount, provider, document } = useRoom({ roomName: id });
+  const { handleEditorMount, provider, document } = useDocumentProvider({ roomName: id });
 
   const currentAttempt = useGetCurrentAttempt(document);
+  usePushUsersInRoom({ provider })
+  const { users: activeUsers } = useGetUsersInRoom({ provider })
+
 
   const signalingClient = useMemo(() => {
     const signalingUrl = `${HOST_WEBSOCKET_API}${BE_API.video.signaling}?roomId=${id}`;
@@ -151,7 +137,7 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
         questionTotalList={mockQuestions}
         languageTotalList={supportedLanguages}
         listOfAttempts={mockAttempts}
-        listOfActiveUsers={currentAttempt.listOfUsers}
+        listOfActiveUsers={activeUsers}
         currentAttempt={currentAttempt}
         onDeleteAttempt={handleDeleteAttempt}
         onCloseRoom={() => handleCloseRoom(provider)}
@@ -159,7 +145,7 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
         onCodeChange={handleCodeChange}
         onQuestionChange={handleQuestionChange}
         onAttemptChange={handleAttemptChange}
-        onLanguageChange={handleLanguageChange}
+        onLanguageChange={(newLanguage: Language, attemptId: number) => handleLanguageChange(document, newLanguage, attemptId)}
       >
         <CodeEditor document={document} provider={provider} onEditorMount={handleEditorMount} />
       </CollabRoom>

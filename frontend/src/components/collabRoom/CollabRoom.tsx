@@ -9,6 +9,7 @@ import { User } from "@/@types/user";
 import { Attempt } from "@/@types/attempt";
 import TabView from "./TabView";
 import styles from "./Splitter.module.css";
+import { Language } from "@/@types/language";
 
 interface CollabRoomLanguage {
   label: string;
@@ -28,7 +29,7 @@ interface CollabRoomPropsContextValue {
   onNewAttempt: () => void;
   onCodeChange: (newCodeText: string, attemptId: number) => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
-  onLanguageChange: (newLanguageValue: string, attemptId: number) => void;
+  onLanguageChange: (newLanguageValue: Language, attemptId: number) => void;
   onAttemptChange: (newAttemptId: number) => void;
 }
 
