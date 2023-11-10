@@ -72,7 +72,13 @@ const VideoStream: React.FC<VideoStreamProps> = ({
           autoPlay
           playsInline
           muted
-          style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transform: "scaleX(-1)",
+            borderRadius: "8px",
+          }}
         />
         <Flex
           position="absolute"
@@ -108,7 +114,7 @@ const VideoStream: React.FC<VideoStreamProps> = ({
           ref={remoteVideoRef}
           autoPlay
           playsInline
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }}
         />
       </Box>
     </Flex>
