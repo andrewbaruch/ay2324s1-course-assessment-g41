@@ -79,39 +79,47 @@ export class WebSocketSignalingClient implements SignalingClient {
   }
 
   async sendOffer(offer: RTCSessionDescriptionInit): Promise<void> {
+    console.log("WebSocketSignalingClient: Sending offer", offer);
     this.socket?.send(JSON.stringify({ type: "offer", offer }));
   }
 
-  // Implement the rest of the methods...
   async sendAnswer(answer: RTCSessionDescriptionInit): Promise<void> {
+    console.log("WebSocketSignalingClient: Sending answer", answer);
     this.socket?.send(JSON.stringify({ type: "answer", answer }));
   }
 
   async sendIceCandidate(candidate: RTCIceCandidate): Promise<void> {
+    console.log("WebSocketSignalingClient: Sending ICE candidate", candidate);
     this.socket?.send(JSON.stringify({ type: "ice-candidate", candidate }));
   }
 
   onOffer(callback: (offer: RTCSessionDescriptionInit, peerId: string) => void): void {
+    console.log("WebSocketSignalingClient: Setting offer callback");
     this.offerCallback = callback;
   }
 
   onAnswer(callback: (answer: RTCSessionDescriptionInit, peerId: string) => void): void {
+    console.log("WebSocketSignalingClient: Setting answer callback");
     this.answerCallback = callback;
   }
 
   onIceCandidate(callback: (candidate: RTCIceCandidate, peerId: string) => void): void {
+    console.log("WebSocketSignalingClient: Setting ICE candidate callback");
     this.iceCandidateCallback = callback;
   }
 
   onDisconnect(callback: () => void): void {
+    console.log("WebSocketSignalingClient: Setting disconnect callback");
     this.disconnectCallback = callback;
   }
 
   onNewPeer(callback: (peerId: string) => void): void {
+    console.log("WebSocketSignalingClient: Setting new peer callback");
     this.newPeerCallback = callback;
   }
 
   onPeerDisconnected(callback: (peerId: string) => void): void {
+    console.log("WebSocketSignalingClient: Setting peer disconnected callback");
     this.peerDisconnectedCallback = callback;
   }
 }
