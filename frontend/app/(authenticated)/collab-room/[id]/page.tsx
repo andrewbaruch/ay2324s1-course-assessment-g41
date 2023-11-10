@@ -111,7 +111,7 @@ const handleAttemptChange = (newAttemptId: number) => {
 };
 
 const handleLanguageChange = (newLanguageValue: string, attemptId: number) => {
-  console.log(`Question change for attempt id ${attemptId}: ${newLanguageValue}`);
+  console.log(`Language change for attempt id ${attemptId}: ${newLanguageValue}`);
 };
 
 interface CollabRoomContainerProps {

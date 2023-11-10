@@ -226,6 +226,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
       };
 
       peerConnection.onicecandidate = (event) => {
+        console.log("karwi: onicecandidate", event);
         if (event.candidate) {
           console.log("VideoContext: Sending ICE candidate", event.candidate);
           signalingClient.sendIceCandidate(event.candidate).catch((error) => {
@@ -245,6 +246,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
           await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
           const answer = await peerConnection.createAnswer();
           console.log("VideoContext: Created answer", answer);
+          // karwi: why set local description answer?
           await peerConnection.setLocalDescription(answer);
           signalingClient.sendAnswer(answer);
         } catch (error) {

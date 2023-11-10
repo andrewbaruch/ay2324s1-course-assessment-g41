@@ -36,7 +36,7 @@ const TopBar = () => {
     if (!selectedOption) {
       return;
     }
-    onLanguageChange(selectedOption.value, 0);
+    onLanguageChange(selectedOption.value, currentAttempt.attemptId);
   };
 
   const currentLanguage = currentAttempt?.language;
