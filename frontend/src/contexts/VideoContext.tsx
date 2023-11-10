@@ -175,6 +175,10 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
     };
   }, [handleNewPeer, handlePeerDisconnected, signalingClient]);
 
+  useEffect(() => {
+    console.log("Current Peers:", Array.from(peers));
+  }, [peers]);
+
   const connectToRemoteStream = useCallback(async () => {
     const attemptReconnect = async (maxAttempts: number, delay: number): Promise<void> => {
       for (let i = 0; i < maxAttempts; i++) {
