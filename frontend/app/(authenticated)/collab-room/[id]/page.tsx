@@ -13,6 +13,8 @@ import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 import { VideoContextProvider } from "@/contexts/VideoContext";
 import { WebSocketSignalingClient } from "@/videoClients/default";
 import useRoomAccess from "@/hooks/guards/useRoomAccess";
+import { HOST_API } from "@/config";
+import { BE_API } from "@/utils/api";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -126,10 +128,10 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ roomId }) => 
 
   const currentAttempt = useGetCurrentAttempt(document);
 
-  // karwi: pass room id to the url here
   const signalingClient = useMemo(() => {
-    return new WebSocketSignalingClient("wss://example.com/signaling");
-  }, []);
+    const signalingUrl = `${HOST_API}${BE_API.video.signaling}?roomId=${roomId}`;
+    return new WebSocketSignalingClient(signalingUrl);
+  }, [roomId]);
 
   return (
     <VideoContextProvider signalingClient={signalingClient}>

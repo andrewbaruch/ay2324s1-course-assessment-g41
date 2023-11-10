@@ -48,6 +48,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
   const prevCameraOnRef = useRef(isCameraOn);
   const prevMicrophoneOnRef = useRef(isMicrophoneOn);
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
   const startLocalStream = useCallback(async () => {
     try {
@@ -137,6 +138,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
         // ... You can add more STUN/TURN servers as needed
       ],
     });
+    peerConnectionRef.current = peerConnection;
 
     // Set up event handlers for peer connection
     peerConnection.ontrack = (event) => {
@@ -151,10 +153,11 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
       }
     };
 
-    // Add local stream tracks to the peer connection
-    localStream?.getTracks().forEach((track) => {
-      peerConnection.addTrack(track, localStream);
-    });
+    // karwi: already handled by renegotiation
+    // // Add local stream tracks to the peer connection
+    // localStream?.getTracks().forEach((track) => {
+    //   peerConnection.addTrack(track, localStream);
+    // });
 
     // Create an offer
     const offer = await peerConnection.createOffer();
@@ -190,12 +193,47 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
       }
     };
 
-    // Clean up the peer connection when the component unmounts or the connection is closed
     return () => {
       peerConnection.close();
+      peerConnectionRef.current = null;
     };
+  }, [signalingClient]);
 
-    // Note: You would also need to handle disconnects and cleanup peerConnection when done
+  useEffect(() => {
+    const peerConnection = peerConnectionRef.current;
+
+    if (peerConnection) {
+      // Remove any existing tracks
+      peerConnection.getSenders().forEach((sender) => {
+        peerConnection.removeTrack(sender);
+      });
+
+      if (localStream) {
+        // Add new tracks to the connection
+        localStream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, localStream);
+        });
+      }
+
+      // Perform renegotiation
+      peerConnection
+        .createOffer()
+        .then((offer) => {
+          return peerConnection.setLocalDescription(offer);
+        })
+        .then(() => {
+          // Ensure that localDescription is not null
+          if (peerConnection.localDescription) {
+            // Send the new offer to the remote peer
+            signalingClient.sendOffer(peerConnection.localDescription);
+          } else {
+            throw new Error("Local description is not set.");
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to renegotiate the peer connection", error);
+        });
+    }
   }, [localStream, signalingClient]);
 
   // The rest of your context provider remains the same

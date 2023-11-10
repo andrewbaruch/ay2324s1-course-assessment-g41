@@ -2,6 +2,7 @@
 const ROOTS_USER = "/user";
 const ROOT_QUESTION = "/question";
 const ROOT_COLLAB = "/collaboration";
+const ROOT_VIDEO = "/videostreaming";
 
 export const BE_API = {
   auth: {
@@ -26,4 +27,7 @@ export const BE_API = {
   },
   topics: `${ROOTS_USER}/topics`,
   languages: `${ROOTS_USER}/languages`,
+  video: {
+    signaling: `${ROOT_VIDEO}/signaling`,
+  },
 };

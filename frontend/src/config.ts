@@ -5,6 +5,7 @@ import packageJson from "../package.json";
 // API
 
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API_KEY || "";
+export const HOST_WEBSOCKET_API = process.env.NEXT_PUBLIC_HOST_WEBSOCKET_API_KEY || "";
 
 // UTILS
 
