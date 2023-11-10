@@ -142,29 +142,24 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
     };
   }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
 
-  // karwi: refactor
   const connectToRemoteStream = useCallback(async () => {
     try {
+      // Establishing connection with the signaling server
       await signalingClient.connect();
       toast({ title: "Connecting...", status: "info", duration: 3000 });
 
-      // Create a new RTCPeerConnection
+      // Setting up the peer connection
       const peerConnection = new RTCPeerConnection({
-        iceServers: [
-          {
-            urls: "stun:stun.l.google.com:19302", // Using Google's public STUN server
-          },
-          // ... You can add more STUN/TURN servers as needed
-        ],
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }], // Using Google's public STUN server
       });
       peerConnectionRef.current = peerConnection;
 
-      // Set up event handlers for peer connection
+      // Handling tracks received from the remote peer
       peerConnection.ontrack = (event) => {
-        // Set the remote stream
         setRemoteStream(event.streams[0]);
       };
 
+      // Sending ICE candidates to the remote peer
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
           signalingClient.sendIceCandidate(event.candidate).catch((error) => {
@@ -173,26 +168,24 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
         }
       };
 
-      // Create an offer
+      // Creating and sending the initial offer
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
-
-      // Send the offer to the remote peer via your signaling service
       signalingClient.sendOffer(offer);
 
-      // Listen for the answer from the remote peer
+      // Handling answer from the remote peer
       signalingClient.onAnswer(async (answer) => {
         await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
       });
 
-      // Listen for ICE candidates from the remote peer
+      // Adding ICE candidates received from the remote peer
       signalingClient.onIceCandidate(async (candidate) => {
         if (candidate) {
           await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
         }
       });
 
-      // Handle the negotiationneeded event (in case renegotiation is needed)
+      // Handling renegotiation if needed
       peerConnection.onnegotiationneeded = async () => {
         try {
           const offer = await peerConnection.createOffer();
@@ -203,7 +196,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
         }
       };
 
-      // Connection state change handler with user feedback
+      // Handling connection state changes
       peerConnection.onconnectionstatechange = () => {
         switch (peerConnection.connectionState) {
           case "connected":
@@ -223,6 +216,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
             break;
         }
       };
+
+      // Cleanup function
       return () => {
         peerConnection.close();
         peerConnectionRef.current = null;
