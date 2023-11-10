@@ -146,6 +146,21 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
 
   const connectToRemoteStream = useCallback(async () => {
+    const attemptReconnect = async (maxAttempts: number, delay: number): Promise<void> => {
+      for (let i = 0; i < maxAttempts; i++) {
+        try {
+          await signalingClient.connect();
+          toast({ title: "Reconnected", status: "success", duration: 3000 });
+          return;
+        } catch (error) {
+          if (i < maxAttempts - 1) {
+            await new Promise((resolve) => setTimeout(resolve, delay));
+          }
+        }
+      }
+      handleError(new Error("Failed to reconnect"), "Could not re-establish connection.");
+    };
+
     try {
       // Establishing connection with the signaling server
       await signalingClient.connect();
@@ -176,6 +191,22 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
       await peerConnection.setLocalDescription(offer);
       signalingClient.sendOffer(offer);
 
+      // Listening for an incoming offer
+      signalingClient.onOffer(async (offer, peerId) => {
+        try {
+          await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+          // Create an answer to the received offer
+          const answer = await peerConnection.createAnswer();
+          await peerConnection.setLocalDescription(answer);
+
+          // Send the answer back to the initiating peer
+          signalingClient.sendAnswer(answer);
+        } catch (error) {
+          handleError(error, "Error handling incoming offer.");
+        }
+      });
+
       // Handling answer from the remote peer
       signalingClient.onAnswer(async (answer) => {
         await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
@@ -186,6 +217,15 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
         if (candidate) {
           await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
         }
+      });
+
+      signalingClient.onDisconnect(async () => {
+        toast({
+          title: "Disconnected, attempting to reconnect...",
+          status: "warning",
+          duration: 3000,
+        });
+        await attemptReconnect(3, 5000); // Attempt to reconnect 3 times with a 5-second delay
       });
 
       // Handling renegotiation if needed
@@ -219,16 +259,18 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
             break;
         }
       };
-
-      // Cleanup function
-      return () => {
-        peerConnection.close();
-        peerConnectionRef.current = null;
-      };
     } catch (error) {
       handleError(error, "Failed to connect to remote stream.");
-      return () => {};
+      await attemptReconnect(3, 5000);
     }
+
+    return () => {
+      signalingClient.disconnect();
+      if (peerConnectionRef.current) {
+        peerConnectionRef.current.close();
+        peerConnectionRef.current = null;
+      }
+    };
   }, [handleError, signalingClient, toast]);
 
   useEffect(() => {

@@ -33,7 +33,7 @@ export class WebSocketSignalingClient implements SignalingClient {
         case "ice-candidate":
           this.iceCandidateCallback?.(data.candidate, data.peerId);
           break;
-        // Handle other messages or events as needed
+        // karwi: Handle other messages or events as needed: new-peer, peer-disconnected
       }
     };
 
