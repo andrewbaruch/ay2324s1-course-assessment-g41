@@ -3,7 +3,7 @@ import { Language } from "@/models/language";
 
 class AttemptPublisher {
   private readonly pubSubClient: typeof PubSubClient;
-  private readonly attemptTopic: string = "ATTEMPT_TOPIC";
+  private readonly attemptTopic: string = "DEV_ATTEMPT_TOPIC";
 
   constructor() {
     this.pubSubClient = PubSubClient;

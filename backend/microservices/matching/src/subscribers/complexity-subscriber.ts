@@ -9,11 +9,11 @@ import { Message } from "@google-cloud/pubsub";
  * Listener that "pulls" messages from Google PubSub on the question complexity topic.
  */
 class ComplexitySubscriber {
-  private readonly pubSubClient: PubSubClient;
+  private readonly pubSubClient: typeof PubSubClient;
   private readonly complexityMatchingPullService: ComplexityMatchingPullService;
 
   constructor() {
-    this.pubSubClient = new PubSubClient()
+    this.pubSubClient = PubSubClient
     this.complexityMatchingPullService = new ComplexityMatchingPullService()
   }
 

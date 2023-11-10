@@ -9,7 +9,3 @@ export const knexPgClient = require('knex')({
   pool: { min: 0, max: 10 },
   ...knexSnakeCaseMappers({ underscoreBeforeDigits: true })
 });
-
-export const RoomTable = knexPgClient("Room");
-
-export const RoomUserTable = knexPgClient("RoomUser");
