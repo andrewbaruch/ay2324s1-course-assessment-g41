@@ -10,6 +10,11 @@ const deleteCache = (name: CacheName) =>
     .open(name)
     .then((cache) => cache.keys().then((requests) => requests.map((req) => cache.delete(req))));
 
+const verifyRoomAccess = (roomId: string) => {
+  // TODO: implement check room access
+  return true;
+};
+
 export const googleAuthProvider: AuthProvider = {
   login: async (params) => {
     try {
@@ -37,13 +42,23 @@ export const googleAuthProvider: AuthProvider = {
    * In case of invalid access token, refreshes it using the current refresh token and resolves.
    * In case of invalid refresh token, throws an error.
    */
-  checkAuth: async () => {
+  // Add roomId to the AuthProvider implementation for checkAuth
+  checkAuth: async (params, roomId) => {
     if (isPublicUrl(window.location.hash)) {
       return;
     }
 
-    const response = await checkAuth();
+    // If roomId is provided, use it to check if the current user has access to that room
+    if (roomId) {
+      // Implement logic to check if the user is authorized to access the room
+      const isAuthorized = await verifyRoomAccess(roomId);
+      if (!isAuthorized) {
+        throw new Error("Unauthorized access to room");
+      }
+    }
 
+    // Continue with the existing checkAuth logic
+    const response = await checkAuth();
     if (response.status !== 200) {
       throw new Error();
     }

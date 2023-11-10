@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { RoomService } from "@/services/room";
+import { DocumentService } from "@/services/room";
 
 export const useRoom = ({ roomName }: { roomName: string }) => {
   const [editor, setEditor] = useState<any>(null);
-  const [roomService, setRoomService] = useState<RoomService | null>(null);
+  const [documentService, setDocumentService] = useState<DocumentService | null>(null);
 
   useEffect(() => {
     if (!editor) {
@@ -11,11 +11,11 @@ export const useRoom = ({ roomName }: { roomName: string }) => {
     }
 
     // once editor is mounted, initialise the room service to bind editor to websocket broadcast
-    const room = new RoomService(roomName, editor);
-    setRoomService(room);
+    const room = new DocumentService(roomName, editor);
+    setDocumentService(room);
 
     return () => {
-      roomService?.provider?.disconnect();
+      documentService?.provider?.disconnect();
     }
   }, [editor]);
 
@@ -25,8 +25,8 @@ export const useRoom = ({ roomName }: { roomName: string }) => {
 
   return {
     handleEditorMount,
-    provider: roomService && roomService.provider ? roomService.provider : null,
-    document: roomService && roomService.document ? roomService.document : null,
-    binding: roomService && roomService.binding ? roomService.binding : null,
+    provider: documentService && documentService.provider ? documentService.provider : null,
+    document: documentService && documentService.document ? documentService.document : null,
+    binding: documentService && documentService.binding ? documentService.binding : null,
   };
 };

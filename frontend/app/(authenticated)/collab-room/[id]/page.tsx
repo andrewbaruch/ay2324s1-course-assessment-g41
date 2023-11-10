@@ -1,12 +1,23 @@
 "use client";
 
-// pages/CollabRoomPage.tsx
-import React from "react";
+// pages/CollabRoomContainer.tsx
+import React, { useMemo } from "react";
 import { Question, QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
 import CollabRoom from "@/components/collabRoom/CollabRoom";
 import { Attempt } from "@/@types/attempt";
 import { CodeEditor } from "@/views/codeEditor";
+import { useRoom } from "@/hooks/room/useRoom";
+import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
+import { useGetLanguages } from "@/hooks/room/useGetLanguages";
+import { VideoContextProvider } from "@/contexts/VideoContext";
+import { WebSocketSignalingClient } from "@/videoClients/default";
+import useRoomAccess from "@/hooks/guards/useRoomAccess";
+import { HOST_WEBSOCKET_API } from "@/config";
+import { BE_API } from "@/utils/api";
+import { Doc } from "yjs";
+import { upsertDocumentValue } from "@/utils/document";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -64,13 +75,11 @@ const mockUsers: User[] = [
 const mockAttempts: Attempt[] = [
   {
     attemptId: 1,
-    codeText: "// Your code here",
     question: mockQuestions[0],
     language: { label: "Plain Text", value: "plaintext" },
   },
   {
     attemptId: 2,
-    codeText: "// Your code here",
     question: mockQuestions[1],
     language: { label: "Plain Text", value: "plaintext" },
   },
@@ -82,12 +91,20 @@ const handleDeleteAttempt = (attemptId: number) => {
   console.log(`Delete attempt with id ${attemptId}`);
 };
 
-const handleCloseRoom = () => {
+const handleCloseRoom = (yProvider: HocuspocusProvider | null) => {
   console.log("Close room");
+  if (!yProvider) return;
+
+  yProvider.disconnect()
+
 };
 
-const handleNewAttempt = () => {
-  console.log("New attempt");
+const handleNewAttempt = (document: Doc | null, listOfAttempts: Attempt[]) => {
+  upsertDocumentValue({
+    sharedKey: "attemptId",
+    valueToUpdate: listOfAttempts.length + 1,
+    document
+  })
 };
 
 const handleCodeChange = (newCodeText: string, attemptId: number) => {
@@ -98,23 +115,56 @@ const handleQuestionChange = (newQuestionId: string, attemptId: number) => {
   console.log(`Question change for attempt id ${attemptId}: ${newQuestionId}`);
 };
 
+const handleAttemptChange = (newAttemptId: number) => {
+  console.log(`Change attempt to ${newAttemptId}`);
+};
+
+const handleLanguageChange = (newLanguageValue: string, attemptId: number) => {
+  console.log(`Question change for attempt id ${attemptId}: ${newLanguageValue}`);
+};
+
+interface CollabRoomContainerProps {
+  params: { id: string };
+}
+
 // Usage
-const CollabRoomPage = ({ params }: { params: { roomId: string } }) => {
+const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => {
+  const { id } = params;
+
+  useRoomAccess(id);
+
+  const { supportedLanguages } = useGetLanguages();
+
+  const { handleEditorMount, provider, document } = useRoom({ roomName: id });
+
+  const currentAttempt = useGetCurrentAttempt(document);
+
+  const signalingClient = useMemo(() => {
+    const signalingUrl = `${HOST_WEBSOCKET_API}${BE_API.video.signaling}?roomId=${id}`;
+    console.log("karwi: signalingUrl:", signalingUrl);
+    return new WebSocketSignalingClient(signalingUrl);
+  }, [id]);
+
   return (
-    <CollabRoom
-      questionTotalList={mockQuestions}
-      listOfAttempts={mockAttempts}
-      listOfActiveUsers={mockUsers}
-      onDeleteAttempt={handleDeleteAttempt}
-      onCloseRoom={handleCloseRoom}
-      onNewAttempt={handleNewAttempt}
-      onCodeChange={handleCodeChange}
-      onQuestionChange={handleQuestionChange}
-      roomName={params.roomId}
-    >
-      <CodeEditor />
-    </CollabRoom>
+    <VideoContextProvider signalingClient={signalingClient}>
+      <CollabRoom
+        questionTotalList={mockQuestions}
+        languageTotalList={supportedLanguages}
+        listOfAttempts={mockAttempts}
+        listOfActiveUsers={currentAttempt.listOfUsers}
+        currentAttempt={currentAttempt}
+        onDeleteAttempt={handleDeleteAttempt}
+        onCloseRoom={() => handleCloseRoom(provider)}
+        onNewAttempt={() => handleNewAttempt(document, mockAttempts)}
+        onCodeChange={handleCodeChange}
+        onQuestionChange={handleQuestionChange}
+        onAttemptChange={handleAttemptChange}
+        onLanguageChange={handleLanguageChange}
+      >
+        <CodeEditor document={document} provider={provider} onEditorMount={handleEditorMount} />
+      </CollabRoom>
+    </VideoContextProvider>
   );
 };
 
-export default CollabRoomPage;
+export default CollabRoomContainer;

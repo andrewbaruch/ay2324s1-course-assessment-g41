@@ -17,22 +17,24 @@ import { DeleteIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const AttemptActions = () => {
-  const { listOfAttempts, onNewAttempt, onDeleteAttempt, setCurrentAttempt, currentAttempt } =
+  const { listOfAttempts, onNewAttempt, onDeleteAttempt, onAttemptChange, currentAttempt } =
     useCollabContext();
-  const [currentPage, setCurrentPage] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const onCloseDeleteModal = () => setIsDeleteModalOpen(false);
   const cancelRef = React.useRef(null);
+
+  const currentPage = listOfAttempts.findIndex(
+    (attempt) => attempt.attemptId === currentAttempt.attemptId,
+  );
 
   const handlePageChange = useCallback(
     (pageIndex: number) => {
       const selectedAttempt = listOfAttempts[pageIndex];
       if (selectedAttempt) {
-        setCurrentAttempt(selectedAttempt);
-        setCurrentPage(pageIndex);
+        onAttemptChange(selectedAttempt.attemptId);
       }
     },
-    [listOfAttempts, setCurrentAttempt],
+    [listOfAttempts, onAttemptChange],
   );
 
   useEffect(() => {

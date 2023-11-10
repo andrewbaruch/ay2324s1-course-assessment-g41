@@ -4,7 +4,7 @@ import * as monaco from "monaco-editor";
 import { MonacoBinding } from "y-monaco";
 import { BE_API } from "@/utils/api";
 
-export class RoomService {
+export class DocumentService {
   readonly document: Y.Doc | undefined;
   readonly provider: HocuspocusProvider | undefined;
   readonly binding: MonacoBinding | undefined;
