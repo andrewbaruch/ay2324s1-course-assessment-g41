@@ -1,9 +1,10 @@
 // BE_API contains api endpoints we use to query our host backend
 const ROOTS_USER = "/user";
-const ROOT_QUESTION = "/question";
-const ROOT_COLLAB = "/collaboration";
-const ROOT_VIDEO = "/videostreaming";
+const ROOTS_QUESTION = "/question";
+const ROOTS_COLLAB = "/collaboration";
+const ROOTS_VIDEO = "/videostreaming";
 
+// karwi: refactor groups. each shd be microservice
 export const BE_API = {
   auth: {
     checkAuth: `${ROOTS_USER}/auth/checkAuth`,
@@ -19,15 +20,15 @@ export const BE_API = {
     uploadImageUrl: `${ROOTS_USER}/user/uploadImageUrl`,
   },
   questions: {
-    root: `${ROOT_QUESTION}/question`,
+    root: `${ROOTS_QUESTION}/question`,
   },
   collaboration: {
-    broadcast: `${ROOT_COLLAB}/broadcast`,
-    room: `${ROOT_COLLAB}/room`,
+    broadcast: `${ROOTS_COLLAB}/broadcast`,
+    room: `${ROOTS_COLLAB}/room`,
   },
   topics: `${ROOTS_USER}/topics`,
   languages: `${ROOTS_USER}/languages`,
   video: {
-    signaling: `${ROOT_VIDEO}/signaling`,
+    signaling: `${ROOTS_VIDEO}/signaling`,
   },
 };
