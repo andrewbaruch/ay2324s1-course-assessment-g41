@@ -1,6 +1,6 @@
 "use client";
 
-// pages/CollabRoomPage.tsx
+// pages/CollabRoomContainer.tsx
 import React, { useMemo } from "react";
 import { Question, QuestionComplexity } from "@/@types/models/question";
 import { User } from "@/@types/user";
@@ -111,8 +111,12 @@ const handleLanguageChange = (newLanguageValue: string, attemptId: number) => {
   console.log(`Question change for attempt id ${attemptId}: ${newLanguageValue}`);
 };
 
+interface CollabRoomContainerProps {
+  id: string;
+}
+
 // Usage
-const CollabRoomPage: React.FC = () => {
+const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ id }) => {
   const { supportedLanguages } = useGetLanguages();
 
   const { handleEditorMount, provider, document } = useRoom();
@@ -145,4 +149,4 @@ const CollabRoomPage: React.FC = () => {
   );
 };
 
-export default CollabRoomPage;
+export default CollabRoomContainer;
