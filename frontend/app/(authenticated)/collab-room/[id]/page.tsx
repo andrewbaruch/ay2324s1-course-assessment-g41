@@ -12,6 +12,7 @@ import useGetCurrentAttempt from "@/hooks/collab-room/useGetCurrentAttempt";
 import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 import { VideoContextProvider } from "@/contexts/VideoContext";
 import { WebSocketSignalingClient } from "@/videoClients/default";
+import useRoomAccess from "@/hooks/guards/useRoomAccess";
 
 // Mock Data
 const mockQuestions: Question[] = [
@@ -112,11 +113,13 @@ const handleLanguageChange = (newLanguageValue: string, attemptId: number) => {
 };
 
 interface CollabRoomContainerProps {
-  id: string;
+  roomId: string;
 }
 
 // Usage
-const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ id }) => {
+const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ roomId }) => {
+  useRoomAccess(roomId);
+
   const { supportedLanguages } = useGetLanguages();
 
   const { handleEditorMount, provider, document } = useRoom();
