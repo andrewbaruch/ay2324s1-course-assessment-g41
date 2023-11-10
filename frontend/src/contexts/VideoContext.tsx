@@ -188,89 +188,87 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
     console.log("VideoContext: Connecting to remote stream");
 
     const attemptReconnect = async (maxAttempts: number, delay: number): Promise<void> => {
+      console.log(`VideoContext: Attempting to reconnect. Max attempts: ${maxAttempts}`);
       for (let i = 0; i < maxAttempts; i++) {
+        console.log(`VideoContext: Reconnect attempt ${i + 1}`);
         try {
           await signalingClient.connect();
           toast({ title: "Reconnected", status: "success", duration: 3000 });
+          console.log("VideoContext: Successfully reconnected");
           return;
         } catch (error) {
+          console.error("VideoContext: Reconnect attempt failed", error);
           if (i < maxAttempts - 1) {
+            console.log(`VideoContext: Waiting ${delay}ms before next reconnect attempt`);
             await new Promise((resolve) => setTimeout(resolve, delay));
           }
         }
       }
+      console.log("VideoContext: All reconnect attempts failed");
       handleError(new Error("Failed to reconnect"), "Could not re-establish connection.");
     };
 
     try {
-      // Establishing connection with the signaling server
       await signalingClient.connect();
+      console.log("VideoContext: Connected to signaling server");
       toast({ title: "Connected", status: "success", duration: 3000 });
 
-      // Setting up the peer connection
+      // Peer connection setup
+      console.log("VideoContext: Setting up peer connection");
       const peerConnection = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun.l.google.com:19302" }], // Using Google's public STUN server
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
       });
       peerConnectionRef.current = peerConnection;
 
-      // Handling tracks received from the remote peer
       peerConnection.ontrack = (event) => {
+        console.log("VideoContext: Received new track", event.streams[0]);
         setRemoteStream(event.streams[0]);
       };
 
-      // Sending ICE candidates to the remote peer
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
+          console.log("VideoContext: Sending ICE candidate", event.candidate);
           signalingClient.sendIceCandidate(event.candidate).catch((error) => {
             handleError(error, "Failed to send ICE candidate.");
           });
         }
       };
 
-      // Creating and sending the initial offer
       const offer = await peerConnection.createOffer();
+      console.log("VideoContext: Created offer", offer);
       await peerConnection.setLocalDescription(offer);
       signalingClient.sendOffer(offer);
 
-      // Listening for an incoming offer
       signalingClient.onOffer(async (offer, peerId) => {
+        console.log(`VideoContext: Received offer from peer ${peerId}`, offer);
         try {
           await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
-          // Create an answer to the received offer
           const answer = await peerConnection.createAnswer();
+          console.log("VideoContext: Created answer", answer);
           await peerConnection.setLocalDescription(answer);
-
-          // Send the answer back to the initiating peer
           signalingClient.sendAnswer(answer);
         } catch (error) {
           handleError(error, "Error handling incoming offer.");
         }
       });
 
-      // Handling answer from the remote peer
       signalingClient.onAnswer(async (answer) => {
+        console.log("VideoContext: Received answer", answer);
         await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
       });
 
-      // Adding ICE candidates received from the remote peer
       signalingClient.onIceCandidate(async (candidate) => {
-        if (candidate) {
-          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-        }
+        console.log("VideoContext: Received ICE candidate", candidate);
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
       });
 
       signalingClient.onDisconnect(async () => {
-        toast({
-          title: "Disconnected, attempting to reconnect...",
-          status: "warning",
-          duration: 3000,
-        });
-        await attemptReconnect(3, 5000); // Attempt to reconnect 3 times with a 5-second delay
+        console.log("VideoContext: Disconnected from signaling server, attempting to reconnect");
+        await attemptReconnect(3, 5000);
       });
 
-      // Handling renegotiation if needed
       peerConnection.onnegotiationneeded = async () => {
+        console.log("VideoContext: Negotiation needed");
         try {
           const offer = await peerConnection.createOffer();
           await peerConnection.setLocalDescription(offer);
@@ -280,23 +278,37 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
         }
       };
 
-      // Handling connection state changes
       peerConnection.onconnectionstatechange = () => {
+        console.log(
+          `VideoContext: Peer connection state changed to ${peerConnection.connectionState}`,
+        );
         switch (peerConnection.connectionState) {
           case "connected":
+            console.log("VideoContext: Peer connection established");
             toast({ title: "Connected", status: "success", duration: 3000 });
             break;
           case "disconnected":
-          case "failed":
+            console.log("VideoContext: Peer connection disconnected");
             handleError(
               new Error("Connection failed"),
               "Connection lost. Please try reconnecting.",
             );
             break;
+          case "failed":
+            console.log("VideoContext: Peer connection failed");
+            handleError(
+              new Error("Connection failed"),
+              "Connection failed. Please try reconnecting.",
+            );
+            break;
           case "closed":
+            console.log("VideoContext: Peer connection closed");
             toast({ title: "Disconnected", status: "warning", duration: 3000 });
             break;
           default:
+            console.log(
+              `VideoContext: Peer connection state is now ${peerConnection.connectionState}`,
+            );
             break;
         }
       };
@@ -320,19 +332,31 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
     console.log("VideoContext: Local stream updated");
 
     const peerConnection = peerConnectionRef.current;
-
     if (peerConnection) {
+      console.log("VideoContext: Updating peer connection with new local stream");
+
       // Remove any existing tracks
-      peerConnection.getSenders().forEach((sender) => {
+      const senders = peerConnection.getSenders();
+      console.log(
+        `VideoContext: Removing ${senders.length} existing sender(s) from peer connection`,
+      );
+      senders.forEach((sender) => {
+        console.log(`VideoContext: Removing sender: ${sender.track?.kind}`);
         peerConnection.removeTrack(sender);
       });
 
       if (localStream) {
+        console.log("VideoContext: Adding new tracks from local stream to peer connection");
         // Add new tracks to the connection
         localStream.getTracks().forEach((track) => {
+          console.log(`VideoContext: Adding track to peer connection: ${track.kind}`);
           peerConnection.addTrack(track, localStream);
         });
+      } else {
+        console.log("VideoContext: Local stream is null, no tracks to add");
       }
+    } else {
+      console.log("VideoContext: Peer connection not established, cannot update tracks");
     }
   }, [localStream, signalingClient]);
 
