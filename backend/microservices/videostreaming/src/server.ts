@@ -47,6 +47,9 @@ class Server {
     }
   }
 
+  // karwi: authentication
+  // karwi: room authentication
+  // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
   private configWebSocket() {
     this.wsServer.on('connection', (ws: ExtendedWebSocket, req) => {
       ws.id = uuidv4(); // Assign a unique ID to the WebSocket connection
@@ -72,6 +75,8 @@ class Server {
     });
   }
 
+  // karwi: ensure no duplicate user
+  // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
   private async addToRoom(roomId: string, ws: ExtendedWebSocket) {
     // Add the WebSocket ID to the room
     await this.redisClient.sAdd(roomId, ws.id);
