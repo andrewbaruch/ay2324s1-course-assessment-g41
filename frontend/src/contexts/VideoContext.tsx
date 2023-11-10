@@ -78,7 +78,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
         video: isCameraOn,
         audio: isMicrophoneOn,
       });
-      console.log("karwi: setlocalstream");
       setLocalStream(stream);
     } catch (error) {
       console.error("Error accessing media devices.", error);
@@ -123,6 +122,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   }, [localStream]);
 
   useEffect(() => {
+    console.log("VideoContext: Camera or microphone state changed");
+
     // Check if the values have changed
     if (prevCameraOnRef.current === isCameraOn && prevMicrophoneOnRef.current === isMicrophoneOn) {
       // If there's no change, do nothing
@@ -148,12 +149,14 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
 
   // Handle new peer joining
   const handleNewPeer = useCallback((peerId: string) => {
+    console.log(`New peer joined: ${peerId}`);
     setPeers((prevPeers) => new Set([...prevPeers, peerId]));
     // Additional logic for a new peer (e.g., create RTCPeerConnection, UI update)
   }, []);
 
   // Handle peer disconnection
   const handlePeerDisconnected = useCallback((peerId: string) => {
+    console.log(`Peer disconnected: ${peerId}`);
     setPeers((prevPeers) => {
       const updatedPeers = new Set(prevPeers);
       updatedPeers.delete(peerId);
@@ -163,12 +166,14 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   }, []);
 
   useEffect(() => {
+    console.log("VideoContext: Setting up signaling client callbacks");
     signalingClient.onNewPeer(handleNewPeer);
     signalingClient.onPeerDisconnected(handlePeerDisconnected);
 
     // ... other initialization code ...
 
     return () => {
+      console.log("VideoContext: Cleaning up signaling client callbacks");
       // Clean up on unmount or when dependencies change
       signalingClient.onNewPeer(() => {});
       signalingClient.onPeerDisconnected(() => {});
@@ -176,28 +181,24 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   }, [handleNewPeer, handlePeerDisconnected, signalingClient]);
 
   useEffect(() => {
-    console.log("Current Peers:", Array.from(peers));
+    console.log("VideoContext: Peers state updated", Array.from(peers));
   }, [peers]);
 
   const connectToRemoteStream = useCallback(async () => {
+    console.log("VideoContext: Connecting to remote stream");
+
     const attemptReconnect = async (maxAttempts: number, delay: number): Promise<void> => {
-      console.log("karwi: attemptReconnect");
       for (let i = 0; i < maxAttempts; i++) {
         try {
-          console.log("karwi: 1");
           await signalingClient.connect();
-          console.log("karwi: 2");
           toast({ title: "Reconnected", status: "success", duration: 3000 });
-          console.log("karwi: 3");
           return;
         } catch (error) {
-          console.log("karwi: 4");
           if (i < maxAttempts - 1) {
             await new Promise((resolve) => setTimeout(resolve, delay));
           }
         }
       }
-      console.log("karwi: 5");
       handleError(new Error("Failed to reconnect"), "Could not re-establish connection.");
     };
 
@@ -305,8 +306,10 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
     }
 
     return () => {
+      console.log("VideoContext: Disconnecting from remote stream");
       signalingClient.disconnect();
       if (peerConnectionRef.current) {
+        console.log("VideoContext: Closing peer connection");
         peerConnectionRef.current.close();
         peerConnectionRef.current = null;
       }
@@ -314,6 +317,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   }, [handleError, signalingClient, toast]);
 
   useEffect(() => {
+    console.log("VideoContext: Local stream updated");
+
     const peerConnection = peerConnectionRef.current;
 
     if (peerConnection) {
