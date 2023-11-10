@@ -12,8 +12,15 @@ interface IUser {
 
 const BottomBar: React.FC = () => {
   const { listOfActiveUsers } = useCollabContext();
-  const { localStream, remoteStream, toggleCamera, toggleMicrophone, isCameraOn, isMicrophoneOn } =
-    useVideoContext();
+  const {
+    localStream,
+    remoteStream,
+    toggleCamera,
+    toggleMicrophone,
+    isCameraOn,
+    isMicrophoneOn,
+    connectToRemoteStream,
+  } = useVideoContext();
 
   return (
     <Flex align="center" justify="space-between" p={4}>
@@ -34,6 +41,7 @@ const BottomBar: React.FC = () => {
         onToggleMicrophone={toggleMicrophone}
         isCameraOn={isCameraOn}
         isMicrophoneOn={isMicrophoneOn}
+        connectToRemoteStream={connectToRemoteStream}
       />
     </Flex>
   );

@@ -126,6 +126,7 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ roomId }) => 
 
   const currentAttempt = useGetCurrentAttempt(document);
 
+  // karwi: pass room id to the url here
   const signalingClient = useMemo(() => {
     return new WebSocketSignalingClient("wss://example.com/signaling");
   }, []);
