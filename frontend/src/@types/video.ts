@@ -8,4 +8,6 @@ export type SignalingClient = {
   onAnswer: (callback: (answer: RTCSessionDescriptionInit, peerId: string) => void) => void;
   onIceCandidate: (callback: (candidate: RTCIceCandidate, peerId: string) => void) => void;
   onDisconnect: (callback: () => void) => void;
+  onNewPeer: (callback: (peerId: string) => void) => void;
+  onPeerDisconnected: (callback: (peerId: string) => void) => void;
 };

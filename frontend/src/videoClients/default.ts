@@ -8,6 +8,8 @@ export class WebSocketSignalingClient implements SignalingClient {
   private answerCallback?: (answer: RTCSessionDescriptionInit, peerId: string) => void;
   private iceCandidateCallback?: (candidate: RTCIceCandidate, peerId: string) => void;
   private disconnectCallback?: () => void;
+  private newPeerCallback?: (peerId: string) => void;
+  private peerDisconnectedCallback?: (peerId: string) => void;
 
   constructor(private url: string) {
     this.socket = new WebSocket(url);
@@ -33,7 +35,12 @@ export class WebSocketSignalingClient implements SignalingClient {
         case "ice-candidate":
           this.iceCandidateCallback?.(data.candidate, data.peerId);
           break;
-        // karwi: Handle other messages or events as needed: new-peer, peer-disconnected
+        case "new-peer":
+          this.newPeerCallback?.(data.peerId);
+          break;
+        case "peer-disconnected":
+          this.peerDisconnectedCallback?.(data.peerId);
+          break;
       }
     };
 
@@ -83,5 +90,13 @@ export class WebSocketSignalingClient implements SignalingClient {
 
   onDisconnect(callback: () => void): void {
     this.disconnectCallback = callback;
+  }
+
+  onNewPeer(callback: (peerId: string) => void): void {
+    this.newPeerCallback = callback;
+  }
+
+  onPeerDisconnected(callback: (peerId: string) => void): void {
+    this.peerDisconnectedCallback = callback;
   }
 }

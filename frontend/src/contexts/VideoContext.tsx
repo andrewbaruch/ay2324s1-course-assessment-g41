@@ -51,6 +51,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   const prevMicrophoneOnRef = useRef(isMicrophoneOn);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const toast = useToast();
+  const [peers, setPeers] = useState(new Set<string>());
 
   const handleError = useCallback(
     (error: unknown, message: string) => {
@@ -144,6 +145,35 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
       stopLocalStream();
     };
   }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
+
+  // Handle new peer joining
+  const handleNewPeer = useCallback((peerId: string) => {
+    setPeers((prevPeers) => new Set([...prevPeers, peerId]));
+    // Additional logic for a new peer (e.g., create RTCPeerConnection, UI update)
+  }, []);
+
+  // Handle peer disconnection
+  const handlePeerDisconnected = useCallback((peerId: string) => {
+    setPeers((prevPeers) => {
+      const updatedPeers = new Set(prevPeers);
+      updatedPeers.delete(peerId);
+      return updatedPeers;
+    });
+    // Additional cleanup logic for the disconnected peer
+  }, []);
+
+  useEffect(() => {
+    signalingClient.onNewPeer(handleNewPeer);
+    signalingClient.onPeerDisconnected(handlePeerDisconnected);
+
+    // ... other initialization code ...
+
+    return () => {
+      // Clean up on unmount or when dependencies change
+      signalingClient.onNewPeer(() => {});
+      signalingClient.onPeerDisconnected(() => {});
+    };
+  }, [handleNewPeer, handlePeerDisconnected, signalingClient]);
 
   const connectToRemoteStream = useCallback(async () => {
     const attemptReconnect = async (maxAttempts: number, delay: number): Promise<void> => {
