@@ -1,5 +1,6 @@
 // context/VideoContextProvider.tsx
 import { SignalingClient } from "@/@types/video";
+import { useToast } from "@chakra-ui/react";
 import React, {
   createContext,
   useContext,
@@ -49,6 +50,23 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
   const prevCameraOnRef = useRef(isCameraOn);
   const prevMicrophoneOnRef = useRef(isMicrophoneOn);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const toast = useToast();
+
+  const handleError = useCallback(
+    (error: unknown, message: string) => {
+      // Type assertion to cast the error to an Error object
+      const errorObj = error instanceof Error ? error : new Error(String(error));
+      console.error(errorObj);
+      toast({
+        title: "Error",
+        description: message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    },
+    [toast],
+  );
 
   const startLocalStream = useCallback(async () => {
     try {
@@ -124,80 +142,96 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
     };
   }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
 
+  // karwi: refactor
   const connectToRemoteStream = useCallback(async () => {
-    // Assume that signalingClient has methods to handle signaling
-    // This would connect to your signaling server and join a specific room
-    await signalingClient.connect();
+    try {
+      await signalingClient.connect();
+      toast({ title: "Connecting...", status: "info", duration: 3000 });
 
-    // Create a new RTCPeerConnection
-    const peerConnection = new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: "stun:stun.l.google.com:19302", // Using Google's public STUN server
-        },
-        // ... You can add more STUN/TURN servers as needed
-      ],
-    });
-    peerConnectionRef.current = peerConnection;
+      // Create a new RTCPeerConnection
+      const peerConnection = new RTCPeerConnection({
+        iceServers: [
+          {
+            urls: "stun:stun.l.google.com:19302", // Using Google's public STUN server
+          },
+          // ... You can add more STUN/TURN servers as needed
+        ],
+      });
+      peerConnectionRef.current = peerConnection;
 
-    // Set up event handlers for peer connection
-    peerConnection.ontrack = (event) => {
-      // Set the remote stream
-      setRemoteStream(event.streams[0]);
-    };
+      // Set up event handlers for peer connection
+      peerConnection.ontrack = (event) => {
+        // Set the remote stream
+        setRemoteStream(event.streams[0]);
+      };
 
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        // Send the ICE candidate to the remote peer via your signaling service
-        signalingClient.sendIceCandidate(event.candidate);
-      }
-    };
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          signalingClient.sendIceCandidate(event.candidate).catch((error) => {
+            handleError(error, "Failed to send ICE candidate.");
+          });
+        }
+      };
 
-    // karwi: already handled by renegotiation
-    // // Add local stream tracks to the peer connection
-    // localStream?.getTracks().forEach((track) => {
-    //   peerConnection.addTrack(track, localStream);
-    // });
-
-    // Create an offer
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-
-    // Send the offer to the remote peer via your signaling service
-    signalingClient.sendOffer(offer);
-
-    // Listen for the answer from the remote peer
-    signalingClient.onAnswer(async (answer) => {
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-    });
-
-    // Listen for ICE candidates from the remote peer
-    signalingClient.onIceCandidate(async (candidate) => {
-      if (candidate) {
-        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-      }
-    });
-
-    // Handle the negotiationneeded event (in case renegotiation is needed)
-    peerConnection.onnegotiationneeded = async () => {
+      // Create an offer
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
+
+      // Send the offer to the remote peer via your signaling service
       signalingClient.sendOffer(offer);
-    };
 
-    // Handle connection state changes
-    peerConnection.onconnectionstatechange = () => {
-      if (peerConnection.connectionState === "connected") {
-        // Peers are connected and ready to communicate
-        console.log("Peers connected!");
-      }
-    };
+      // Listen for the answer from the remote peer
+      signalingClient.onAnswer(async (answer) => {
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+      });
 
-    return () => {
-      peerConnection.close();
-      peerConnectionRef.current = null;
-    };
-  }, [signalingClient]);
+      // Listen for ICE candidates from the remote peer
+      signalingClient.onIceCandidate(async (candidate) => {
+        if (candidate) {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+      });
+
+      // Handle the negotiationneeded event (in case renegotiation is needed)
+      peerConnection.onnegotiationneeded = async () => {
+        try {
+          const offer = await peerConnection.createOffer();
+          await peerConnection.setLocalDescription(offer);
+          signalingClient.sendOffer(offer);
+        } catch (error) {
+          console.error("Failed to create offer on negotiation needed", error);
+        }
+      };
+
+      // Connection state change handler with user feedback
+      peerConnection.onconnectionstatechange = () => {
+        switch (peerConnection.connectionState) {
+          case "connected":
+            toast({ title: "Connected", status: "success", duration: 3000 });
+            break;
+          case "disconnected":
+          case "failed":
+            handleError(
+              new Error("Connection failed"),
+              "Connection lost. Please try reconnecting.",
+            );
+            break;
+          case "closed":
+            toast({ title: "Disconnected", status: "warning", duration: 3000 });
+            break;
+          default:
+            break;
+        }
+      };
+      return () => {
+        peerConnection.close();
+        peerConnectionRef.current = null;
+      };
+    } catch (error) {
+      handleError(error, "Failed to connect to remote stream.");
+      return () => {};
+    }
+  }, [handleError, signalingClient, toast]);
 
   useEffect(() => {
     const peerConnection = peerConnectionRef.current;
@@ -214,25 +248,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
           peerConnection.addTrack(track, localStream);
         });
       }
-
-      // Perform renegotiation
-      peerConnection
-        .createOffer()
-        .then((offer) => {
-          return peerConnection.setLocalDescription(offer);
-        })
-        .then(() => {
-          // Ensure that localDescription is not null
-          if (peerConnection.localDescription) {
-            // Send the new offer to the remote peer
-            signalingClient.sendOffer(peerConnection.localDescription);
-          } else {
-            throw new Error("Local description is not set.");
-          }
-        })
-        .catch((error) => {
-          console.error("Failed to renegotiate the peer connection", error);
-        });
     }
   }, [localStream, signalingClient]);
 
