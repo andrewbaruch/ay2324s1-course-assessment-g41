@@ -2,13 +2,12 @@ version: "3.8"
 
 x-common-variables: &common-variables
   POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
-  POSTGRES_COLLAB: postgresql://postgres:postgres@postgres-collab:5432/postgres?connect_timeout=300
   MONGO: mongodb://user:password@mongo:27017
   EXE_ENV: DEV
-  JWT_SECRET: EXAMPLE_SECRERT # pass around JWT secret so each service can verify user TODO: add to github secrets on deployment
+  JWT_SECRET: EXAMPLE_SECRERT 
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
   ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
-  SERVER_PORT: 3000
+  SERVER_PORT: 3000  
 
 networks:
   frontend:
@@ -19,10 +18,7 @@ services:
     container_name: user
     build:
       dockerfile: ./microservices/user/Dockerfile.local
-      context: ./backend
-    volumes:
-      - ./backend/microservices/user:/home/microservices/user/
-      - /home/microservices/user/node_modules
+      context: ../backend
     ports:
       - 8080:3000
     restart: on-failure
@@ -30,15 +26,13 @@ services:
       - backend
     environment:
       <<: *common-variables
+      LOGIN_REDIRECT_URL: http://localhost:3000/dashboard
 
   question:
     container_name: question
     build:
       dockerfile: ./microservices/question/Dockerfile.local
-      context: ./backend
-    volumes:
-      - ./backend/microservices/question:/home/microservices/question/
-      - /home/microservices/question/node_modules
+      context: ../backend
     ports:
       - 3001:3000
     restart: on-failure
@@ -46,28 +40,26 @@ services:
       - backend
     environment:
       <<: *common-variables
-
-  collaboration:
-    container_name: collaboration
+  
+  matching:
+    container_name: matching
     build:
-      dockerfile: ./microservices/collaboration/Dockerfile.local
-      context: ./backend
-    volumes:
-      - ./backend/microservices/collaboration:/home/microservices/collaboration/
-      - /home/microservices/collaboration/node_modules
+      dockerfile: ./microservices/matching/Dockerfile.dev
+      context: ../backend
     ports:
-      - 5001:3000
+      - 7001:3000
     restart: on-failure
     networks:
       - backend
-    environment:
+    environment: 
       <<: *common-variables
-      SERVER_PORT: 3000
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
+      COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
 
   postgres:
     container_name: postgres
     build:
-      context: ./postgres
+      context: ../postgres
       dockerfile: Dockerfile
     restart: always
     environment:
@@ -77,22 +69,6 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    networks:
-      - backend
-
-  postgres-collab:
-    container_name: postgres-collab
-    build:
-      context: ./postgres-collab
-      dockerfile: Dockerfile
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - postgres-collab:/var/lib/postgresql/data
-    ports:
-      - "5433:5432" # Use a different port for the new instance, e.g., 5433
     networks:
       - backend
 
@@ -111,7 +87,7 @@ services:
   mongo:
     container_name: mongo
     build:
-      context: ./mongo
+      context: ../mongo
       dockerfile: Dockerfile
     restart: always
     environment:
@@ -137,33 +113,14 @@ services:
     networks:
       - backend
 
-  matching:
-    container_name: matching
-    build:
-      dockerfile: ./microservices/matching/Dockerfile.dev
-      context: ./backend
-    volumes:
-      - ./backend/microservices/matching:/home/microservices/matching/
-      - /home/microservices/matching/node_modules
-    ports:
-      - 7001:3000
-    restart: on-failure
-    networks:
-      - backend
-    environment:
-      <<: *common-variables
-      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
-      COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
-
   nginx:
     depends_on:
       - client
       - user
-      - matching
     restart: always
     build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
+      dockerfile: Dockerfile.A5
+      context: ../nginx
     ports:
       - "3000:80"
     networks:
@@ -173,16 +130,10 @@ services:
   client:
     build:
       dockerfile: Dockerfile.local
-      context: ./frontend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      context: ../frontend
     networks:
       - frontend
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 
 volumes:
   postgres:
-  postgres-collab:
   mongo:
