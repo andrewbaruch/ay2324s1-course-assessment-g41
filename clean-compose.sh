@@ -1,12 +1,13 @@
-docker-compose rm -f
+#!/bin/bash
 
-docker volume rm ay2324s1-course-assessment-g41_3219Matching
-docker volume rm ay2324s1-course-assessment-g41_3219User
-docker volume rm ay2324s1-course-assessment-g41_mongo
-docker volume rm ay2324s1-course-assessment-g41_postgres
-docker volume rm ay2324s1-course-assessment-g41_frontend
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <path-to-docker-compose-file>"
+  exit 1
+fi
 
-docker-compose build --no-cache
-docker-compose up
+COMPOSE_FILE=$1
 
+docker-compose -f "$COMPOSE_FILE" down -v --rmi all
 
+docker-compose -f "$COMPOSE_FILE" build --no-cache
+docker-compose -f "$COMPOSE_FILE" up -d
