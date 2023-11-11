@@ -15,7 +15,7 @@ const upsertAttempt = async (attemptData: AttemptMessageData) => {
   return doc;
 }
 
-const findAttemptFromDatabase = async (attemptId: string, roomName: string) => {
+const findAttemptFromDatabase = async (attemptId: number, roomName: string) => {
   const query = { attemptId, roomName }
   const doc = await AttemptModel.findOne(query)
   console.log("Found doc from attempt collection", doc)

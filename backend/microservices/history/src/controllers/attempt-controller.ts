@@ -3,7 +3,7 @@ import * as AttemptService from "@/services/attempt-service";
 
 export async function getAttempt(req: Request, res: Response) {
   const { roomName, attemptId } = req.params
-  const doc = await AttemptService.findAttemptFromDatabase(attemptId, roomName)
+  const doc = await AttemptService.findAttemptFromDatabase(parseInt(attemptId), roomName)
   if (!doc) {
     res.status(400).send()
   } else {

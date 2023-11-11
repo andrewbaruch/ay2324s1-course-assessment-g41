@@ -1,7 +1,7 @@
 import MongoClient from "@/clients/mongo-mongoose";
 
 const AttemptSchema = new MongoClient.Schema({
-  attemptId: String,
+  attemptId: Number,
   questionId: String,
   text: String,
   roomName: String,
