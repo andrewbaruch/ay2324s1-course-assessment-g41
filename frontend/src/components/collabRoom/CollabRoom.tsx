@@ -28,7 +28,7 @@ interface CollabRoomPropsContextValue {
   onCloseRoom: () => void;
   onNewAttempt: () => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
-  onLanguageChange: (newLanguageValue: Language, attemptId: number) => void;
+  onLanguageChange: (newLanguageValue: Language) => void;
   onAttemptChange: (newAttemptId: number) => void;
 }
 

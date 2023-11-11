@@ -38,8 +38,9 @@ const AttemptActions = () => {
   );
 
   useEffect(() => {
-    handlePageChange(0); // Set the first page as default display
-  }, [handlePageChange]);
+    // on mount, create a new attempt
+    handlePageChange(1); // Set the first page as default display
+  }, []);
 
   const handleNewAttempt = () => {
     if (currentAttempt) {
