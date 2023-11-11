@@ -16,8 +16,6 @@ interface CollabRoomLanguage {
   value: string;
 }
 
-// karwi: refactor
-// karwi: better name?
 interface CollabRoomPropsContextValue {
   questionTotalList: Question[];
   languageTotalList: CollabRoomLanguage[];

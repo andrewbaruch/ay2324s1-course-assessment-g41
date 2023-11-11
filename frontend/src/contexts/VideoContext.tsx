@@ -57,11 +57,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   const toast = useToast();
 
-  // karwi: check the deps
-  // start stream and set local stream
-  // when change then will change local stream
   const startLocalStream = useCallback(async () => {
-    console.log("karwi: start local stream");
+    console.log("VideoContext: startLocalStream");
     try {
       console.log("VideoContext: Starting local stream");
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -87,8 +84,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     }
   }, [isCameraOn, isMicrophoneOn, toast]);
 
-  // will stop the current local stream
-  // then will have nothing to stream
   const stopLocalStream = useCallback(() => {
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
@@ -96,14 +91,13 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     }
   }, [localStream]);
 
-  // to set the state above
   const toggleCamera = useCallback(() => {
-    console.log("karwi: togglecamera");
+    console.log("VideoContext: toggleCamera");
     setIsCameraOn((prev) => !prev);
   }, []);
 
   const toggleMicrophone = useCallback(() => {
-    console.log("karwi: togglecamera");
+    console.log("VideoContext: toggleMicrophone");
     setIsMicrophoneOn((prev) => !prev);
   }, []);
 
@@ -133,10 +127,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     };
   }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
 
-  // create peer; listen to stream; add myself in first;
-  // qn: where is myself; then emit?
-  // im the initiator;
-  // then will add this person to this grp
   const createAndSetupPeer = useCallback(
     (initiator: boolean, signal?: SignalData) => {
       const peer = new Peer({
@@ -156,8 +146,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     [localStream],
   );
 
-  // on adding self then i will emit this one
-  // karwi: callPeer might be called twice
   const callPeer = useCallback(() => {
     console.log(`VideoContext: Calling peer ${roomId}`);
     const peer = createAndSetupPeer(true);
@@ -176,9 +164,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     });
   }, [createAndSetupPeer, socket, roomId, toast]);
 
-  // you call me then i answer;
-  // then i add myself in; then add you in; then emit answer call;
-  // on call receive; then you add me in;
   const answerCall = useCallback(
     (signal: SignalData) => {
       console.log("VideoContext: Answering call");
@@ -200,7 +185,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     [createAndSetupPeer, socket, roomId, toast],
   );
 
-  // cut off all;
   const leaveCall = useCallback(() => {
     console.log("VideoContext: Leaving call");
     if (peerConnectionRef.current) {
@@ -232,13 +216,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
     socket.on("callUser", (data) => {
       console.log("VideoContext: Received call from peer");
-      // if (!peerConnectionRef.current) {
-      //   console.log("VideoContext: No existing peer connection. Answering call.");
-      //   answerCall(data.signal);
-      // } else {
-      //   console.log("VideoContext: Already in a call. Ignoring incoming call.");
-      // }
-      // karwi: user might reinit
+
+      // karwi: used to handle user might reinit
       answerCall(data.signal);
     });
 
@@ -258,8 +237,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     };
   }, [answerCall, socket, toast]);
 
-  // start; then will call peer;
-  // when all change; call peer change; then will call again;
   useEffect(() => {
     console.log(`VideoContext: Room ID changed to ${roomId}. Initiating call if room ID is set.`);
     if (roomId && !peerConnectionRef.current) {
@@ -273,9 +250,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     // karwi: fix deps
   }, [roomId]);
 
-  // if you change to this one;
-  // qn: what does this do ?
-  // if change local stream; then leave call;
   useEffect(() => {
     // karwi: leave call when localstream is null?
     console.log("VideoContext: Local stream updated. Restarting call if in an existing call.");
