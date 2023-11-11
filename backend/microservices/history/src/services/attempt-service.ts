@@ -9,20 +9,28 @@ const upsertAttempt = async (attemptData: AttemptMessageData) => {
   const query = {
     attemptId: attemptData.attemptId,
   }
-
+  console.log('attempting to upsert', query, attemptData);
   const doc = await AttemptModel.findOneAndUpdate(query, attemptData, options)
   console.log("Upserted into attempt collection", doc?.attemptId, doc?.roomName, doc?.text, doc?.language?.label)
   return doc;
 }
 
-const findAttemptFromDatabase = async (attemptId: string) => {
-  const query = { attemptId }
+const findAttemptFromDatabase = async (attemptId: string, roomName: string) => {
+  const query = { attemptId, roomName }
   const doc = await AttemptModel.findOne(query)
   console.log("Found doc from attempt collection", doc)
   return doc;
 }
 
+const findAllAttemptsFrom = async (roomName: string) => {
+  const query = { roomName };
+  const doc = await AttemptModel.find(query);
+  console.log("Found all attempts from room", doc);
+  return doc;
+}
+
 export {
   upsertAttempt,
-  findAttemptFromDatabase
+  findAttemptFromDatabase,
+  findAllAttemptsFrom
 };

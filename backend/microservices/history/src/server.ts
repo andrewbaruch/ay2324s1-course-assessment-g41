@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import express from 'express'
 import attemptRouter from "@/routes/attempt-router";
+import AttemptSubscriber from "@/subscribers/attempt-subscriber";
 
 export class Server {
   private app
@@ -30,6 +31,8 @@ export class Server {
     this.app.listen(this.port, () => {
       console.log("Listening to port", this.port)
     })
+    const historySubscriber = new AttemptSubscriber();
+    historySubscriber.start()
   }
 
   private configMiddleware() {

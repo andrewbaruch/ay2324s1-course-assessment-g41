@@ -1,19 +1,20 @@
-import { onAuthenticatePayload, onChangePayload, onStoreDocumentPayload } from "@hocuspocus/server";
+import { onAuthenticatePayload, onChangePayload, onStatelessPayload, onStoreDocumentPayload } from "@hocuspocus/server";
 import { Language } from "@/models/language";
 import * as AttemptService from "@/services/attempt";
 import * as RoomService from "@/services/room";
 import * as AuthService from "@/services/auth";
 import { parseCookie } from "@/utils/parseCookie";
+import { YText } from "yjs/dist/src/internals";
 
-const saveAttempt = (data: onStoreDocumentPayload) => {
+const autoSaveAttempt = (data: onStoreDocumentPayload) => {
   const { documentName } = data
   const ymap = data.document.getMap();
   const attemptId = ymap.get("attemptId") as string;
-  const text = ymap.get("text") as string;
+  const text = ymap.get("monaco") as YText;
   const language = ymap.get("language") as Language;
   const questionId = ymap.get("questionId") as string;
   AttemptService.saveAttempt({
-    attemptId, text, language, roomName: documentName, questionId
+    attemptId, text: text.toJSON(), language, roomName: documentName, questionId
   })
 }
 
@@ -30,8 +31,30 @@ const checkAuthForUser = async (data: onAuthenticatePayload) => {
   }
 }
 
+const handleStatelessMessage = async (data: onStatelessPayload) => {
+  const { attemptId, language, text } = JSON.parse(data.payload);
+  console.log("Saving ", {
+    roomName: data.documentName,
+    attemptId,
+    text,
+    language,
+    // questionId
+  })
+  AttemptService.saveAttempt({
+    roomName: data.documentName,
+    attemptId,
+    text,
+    language,
+    questionId: "test-question-id",
+  })
+
+  console.log("Creating New Attempt")
+}
+
 const handleChangeData = async (data: onChangePayload) => {
-  const signal = data.document.getMap().get("signal") as string
+  const signal = data.document.getMap("signal").get("signal") as string
+
+  console.log('reading signal', signal)
   
   switch (signal) {
     case "NEW":
@@ -44,7 +67,8 @@ const handleChangeData = async (data: onChangePayload) => {
 }
 
 export {
-  saveAttempt,
+  autoSaveAttempt as saveAttempt,
   checkAuthForUser,
-  handleChangeData
+  handleChangeData,
+  handleStatelessMessage
 }

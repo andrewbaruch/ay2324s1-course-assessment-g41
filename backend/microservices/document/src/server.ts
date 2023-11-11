@@ -51,6 +51,7 @@ class BroadcastServer {
       //   this.emitEvent(`SAVED_DOCUMENT_${data.documentName}`)
       // },
       onAuthenticate: broadcastRouter.onAuthenticate,
+      onStateless: broadcastRouter.onStateless,
       // onChange: broadcastRouter.onChange,
     })
   }

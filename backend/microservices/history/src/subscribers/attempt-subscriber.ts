@@ -12,6 +12,10 @@ class AttemptSubscriber {
     this.pubSubClient = PubSubClient;
   }
 
+  start() {
+    this.subscribeToAttemptTopic();
+  }
+
   subscribeToAttemptTopic() {
     this.pubSubClient.subscribeToTopic(this.attemptTopic, this.handleMessage);
   }
