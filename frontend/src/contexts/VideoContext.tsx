@@ -44,6 +44,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
   const peerConnectionRef = useRef<Peer.Instance | null>(null);
+  const prevCameraOnRef = useRef(isCameraOn);
+  const prevMicrophoneOnRef = useRef(isMicrophoneOn);
   // const socket = useRef(io(`${HOST_API}${BE_API.video.root}`, { query: { roomId } })).current;
   // const socket = useRef(io("http://localhost:3000/videostreaming", { query: { roomId } })).current;
   const socket = useRef(
@@ -59,6 +61,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   // start stream and set local stream
   // when change then will change local stream
   const startLocalStream = useCallback(async () => {
+    console.log("karwi: start local stream");
     try {
       console.log("VideoContext: Starting local stream");
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -95,12 +98,40 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   // to set the state above
   const toggleCamera = useCallback(() => {
+    console.log("karwi: togglecamera");
     setIsCameraOn((prev) => !prev);
   }, []);
 
   const toggleMicrophone = useCallback(() => {
+    console.log("karwi: togglecamera");
     setIsMicrophoneOn((prev) => !prev);
   }, []);
+
+  useEffect(() => {
+    console.log("VideoContext: Camera or microphone state changed");
+
+    // Check if the values have changed
+    if (prevCameraOnRef.current === isCameraOn && prevMicrophoneOnRef.current === isMicrophoneOn) {
+      // If there's no change, do nothing
+      return;
+    }
+
+    // Update the refs with the new values
+    prevCameraOnRef.current = isCameraOn;
+    prevMicrophoneOnRef.current = isMicrophoneOn;
+
+    // If the camera or microphone needs to be started or stopped, do so
+    if (isCameraOn || isMicrophoneOn) {
+      startLocalStream();
+    } else {
+      stopLocalStream();
+    }
+
+    // Cleanup function for unmounting
+    return () => {
+      stopLocalStream();
+    };
+  }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
 
   // create peer; listen to stream; add myself in first;
   // qn: where is myself; then emit?
