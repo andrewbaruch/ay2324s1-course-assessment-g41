@@ -3,7 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import { createClient } from 'redis';
+// import { createClient } from 'redis';
 
 class ServerApp {
   private app: express.Application;
@@ -20,9 +20,10 @@ class ServerApp {
         origin: '*',
         methods: ['GET', 'POST'],
       },
+      path: '/socket.io', // Set custom path here
     });
     const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-    this.redisClient = createClient({ url: redisUrl });
+    // this.redisClient = createClient({ url: redisUrl });
     this.port = process.env.SERVER_PORT || 3000;
     this.configMiddleware();
     this.configSocket();
@@ -47,14 +48,14 @@ class ServerApp {
 
       if (roomId) {
         console.log(`Client ${socket.id} joining room: ${roomId}`);
-        await this.addToRoom(roomId, socket.id);
+        // await this.addToRoom(roomId, socket.id);
         socket.join(roomId);
       }
 
       socket.on('disconnect', async () => {
         console.log(`Client disconnected: ${socket.id}`);
         if (roomId) {
-          await this.removeFromRoom(roomId, socket.id);
+          // await this.removeFromRoom(roomId, socket.id);
         }
       });
 
@@ -74,15 +75,15 @@ class ServerApp {
     });
   }
 
-  private async addToRoom(roomId: string, clientId: string) {
-    await this.redisClient.sAdd(roomId, clientId);
-    console.log(`Added client ${clientId} to room ${roomId}`);
-  }
+  // private async addToRoom(roomId: string, clientId: string) {
+  //   // await this.redisClient.sAdd(roomId, clientId);
+  //   console.log(`Added client ${clientId} to room ${roomId}`);
+  // }
 
-  private async removeFromRoom(roomId: string, clientId: string) {
-    await this.redisClient.sRem(roomId, clientId);
-    console.log(`Removed client ${clientId} from room ${roomId}`);
-  }
+  // private async removeFromRoom(roomId: string, clientId: string) {
+  //   // await this.redisClient.sRem(roomId, clientId);
+  //   console.log(`Removed client ${clientId} from room ${roomId}`);
+  // }
 
   public start() {
     this.httpServer.listen(this.port, () => {

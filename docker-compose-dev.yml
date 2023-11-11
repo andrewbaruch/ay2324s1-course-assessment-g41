@@ -31,13 +31,13 @@ services:
     environment:
       <<: *common-variables
 
-  redis:
-    container_name: redis
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    networks:
-      - backend
+  # redis:
+  #   container_name: redis
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - backend
 
   videostreaming:
     container_name: videostreaming
@@ -52,8 +52,8 @@ services:
     restart: on-failure
     networks:
       - backend
-    depends_on:
-      - redis
+    # depends_on:
+    #   - redis
     environment:
       <<: *common-variables
       REDIS_URL: redis://redis:6379
