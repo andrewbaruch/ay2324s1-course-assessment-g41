@@ -9,8 +9,6 @@ x-common-variables: &common-variables
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
   ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
   SERVER_PORT: 3000
-  MATCHING_REQUEST_REDIS_URL: rediss://default:e840999abd7046a39bf40c6aaf69faf9@quality-llama-43887.upstash.io:43887
-  MATCHING_PAIR_REDIS_URL: rediss://default:9ed22128c2b945b78ff7fd840679a80a@sought-meerkat-43858.upstash.io:43858
 
 networks:
   frontend:
@@ -156,6 +154,8 @@ services:
       <<: *common-variables
       GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
       COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+      MATCHING_REQUEST_REDIS_URL: rediss://default:e840999abd7046a39bf40c6aaf69faf9@quality-llama-43887.upstash.io:43887
+      MATCHING_PAIR_REDIS_URL: rediss://default:9ed22128c2b945b78ff7fd840679a80a@sought-meerkat-43858.upstash.io:43858
 
   nginx:
     depends_on:
