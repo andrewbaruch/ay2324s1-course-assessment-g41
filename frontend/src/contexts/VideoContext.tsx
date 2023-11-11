@@ -11,6 +11,7 @@ import Peer, { SignalData } from "simple-peer";
 import io from "socket.io-client";
 import { HOST_API } from "@/config";
 import { BE_API } from "@/utils/api";
+import { useToast } from "@chakra-ui/react";
 
 interface VideoContextValue {
   localStream: MediaStream | null;
@@ -46,17 +47,33 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const peerConnectionRef = useRef<Peer.Instance | null>(null);
   const socket = useRef(io(`${HOST_API}${BE_API.video.root}`, { query: { roomId } })).current;
 
+  const toast = useToast();
+
   const startLocalStream = useCallback(async () => {
     try {
+      console.log("Starting local stream");
       const stream = await navigator.mediaDevices.getUserMedia({
         video: isCameraOn,
         audio: isMicrophoneOn,
       });
       setLocalStream(stream);
+      toast({
+        title: "Local stream started",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error("Error accessing media devices.", error);
+      toast({
+        title: "Failed to start local stream",
+        description: String(error),
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
-  }, [isCameraOn, isMicrophoneOn]);
+  }, [isCameraOn, isMicrophoneOn, toast]);
 
   const stopLocalStream = useCallback(() => {
     if (localStream) {
@@ -93,6 +110,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   );
 
   const callPeer = useCallback(() => {
+    console.log(`Calling peer ${roomId}`);
     const peer = createAndSetupPeer(true);
 
     peer.on("signal", (data) => {
@@ -104,6 +122,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   const answerCall = useCallback(
     (signal: SignalData) => {
+      console.log("Answering call");
       const peer = createAndSetupPeer(false, signal);
 
       peer.on("signal", (data) => {
@@ -116,6 +135,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   );
 
   const leaveCall = useCallback(() => {
+    console.log("Leaving call");
     if (peerConnectionRef.current) {
       peerConnectionRef.current.destroy();
       peerConnectionRef.current = null;
