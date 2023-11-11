@@ -10,7 +10,6 @@ interface VideoStreamProps {
   onToggleMicrophone: () => void;
   isCameraOn: boolean;
   isMicrophoneOn: boolean;
-  connectToRemoteStream: () => Promise<() => void>;
 }
 
 const VideoStream: React.FC<VideoStreamProps> = ({
@@ -20,32 +19,31 @@ const VideoStream: React.FC<VideoStreamProps> = ({
   onToggleMicrophone,
   isCameraOn,
   isMicrophoneOn,
-  connectToRemoteStream,
 }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const bgColor = useColorModeValue("whiteAlpha.600", "blackAlpha.600");
 
-  useEffect(() => {
-    let disconnect: () => void;
+  // useEffect(() => {
+  //   let disconnect: () => void;
 
-    // Immediately invoked async function to use await
-    (async () => {
-      try {
-        // Wait for the Promise from connectToRemoteStream to resolve to the disconnect function
-        disconnect = await connectToRemoteStream();
-      } catch (error) {
-        console.error("Failed to connect to remote stream:", error);
-      }
-    })();
+  //   // Immediately invoked async function to use await
+  //   (async () => {
+  //     try {
+  //       // Wait for the Promise from connectToRemoteStream to resolve to the disconnect function
+  //       disconnect = await connectToRemoteStream();
+  //     } catch (error) {
+  //       console.error("Failed to connect to remote stream:", error);
+  //     }
+  //   })();
 
-    // The cleanup function for the useEffect hook
-    return () => {
-      if (disconnect) {
-        disconnect();
-      }
-    };
-  }, [connectToRemoteStream]);
+  //   // The cleanup function for the useEffect hook
+  //   return () => {
+  //     if (disconnect) {
+  //       disconnect();
+  //     }
+  //   };
+  // }, [connectToRemoteStream]);
 
   // Set up local video stream
   useEffect(() => {

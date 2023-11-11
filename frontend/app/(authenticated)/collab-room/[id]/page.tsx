@@ -130,14 +130,14 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
 
   const currentAttempt = useGetCurrentAttempt(document);
 
-  const signalingClient = useMemo(() => {
-    const signalingUrl = `${HOST_WEBSOCKET_API}${BE_API.video.signaling}?roomId=${id}`;
-    console.log("karwi: signalingUrl:", signalingUrl);
-    return new WebSocketSignalingClient(signalingUrl);
-  }, [id]);
+  // const signalingClient = useMemo(() => {
+  //   const signalingUrl = `${HOST_WEBSOCKET_API}${BE_API.video.signaling}?roomId=${id}`;
+  //   console.log("karwi: signalingUrl:", signalingUrl);
+  //   return new WebSocketSignalingClient(signalingUrl);
+  // }, [id]);
 
   return (
-    <VideoContextProvider signalingClient={signalingClient}>
+    <VideoContextProvider roomId={id}>
       <CollabRoom
         questionTotalList={mockQuestions}
         languageTotalList={supportedLanguages}
