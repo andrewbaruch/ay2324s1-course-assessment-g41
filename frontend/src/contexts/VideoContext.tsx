@@ -7,11 +7,10 @@ import React, {
   useRef,
   ReactNode,
 } from "react";
-import Peer from "simple-peer";
+import Peer, { SignalData } from "simple-peer";
 import io from "socket.io-client";
-
-// karwi: modify this
-const socket = io("http://localhost:5000"); // Adjust the URL to your server
+import { HOST_API } from "@/config";
+import { BE_API } from "@/utils/api";
 
 interface VideoContextValue {
   localStream: MediaStream | null;
@@ -36,7 +35,7 @@ export const useVideoContext = () => {
 
 interface VideoContextProviderProps {
   children: ReactNode;
-  roomId: string; // The peer ID or room ID to connect to
+  roomId: string;
 }
 
 export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ children, roomId }) => {
@@ -45,6 +44,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
   const peerConnectionRef = useRef<Peer.Instance | null>(null);
+  const socket = useRef(io(`${HOST_API}${BE_API.video.root}`, { query: { roomId } })).current;
 
   const startLocalStream = useCallback(async () => {
     try {
@@ -73,52 +73,47 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     setIsMicrophoneOn((prev) => !prev);
   }, []);
 
-  const callPeer = useCallback(
-    (id: string) => {
+  const createAndSetupPeer = useCallback(
+    (initiator: boolean, signal?: any) => {
       const peer = new Peer({
-        initiator: true,
+        initiator,
         trickle: false,
         stream: localStream ?? undefined,
       });
 
-      peer.on("signal", (data) => {
-        socket.emit("callUser", { userToCall: id, signalData: data });
-      });
+      peer.on("stream", setRemoteStream);
 
-      socket.on("callAccepted", (signal) => {
+      if (signal) {
         peer.signal(signal);
-      });
+      }
 
-      peer.on("stream", (stream) => {
-        setRemoteStream(stream);
-      });
-
-      peerConnectionRef.current = peer;
+      return peer;
     },
     [localStream],
   );
 
-  const answerCall = useCallback(() => {
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream: localStream ?? undefined,
-    });
+  const callPeer = useCallback(() => {
+    const peer = createAndSetupPeer(true);
 
     peer.on("signal", (data) => {
-      socket.emit("answerCall", data);
-    });
-
-    socket.on("callerSignal", (signal) => {
-      peer.signal(signal);
-    });
-
-    peer.on("stream", (stream) => {
-      setRemoteStream(stream);
+      socket.emit("callUser", { userToCall: roomId, signalData: data });
     });
 
     peerConnectionRef.current = peer;
-  }, [localStream]);
+  }, [createAndSetupPeer, socket, roomId]);
+
+  const answerCall = useCallback(
+    (signal: SignalData) => {
+      const peer = createAndSetupPeer(false, signal);
+
+      peer.on("signal", (data) => {
+        socket.emit("answerCall", { roomId, signal: data });
+      });
+
+      peerConnectionRef.current = peer;
+    },
+    [createAndSetupPeer, socket, roomId],
+  );
 
   const leaveCall = useCallback(() => {
     if (peerConnectionRef.current) {
@@ -129,23 +124,40 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, []);
 
   useEffect(() => {
-    // Listen for incoming calls
-    socket.on("incomingCall", (data) => {
-      // Automatically answer the call
-      answerCall();
+    socket.on("callUser", (data) => {
+      if (!peerConnectionRef.current) {
+        answerCall(data.signal);
+      }
     });
 
-    // Automatically call the peer when the roomId changes
+    socket.on("callAccepted", (signal) => {
+      if (peerConnectionRef.current) {
+        peerConnectionRef.current.signal(signal);
+      }
+    });
+
+    return () => {
+      socket.off("callUser");
+      socket.off("callAccepted");
+    };
+  }, [answerCall, socket]);
+
+  useEffect(() => {
     if (roomId) {
-      callPeer(roomId);
+      callPeer();
     }
 
-    // Cleanup: Leave call and remove event listener when the component unmounts
     return () => {
       leaveCall();
-      socket.off("incomingCall");
     };
-  }, [roomId, callPeer, leaveCall, answerCall]);
+  }, [roomId, callPeer, leaveCall]);
+
+  useEffect(() => {
+    if (localStream && peerConnectionRef.current) {
+      leaveCall();
+      callPeer();
+    }
+  }, [localStream, callPeer, leaveCall]);
 
   return (
     <VideoContext.Provider

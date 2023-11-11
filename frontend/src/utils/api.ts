@@ -29,6 +29,7 @@ export const BE_API = {
   topics: `${ROOTS_USER}/topics`,
   languages: `${ROOTS_USER}/languages`,
   video: {
+    root: `${ROOTS_VIDEO}`,
     signaling: `${ROOTS_VIDEO}/signaling`,
   },
 };
