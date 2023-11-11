@@ -27,6 +27,8 @@ const AttemptActions = () => {
     (attempt) => attempt.attemptId === currentAttempt.attemptId,
   );
 
+  console.log(currentPage, 'currentPage', listOfAttempts);
+
   const handlePageChange = useCallback(
     async (pageIndex: number) => {
       const selectedAttempt = listOfAttempts[pageIndex];

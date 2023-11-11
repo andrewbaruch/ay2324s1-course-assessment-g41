@@ -86,11 +86,11 @@ class QuestionService {
         topics: string[];
         _id: string;
       }[];
-      } = await authorizedAxios.get(BE_API.questions.root, {
-        data: {
-          difficulties, sorting
-        }
-      });
+      } = await authorizedAxios.get(
+        `${BE_API.questions.root}${difficulties
+          ? `?difficulties=${difficulties.join(",")}`
+          : ""}`
+      );
     return data.map(
       (d) =>
         ({

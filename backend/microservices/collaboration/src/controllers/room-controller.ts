@@ -45,3 +45,16 @@ export async function isRoomOpen(req: Request, res: Response) {
     res.status(400).send()
   }
 }
+
+export async function getRoomsWithUser(req: Request, res: Response) {
+  const { userId } = req.params;
+
+  try {
+    const rooms = await RoomService.getRoomsWithUser(userId);
+    res.status(200).json({
+      rooms
+    })
+  } catch (err) {
+    res.status(400).send()
+  }
+}

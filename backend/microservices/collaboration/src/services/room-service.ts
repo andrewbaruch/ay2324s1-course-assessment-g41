@@ -80,4 +80,10 @@ export class RoomService {
 
     return { roomName: slug }
   }
+
+  static async getRoomsWithUser(userId: string) {
+    const record: RoomUser[] = await knexPgClient.from("RoomUser").select("*").where({ userId });
+    console.log(`found ${record} rooms with ${userId}`);
+    return record.map(rec => rec.roomName);
+  }
 }

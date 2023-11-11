@@ -1,12 +1,19 @@
-import { onAuthenticatePayload, onChangePayload, onStatelessPayload, onStoreDocumentPayload } from "@hocuspocus/server";
+import { onAuthenticatePayload, onChangePayload, onDisconnectPayload, onStatelessPayload, onStoreDocumentPayload } from "@hocuspocus/server";
 import * as AttemptService from "@/services/attempt";
 import * as RoomService from "@/services/room";
 import * as AuthService from "@/services/auth";
 import { parseCookie } from "@/utils/parseCookie";
 
+const NO_QUESTION_ID = "-1"
+
 const autoSaveAttempt = (data: onStoreDocumentPayload) => {
   const attempt = AttemptService.extractAttemptFromDocument({ document: data.document });
   if (!attempt.attemptId) return; // if attempt id is invalid, don't save
+  const { questionId } = attempt;
+  if (!questionId) {
+    AttemptService.saveAttempt({ ...attempt, roomName: data.documentName, questionId: NO_QUESTION_ID });
+    return;
+  }
   AttemptService.saveAttempt({ ...attempt, roomName: data.documentName });
 }
 
@@ -37,30 +44,21 @@ const handleStatelessMessage = async (data: onStatelessPayload) => {
     attemptId,
     text,
     language,
-    questionId,
+    questionId: questionId ? questionId : NO_QUESTION_ID,
   })
-
-  console.log("Creating New Attempt")
 }
 
-const handleChangeData = async (data: onChangePayload) => {
-  const signal = data.document.getMap("signal").get("signal") as string
-
-  console.log('reading signal', signal)
-  
-  switch (signal) {
-    case "NEW":
-      // create attempt
-      return
-    case "REVERT":
-      // go back to attempt
-      return
+const handleDisconnect = async (data: onDisconnectPayload) => {
+  console.log(`total users in room: ${data.clientsCount}`);
+  if (data.clientsCount === 0) {
+    // no one else is in the room, so the last user who leaves the room closes the room
+    await RoomService.closeRoom(data.documentName, data.requestHeaders);
   }
 }
 
 export {
   autoSaveAttempt as saveAttempt,
   checkAuthForUser,
-  handleChangeData,
-  handleStatelessMessage
+  handleStatelessMessage,
+  handleDisconnect
 }

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as AttemptService from "@/services/attempt-service";
+import * as RoomService from "@/services/room-service";
 
 export async function getAttempt(req: Request, res: Response) {
   const { roomName, attemptId } = req.params
@@ -16,4 +17,25 @@ export async function getAllAttemptsInRoom(req: Request, res: Response) {
   const { roomName } = req.params;
   const doc = await AttemptService.findAllAttemptsFrom(roomName);
   res.status(200).json(doc)
+}
+
+export async function getAttemptsByUser(req: Request, res: Response) {
+  const userId: string = res.locals.userId
+  const roomNames = await RoomService.getRoomsWithUser(userId)
+  let result: {
+    roomName?: string | null | undefined;
+    attemptId?: number | null | undefined;
+    questionId?: string | null | undefined;
+    text?: string | null | undefined;
+    language?: {
+      label?: string | null | undefined;
+      value?: string | null | undefined;
+    } | null | undefined
+  }[] = []
+
+  roomNames.forEach(async (room) => {
+    const attempts = await AttemptService.findAllAttemptsFrom(room);
+    result = [...result, ...attempts];
+  })
+  res.status(200).json(result)
 }

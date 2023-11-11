@@ -1,4 +1,4 @@
-import { Extension, onAuthenticatePayload, onChangePayload, onStatelessPayload, onStoreDocumentPayload } from "@hocuspocus/server";
+import { Extension, onAuthenticatePayload, onChangePayload, onDisconnectPayload, onStatelessPayload, onStoreDocumentPayload } from "@hocuspocus/server";
 import * as BroadcastController from "@/controllers/broadcast-controller";
 
 class BroadcastRouter implements Extension {
@@ -17,6 +17,10 @@ class BroadcastRouter implements Extension {
 
   async onStateless(data: onStatelessPayload) {
     await BroadcastController.handleStatelessMessage(data);
+  }
+
+  async onDisconnect(data: onDisconnectPayload) {
+    await BroadcastController.handleDisconnect(data);
   }
 }
 

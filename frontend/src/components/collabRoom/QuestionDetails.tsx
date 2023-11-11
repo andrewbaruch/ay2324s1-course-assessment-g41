@@ -54,8 +54,6 @@ const QuestionDetails = () => {
     label: question.title,
   }));
 
-  console.log(questionTotalList, 'questino total list');
-
   return currentAttempt ? (
     <Box rounded="md">
       <Select

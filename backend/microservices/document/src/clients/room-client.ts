@@ -1,4 +1,5 @@
 import axios from "axios";
+import { IncomingHttpHeaders } from "http";
 // TODO: implement service registry to retrieve collab service endpoint
 const { COLLAB_SERVICE_ENDPOINT } = process.env
 
@@ -30,9 +31,20 @@ const isRoomOpen = async (roomName: string) => {
   }
 }
 
+const closeRoom = async (roomName: string, requestHeaders: IncomingHttpHeaders) => {
+  const cookie = requestHeaders.cookie;
+  if (cookie) {
+    roomClient.defaults.headers['Cookie'] = cookie;
+  }
+
+  const response = await roomClient.put(`/room/${roomName}/status/close`);
+  console.log(`Received ${response} from collab-service`);
+}
+
 export {
   doesUserHaveAccessToRoom,
-  isRoomOpen
+  isRoomOpen,
+  closeRoom
 }
 
 

@@ -1,6 +1,7 @@
 import { Server as HocuspocusServer } from '@hocuspocus/server'
 import { Logger } from '@hocuspocus/extension-logger'
 import broadcastRouter from './routes/broadcast-router'
+import { Redis } from '@hocuspocus/extension-redis'
 
 /**
  * Handles the broadcast logic between multiple clients via Yjs. 
@@ -25,8 +26,15 @@ class BroadcastServer {
     }
 
     if (!process.env.COLLAB_SERVICE_ENDPOINT) {
-      console.log("Missing connection to Collab Endpoint - operations involving collab service will not work")
+      console.log("Missing connection to Collab Endpoint - operations involving collab service will not work");
+      process.exit();
     }
+
+    if (!process.env.REDIS_DOCUMENT_SYNC_HOST || !process.env.REDIS_DOCUMENT_SYNC_PORT) {
+      console.log("Missing REDIS SYNC");
+      process.exit();
+    }
+
     this.port = parseInt(port)
     this.broadcastWebsocketServer = this.createAndConfigureWebsocketServer()
   }
@@ -40,7 +48,10 @@ class BroadcastServer {
       name: 'PeerPrep Document Broadcast Server',
       extensions: [
         new Logger(),
-        // TODO: include Redis extension for scalability
+        new Redis({
+          host: process.env.REDIS_DOCUMENT_SYNC_HOST,
+          port: parseInt(process.env.REDIS_DOCUMENT_SYNC_PORT as string),
+        })
       ],
       onListen: async (data) => {
         console.log(`Broadcast server is listening on port "${data.port}"!`);
@@ -52,6 +63,7 @@ class BroadcastServer {
         this.emitEvent(`SAVED_DOCUMENT_${data.documentName}`)
       },
       onStateless: broadcastRouter.onStateless,
+      onDisconnect: broadcastRouter.onDisconnect,
     })
   }
   

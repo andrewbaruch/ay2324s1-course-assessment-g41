@@ -3,6 +3,6 @@ import { Question } from "./models/question";
 
 export interface Attempt {
   attemptId: number; // karwi: string?
-  question?: Question;
+  question?: Question | null;
   language: Language;
 }

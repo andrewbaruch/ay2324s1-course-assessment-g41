@@ -117,9 +117,10 @@ export const MatchingForm = () => {
                       if (response.roomId) {
                         openRoom(response.roomId).then(res => {
                           // save complexity
-                          // const keyIndex = Object.keys(QuestionComplexity)[enumIndex]
-                          // console.log(enumIndex, QuestionComplexity[keyIndex])
-                          setComplexity(data.complexity);
+                          const enumIndex = Object.values(QuestionComplexity).findIndex(
+                            (complexityVal) => complexityVal === data.complexity
+                          );
+                          setComplexity(enumIndex + 1);
                           router.push(`/collab-room/${response.roomId}`);
                         }).catch(err => {
                           toast({

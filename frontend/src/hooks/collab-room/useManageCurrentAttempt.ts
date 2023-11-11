@@ -36,6 +36,8 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
 
   const [currentAttempt, setCurrentAttempt] = useState({ attemptId: sharedAttemptId, question: sharedQuestion, language: sharedLanguage });
   const { attempts: listOfSavedAttempts } = useGetAllAttempts({ roomName, currentAttempt })
+  console.log(currentAttempt, "currentAttempt");
+  console.log(listOfSavedAttempts, "list of saved attempts");
 
   useEffect(() => {
     if (!document || !provider) return;

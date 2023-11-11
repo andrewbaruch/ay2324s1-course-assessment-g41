@@ -41,6 +41,14 @@ services:
     networks:
       - backend
 
+  redis-document:
+    container_name: redis-document
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    networks:
+      - backend
+
   videostreaming:
     container_name: videostreaming
     build:
@@ -109,6 +117,7 @@ services:
     environment:
       <<: *common-variables
       GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/history/key.json"
+      COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
 
   document:
     container_name: document
@@ -120,6 +129,8 @@ services:
       - /home/microservices/document/node_modules
     ports:
       - 5002:3000
+    depends_on:
+      - redis-document
     restart: on-failure
     networks:
       - backend
@@ -128,6 +139,10 @@ services:
       SERVER_PORT: 3000
       COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
       GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/document/key.json"
+      REDIS_DOCUMENT_SYNC_HOST: "redis-document"
+      REDIS_DOCUMENT_SYNC_PORT: 6379
+      REDIS_DOCUMENT_SYNC_PASSWORD: "6359e3fccdc9490ab2d590b39db5661b"
+      REDIS_DOCUMENT_URL: redis://redis-document:6379
 
   postgres:
     container_name: postgres

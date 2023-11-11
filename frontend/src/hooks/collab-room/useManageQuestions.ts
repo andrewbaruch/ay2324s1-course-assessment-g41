@@ -4,7 +4,7 @@ import { upsertDocumentValue } from "@/utils/document";
 import { useEffect, useState } from "react";
 import { Doc } from "yjs";
 
-const useManageQuestionsInRoom = ({ complexity, document }: { complexity: QuestionComplexity | null | undefined, document: Doc | null }) => {
+const useManageQuestionsInRoom = ({ complexity, document }: { complexity: QuestionComplexity | null | undefined | number, document: Doc | null }) => {
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
 
   const handleQuestionChange = async (newQuestionId: string) => {

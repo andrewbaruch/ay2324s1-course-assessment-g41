@@ -9,6 +9,7 @@ const roomRouter = Router()
 roomRouter.post('/', RoomController.createRoom)
 roomRouter.get('/:roomName/access', RoomController.checkUserInRoom)
 roomRouter.get('/:roomName/status', RoomController.isRoomOpen)
+roomRouter.get('/:userId', RoomController.getRoomsWithUser)
 
 // indempotency
 // auth JWT endpoints, for client

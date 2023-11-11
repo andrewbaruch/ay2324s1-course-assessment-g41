@@ -21,6 +21,11 @@ export class Server {
       process.exit()
     }
 
+    if (!process.env.COLLAB_SERVICE_ENDPOINT) {
+      console.log("Missing COLLAB_SERVICE_ENDPOINT");
+      process.exit();
+    }
+
     this.port = port
     this.app = express()
     this.configMiddleware()
