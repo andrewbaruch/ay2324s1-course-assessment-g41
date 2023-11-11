@@ -163,7 +163,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     const peer = createAndSetupPeer(true);
 
     peer.on("signal", (data) => {
-      socket.emit("callUser", { userToCall: roomId, signalData: data });
+      socket.emit("callUser", { roomId: roomId, signalData: data });
     });
 
     peerConnectionRef.current = peer;
@@ -261,7 +261,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   // start; then will call peer;
   // when all change; call peer change; then will call again;
   useEffect(() => {
-    console.log(`Room ID changed to ${roomId}. Initiating call if room ID is set.`);
+    console.log(`VideoContext: Room ID changed to ${roomId}. Initiating call if room ID is set.`);
     if (roomId && !peerConnectionRef.current) {
       callPeer();
     }
@@ -270,12 +270,14 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       console.log("VideoContext: Leaving call due to component unmount or room ID change.");
       leaveCall();
     };
-  }, [roomId, leaveCall, callPeer]);
+    // karwi: fix deps
+  }, [roomId]);
 
   // if you change to this one;
   // qn: what does this do ?
   // if change local stream; then leave call;
   useEffect(() => {
+    // karwi: leave call when localstream is null?
     console.log("VideoContext: Local stream updated. Restarting call if in an existing call.");
     if (localStream && peerConnectionRef.current) {
       console.log("VideoContext: Leaving and reinitiating call due to local stream change.");
