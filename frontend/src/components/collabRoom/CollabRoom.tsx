@@ -27,7 +27,6 @@ interface CollabRoomPropsContextValue {
   onDeleteAttempt: (attemptId: number) => void;
   onCloseRoom: () => void;
   onNewAttempt: () => void;
-  onCodeChange: (newCodeText: string, attemptId: number) => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
   onLanguageChange: (newLanguageValue: Language, attemptId: number) => void;
   onAttemptChange: (newAttemptId: number) => void;
@@ -50,7 +49,6 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   onDeleteAttempt,
   onCloseRoom,
   onNewAttempt,
-  onCodeChange,
   onQuestionChange,
   onLanguageChange,
   onAttemptChange,
@@ -73,7 +71,6 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
         onDeleteAttempt,
         onCloseRoom,
         onNewAttempt,
-        onCodeChange,
         onQuestionChange,
         onLanguageChange,
         onAttemptChange,

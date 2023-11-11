@@ -9,6 +9,7 @@ import { codeEditorOptions, themifyCodeEditor } from "@/utils/codeEditor";
 import { useCollabContext } from "@/hooks/contexts/useCollabContext";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
+import { MonacoBinding } from "y-monaco";
 
 interface Props {
   onEditorMount: (editor: any) => void;
@@ -19,13 +20,15 @@ interface Props {
 /**
  * Reference: https://liveblocks.io/examples/collaborative-code-editor/nextjs-yjs-monaco
  */
-export const CodeEditor: React.FC<Props> = ({ onEditorMount, provider, document }) => {
+export const CodeEditor: React.FC<Props> = ({ onEditorMount, provider }) => {
   const { currentAttempt } = useCollabContext();
   const language = currentAttempt?.language;
   const { colorMode } = useColorMode();
 
   useEffect(() => {
-    return () => provider?.disconnect()
+    return () => {
+      provider?.disconnect()
+    }
   }, []);
 
   return (

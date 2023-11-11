@@ -1,3 +1,4 @@
+import { upsertDocumentValue } from "@/utils/document";
 import { useEffect, useState } from "react";
 import { Doc } from "yjs";
 
@@ -11,6 +12,18 @@ export const useGetDocumentValue = ({
     defaultValue: any
   }) => {
   const [val, setVal] = useState(defaultValue);
+
+  useEffect(() => {
+    if (!document) return;
+    if (document?.getMap(sharedKey).get(sharedKey)) return;
+
+    upsertDocumentValue({
+      sharedKey,
+      document,
+      valueToUpdate: defaultValue
+    });
+
+  }, [document])
 
   useEffect(() => {
     if (!document) return;

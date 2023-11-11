@@ -40,6 +40,9 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
       })
     }
 
+    return () => {
+      documentService?.provider?.disconnect();
+    }
   }, [documentService])
 
   const handleEditorMount = (editor: any) => {

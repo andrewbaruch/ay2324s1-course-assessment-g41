@@ -28,10 +28,10 @@ const AttemptActions = () => {
   );
 
   const handlePageChange = useCallback(
-    (pageIndex: number) => {
+    async (pageIndex: number) => {
       const selectedAttempt = listOfAttempts[pageIndex];
       if (selectedAttempt) {
-        onAttemptChange(selectedAttempt.attemptId);
+        await onAttemptChange(selectedAttempt.attemptId);
       }
     },
     [listOfAttempts, onAttemptChange],
