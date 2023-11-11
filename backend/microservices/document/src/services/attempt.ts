@@ -5,7 +5,7 @@ import { Doc } from "yjs";
 const ATTEMPT_ID_KEY = "attemptId";
 const MONACO_TEXT_KEY = "monaco";
 const LANGUAGE_KEY = "language";
-const QUESTION_KEY = "questionId";
+const QUESTION_KEY = "question";
 
 const saveAttempt = ({ roomName, attemptId, text, language, questionId }: { roomName: string; attemptId: number; text: string; language: Language, questionId: string }) => {
   const publisher = new AttemptPublisher()
@@ -38,8 +38,8 @@ const extractAttemptIdFrom = ({ document }: { document: Doc }) => {
 
 const extractQuestionIdFrom = ({ document }: { document: Doc }) => {
   const ymap = document.getMap(QUESTION_KEY);
-  const questionId = ymap.get(QUESTION_KEY) as string;
-  return questionId;
+  const question = ymap.get(QUESTION_KEY) as { id: string };
+  return question?.id;
 }
 
 const extractLanguageFrom = ({ document }: { document: Doc }) => {

@@ -6,7 +6,7 @@ import { parseCookie } from "@/utils/parseCookie";
 
 const autoSaveAttempt = (data: onStoreDocumentPayload) => {
   const attempt = AttemptService.extractAttemptFromDocument({ document: data.document });
-  AttemptService.saveAttempt({ ...attempt, roomName: data.documentName, questionId: "test-question-id" });
+  AttemptService.saveAttempt({ ...attempt, roomName: data.documentName });
 }
 
 const checkAuthForUser = async (data: onAuthenticatePayload) => {
@@ -23,20 +23,20 @@ const checkAuthForUser = async (data: onAuthenticatePayload) => {
 }
 
 const handleStatelessMessage = async (data: onStatelessPayload) => {
-  const { attemptId, language, text } = JSON.parse(data.payload);
+  const { attemptId, language, text, questionId } = JSON.parse(data.payload);
   console.log("Saving ", {
     roomName: data.documentName,
     attemptId,
     text,
     language,
-    // questionId
+    questionId
   })
   AttemptService.saveAttempt({
     roomName: data.documentName,
     attemptId,
     text,
     language,
-    questionId: "test-question-id",
+    questionId,
   })
 
   console.log("Creating New Attempt")
