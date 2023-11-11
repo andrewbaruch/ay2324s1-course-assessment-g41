@@ -18,9 +18,6 @@ interface VideoContextValue {
   remoteStream: MediaStream | null;
   startLocalStream: () => Promise<void>;
   stopLocalStream: () => void;
-  callPeer: (id: string) => void;
-  answerCall: () => void;
-  leaveCall: () => void;
   isCameraOn: boolean;
   isMicrophoneOn: boolean;
   toggleCamera: () => void;
@@ -157,9 +154,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
         remoteStream,
         startLocalStream,
         stopLocalStream,
-        callPeer,
-        answerCall,
-        leaveCall,
         isCameraOn,
         isMicrophoneOn,
         toggleCamera,
