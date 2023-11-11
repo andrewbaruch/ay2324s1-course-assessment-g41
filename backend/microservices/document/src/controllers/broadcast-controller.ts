@@ -6,6 +6,7 @@ import { parseCookie } from "@/utils/parseCookie";
 
 const autoSaveAttempt = (data: onStoreDocumentPayload) => {
   const attempt = AttemptService.extractAttemptFromDocument({ document: data.document });
+  if (!attempt.attemptId) return; // if attempt id is invalid, don't save
   AttemptService.saveAttempt({ ...attempt, roomName: data.documentName });
 }
 

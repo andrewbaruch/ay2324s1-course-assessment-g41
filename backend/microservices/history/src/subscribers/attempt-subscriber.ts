@@ -29,6 +29,7 @@ class AttemptSubscriber {
       console.log(`\tAttributes: ${message.attributes}`);
 
       const { attemptId, text, language, roomName, questionId } = JSON.parse(message.data.toString()) as AttemptMessageData;
+      if (!attemptId) return; // do not upsert if attempt id is invalid
       await AttemptService.upsertAttempt({ attemptId, text, language, roomName, questionId });  
     } catch (err) {
       // allow graceful timeout from waiting
