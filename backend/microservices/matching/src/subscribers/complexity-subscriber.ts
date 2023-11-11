@@ -72,7 +72,7 @@ class ComplexitySubscriber {
           {
             userId2: user2.userId,
             complexity: complexity,
-            roomId: room.name,
+            roomId: room,
           }
         );
         const insertUser2 = await complexityMatchingPairCache.set(
@@ -80,7 +80,7 @@ class ComplexitySubscriber {
           {
             userId2: user1.userId,
             complexity: complexity,
-            roomId: room.name,
+            roomId: room,
           }
         );
         // update matchingPairCache
