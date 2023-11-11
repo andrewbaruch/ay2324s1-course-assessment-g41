@@ -108,6 +108,7 @@ services:
       - backend
     environment:
       <<: *common-variables
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/history/key.json"
 
   document:
     container_name: document
@@ -126,6 +127,7 @@ services:
       <<: *common-variables
       SERVER_PORT: 3000
       COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/document/key.json"
 
   postgres:
     container_name: postgres
