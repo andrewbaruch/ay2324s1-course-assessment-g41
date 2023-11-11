@@ -46,6 +46,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const peerConnectionRef = useRef<Peer.Instance | null>(null);
   const prevCameraOnRef = useRef(isCameraOn);
   const prevMicrophoneOnRef = useRef(isMicrophoneOn);
+  const prevRoomIdRef = useRef("");
+
   // const socket = useRef(io(`${HOST_API}${BE_API.video.root}`, { query: { roomId } })).current;
   // const socket = useRef(io("http://localhost:3000/videostreaming", { query: { roomId } })).current;
   const socket = useRef(
@@ -238,17 +240,23 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, [answerCall, socket, toast]);
 
   useEffect(() => {
-    console.log(`VideoContext: Room ID changed to ${roomId}. Initiating call if room ID is set.`);
-    if (roomId && !peerConnectionRef.current) {
+    const prevRoomId = prevRoomIdRef.current;
+    console.log(`VideoContext: Room ID changed from ${prevRoomId} to ${roomId}.`);
+
+    // Call peer only if roomId has changed and there's no existing connection
+    if (roomId !== prevRoomId && !peerConnectionRef.current) {
+      console.log("VideoContext: Initiating call due to Room ID change.");
       callPeer();
     }
 
+    // Update the ref with the current roomId for the next render
+    prevRoomIdRef.current = roomId;
+
     return () => {
-      console.log("VideoContext: Leaving call due to component unmount or room ID change.");
+      console.log("VideoContext: Leaving call due to component unmount or Room ID change.");
       leaveCall();
     };
-    // karwi: fix deps
-  }, [roomId]);
+  }, [callPeer, leaveCall, roomId]);
 
   useEffect(() => {
     // karwi: leave call when localstream is null?
