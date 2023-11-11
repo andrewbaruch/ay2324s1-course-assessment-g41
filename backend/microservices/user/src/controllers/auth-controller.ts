@@ -6,16 +6,15 @@ import { handleServiceError } from '@/controllers/error-handler';
 import jwt from 'jsonwebtoken';
 import { cookieConfig } from '@/constants/cookie-config';
 import { accessTokenKey, refreshTokenKey } from '@/constants/token';
+const { JsonWebTokenError } = jwt;
+
+const testEmail = "example@email.com";
 
 if (!process.env.LOGIN_REDIRECT_URL) {
   console.log("Missing LOGIN_REDIRECT_URL");
   process.exit();
 }
 export const loginRedirectURL = process.env.LOGIN_REDIRECT_URL;
-
-const { JsonWebTokenError } = jwt;
-
-const testEmail = "example@email.com";
 
 export async function googleAuth(req: Request, res: Response): Promise<void> {
   if (process.env.EXE_ENV === "DEV" && process.env.SKIP_LOGIN_AUTH === "TRUE") {

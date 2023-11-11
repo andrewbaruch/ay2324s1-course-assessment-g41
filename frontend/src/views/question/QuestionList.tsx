@@ -18,7 +18,7 @@ import { BsCodeSquare } from "react-icons/bs";
 import { ComplexityBadge } from "../../components/complexity";
 import Link from "next/link";
 
-export const QuestionsList = ({ questions }: { questions: Question[] }) => {
+export const QuestionsList = ({ questions, hasWritePerms }: { questions: Question[], hasWritePerms: boolean }) => {
   const bgColor = useColorModeValue("white", "navy.800");
   const hoverColor = useColorModeValue("gray.100", "navy.900");
 
@@ -26,17 +26,19 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
     <Stack spacing={4}>
       {questions.length > 0 ? (
         <>
-          <Tooltip
-            label="Design your own question, or save a question you encountered from a technical interview here!"
-            hasArrow
-            placement="right"
-          >
-            <Link href={"/coding-questions/add-question"}>
-              <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
-                Craft Question
+          {hasWritePerms
+            ? (<Tooltip
+              label="Design your own question, or save a question you encountered from a technical interview here!"
+              hasArrow
+              placement="right"
+            >
+              <Link href={"/coding-questions/add-question"}>
+                <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
+                  Craft Question
               </Button>
-            </Link>
-          </Tooltip>
+              </Link>
+            </Tooltip>) : null
+          }
 
           <Stack borderWidth={1} borderRadius={4} spacing={0} background={bgColor}>
             {questions.map((q, index) =>
@@ -66,16 +68,17 @@ export const QuestionsList = ({ questions }: { questions: Question[] }) => {
       ) : (
           <Alert borderRadius={16}>
             <Stack>
-              <AlertTitle>Looks like you have not saved a question!</AlertTitle>
+              <AlertTitle>{hasWritePerms ? `Looks like you have not saved a question!` : `Looks like there are no questions.`}</AlertTitle>
               <AlertDescription>
-                This question repository helps you save questions you have encountered from past
-                interviews! You can also design and save your own question!
-            </AlertDescription>
-              <Link href={"/coding-questions/add-question"}>
-                <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
-                  Craft Question
-              </Button>
-              </Link>
+                {hasWritePerms ? `This question repository helps you save questions you have encountered from past
+                interviews! You can also design and save your own question!` : `The question repostiroy is currently empty. Try again later.`}
+              </AlertDescription>
+              {hasWritePerms
+                ? <Link href={"/coding-questions/add-question"}>
+                  <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
+                    Craft Question
+                  </Button>
+                </Link> : null}
             </Stack>
           </Alert>
         )}

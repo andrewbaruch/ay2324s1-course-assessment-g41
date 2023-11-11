@@ -23,7 +23,9 @@ import {
 } from "@chakra-ui/react";
 
 import { Question, QuestionCategories, QuestionComplexity } from "@/@types/models/question";
+import { Role } from "@/@types/user";
 import { useForm } from "react-hook-form";
+import useAuthRole from "@/hooks/guards/useAuthRole";
 import { useQuestions } from "@/hooks/questions/useQuestionList";
 import { QuestionDetails } from "./QuestionDetails";
 import { useRouter } from "next/navigation";
@@ -39,6 +41,8 @@ export const QuestionForm = ({ question = null }: { question: Question | null })
   } = useForm({
     defaultValues: question ? { ...question } : undefined,
   });
+
+  useAuthRole([Role.ADMIN])
   const { addQuestion, editQuestion } = useQuestions({});
   const toast = useToast();
   const router = useRouter();
