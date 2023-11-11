@@ -49,9 +49,12 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   const toast = useToast();
 
+  // karwi: check the deps
+  // start stream and set local stream
+  // when change then will change local stream
   const startLocalStream = useCallback(async () => {
     try {
-      console.log("Starting local stream");
+      console.log("VideoContext: Starting local stream");
       const stream = await navigator.mediaDevices.getUserMedia({
         video: isCameraOn,
         audio: isMicrophoneOn,
@@ -75,6 +78,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     }
   }, [isCameraOn, isMicrophoneOn, toast]);
 
+  // will stop the current local stream
+  // then will have nothing to stream
   const stopLocalStream = useCallback(() => {
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
@@ -82,6 +87,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     }
   }, [localStream]);
 
+  // to set the state above
   const toggleCamera = useCallback(() => {
     setIsCameraOn((prev) => !prev);
   }, []);
@@ -90,8 +96,12 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     setIsMicrophoneOn((prev) => !prev);
   }, []);
 
+  // create peer; listen to stream; add myself in first;
+  // qn: where is myself; then emit?
+  // im the initiator;
+  // then will add this person to this grp
   const createAndSetupPeer = useCallback(
-    (initiator: boolean, signal?: any) => {
+    (initiator: boolean, signal?: SignalData) => {
       const peer = new Peer({
         initiator,
         trickle: false,
@@ -109,8 +119,10 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     [localStream],
   );
 
+  // on adding self then i will emit this one
+  // karwi: callPeer might be called twice
   const callPeer = useCallback(() => {
-    console.log(`Calling peer ${roomId}`);
+    console.log(`VideoContext: Calling peer ${roomId}`);
     const peer = createAndSetupPeer(true);
 
     peer.on("signal", (data) => {
@@ -120,9 +132,12 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     peerConnectionRef.current = peer;
   }, [createAndSetupPeer, socket, roomId]);
 
+  // you call me then i answer;
+  // then i add myself in; then add you in; then emit answer call;
+  // on call receive; then you add me in;
   const answerCall = useCallback(
     (signal: SignalData) => {
-      console.log("Answering call");
+      console.log("VideoContext: Answering call");
       const peer = createAndSetupPeer(false, signal);
 
       peer.on("signal", (data) => {
@@ -134,46 +149,67 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     [createAndSetupPeer, socket, roomId],
   );
 
+  // cut off all;
   const leaveCall = useCallback(() => {
-    console.log("Leaving call");
+    console.log("VideoContext: Leaving call");
     if (peerConnectionRef.current) {
       peerConnectionRef.current.destroy();
       peerConnectionRef.current = null;
-      setRemoteStream(null);
+      // setRemoteStream(null);
     }
   }, []);
 
   useEffect(() => {
+    console.log("Setting up socket event listeners");
+
     socket.on("callUser", (data) => {
-      if (!peerConnectionRef.current) {
-        answerCall(data.signal);
-      }
+      console.log("Received call from peer");
+      // if (!peerConnectionRef.current) {
+      //   console.log("No existing peer connection. Answering call.");
+      //   answerCall(data.signal);
+      // } else {
+      //   console.log("Already in a call. Ignoring incoming call.");
+      // }
+      // karwi: user might reinit
+      answerCall(data.signal);
     });
 
     socket.on("callAccepted", (signal) => {
+      console.log("Call accepted by peer");
       if (peerConnectionRef.current) {
+        console.log("Signaling call acceptance");
         peerConnectionRef.current.signal(signal);
       }
     });
 
     return () => {
+      console.log("Cleaning up socket event listeners");
       socket.off("callUser");
       socket.off("callAccepted");
     };
   }, [answerCall, socket]);
 
+  // start; then will call peer;
+  // when all change; call peer change; then will call again;
   useEffect(() => {
-    if (roomId) {
+    console.log(`Room ID changed to ${roomId}. Initiating call if room ID is set.`);
+    if (roomId && !peerConnectionRef.current) {
       callPeer();
     }
 
     return () => {
+      console.log("Leaving call due to component unmount or room ID change.");
       leaveCall();
     };
-  }, [roomId, callPeer, leaveCall]);
+  }, [roomId, leaveCall, callPeer]);
 
+  // if you change to this one;
+  // qn: what does this do ?
+  // if change local stream; then leave call;
   useEffect(() => {
+    console.log("Local stream updated. Restarting call if in an existing call.");
     if (localStream && peerConnectionRef.current) {
+      console.log("Leaving and reinitiating call due to local stream change.");
       leaveCall();
       callPeer();
     }
