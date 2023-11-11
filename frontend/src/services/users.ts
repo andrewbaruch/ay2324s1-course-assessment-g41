@@ -6,3 +6,5 @@ export const getUser = () => authorizedAxios.get<UserResponse>(BE_API.users.root
 
 export const updateUser = (user: UserRequest) =>
   authorizedAxios.patch<UserResponse>(BE_API.users.root, user);
+
+export const deleteUser = () => authorizedAxios.delete(BE_API.users.root)
