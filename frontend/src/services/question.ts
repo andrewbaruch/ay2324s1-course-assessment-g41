@@ -75,7 +75,7 @@ class QuestionService {
     if (typeof window === "undefined") {
       return [];
     }
-
+    console.log(difficulties, 'difficulties');
     const {
       data,
     }: {

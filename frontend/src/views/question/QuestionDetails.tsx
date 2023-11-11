@@ -33,7 +33,7 @@ export const QuestionDetails = ({
   categories,
   isPreview = false,
 }: Question & { isPreview?: boolean }) => {
-  const { removeQuestion } = useQuestions();
+  const { removeQuestion } = useQuestions({});
   const [isEdit, setIsEdit] = useState(false);
   const bgColor = useColorModeValue("white", "navy.800");
 

@@ -29,6 +29,7 @@ import { useMatching } from "@/hooks/matching/useMatchingRequest";
 import { useRouter } from "next/navigation";
 import { Status } from "@/@types/status";
 import { openRoom } from "@/services/room";
+import { useMatchingContext } from "@/contexts/MatchingContext";
 
 export const MatchingForm = () => {
   const {
@@ -45,6 +46,7 @@ export const MatchingForm = () => {
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setComplexity } = useMatchingContext()
 
   return (
     <Stack
@@ -114,6 +116,10 @@ export const MatchingForm = () => {
                       intervalId = null;
                       if (response.roomId) {
                         openRoom(response.roomId).then(res => {
+                          // save complexity
+                          // const keyIndex = Object.keys(QuestionComplexity)[enumIndex]
+                          // console.log(enumIndex, QuestionComplexity[keyIndex])
+                          setComplexity(data.complexity);
                           router.push(`/collab-room/${response.roomId}`);
                         }).catch(err => {
                           toast({

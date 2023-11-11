@@ -47,14 +47,14 @@ const QuestionDetails = () => {
     }
   };
 
-  const currentQuestion = questionTotalList.find(
-    (question) => question.id === currentAttempt?.question?.id,
-  );
+  const currentQuestion = currentAttempt?.question;
 
   const options = questionTotalList.map((question) => ({
     value: question.id,
     label: question.title,
   }));
+
+  console.log(questionTotalList, 'questino total list');
 
   return currentAttempt ? (
     <Box rounded="md">

@@ -47,7 +47,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
         attemptId: sharedAttemptId,
         language: sharedLanguage,
         text: "",
-        questionId: 'fake-question-id',
+        questionId: sharedQuestion?.id,
       });
     }
   }, [document, provider]);
@@ -69,6 +69,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
     const currentAttemptId = document.getMap("attemptId").get("attemptId") as number;
     const language = document.getMap("language").get("language") as Language;
     const text = document.getText("monaco");
+    const question = document.getMap("question").get("question") as Question;
 
     // write all of previous attempt and send to server
     console.log('sending statless message', { currentAttemptId, language });
@@ -77,12 +78,12 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
       attemptId: currentAttemptId,
       language,
       text: text.toJSON(),
-      questionId: 'fake-question-id',
+      questionId: question?.id,
     });
 
     // create new attempt
     console.log('creating attempt on new attempt', listOfSavedAttempts.length + 1);
-    const newAttemptId = Math.max(...listOfSavedAttempts.map(attempt => parseInt(attempt.attemptId.toString()))) + 1
+    const newAttemptId = Math.max(...listOfSavedAttempts.map(attempt => attempt.attemptId)) + 1
     upsertDocumentValue({
       sharedKey: "attemptId",
       valueToUpdate: newAttemptId,
@@ -94,7 +95,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
       attemptId: newAttemptId,
       language,
       text: "",
-      questionId: 'fake-question-id',
+      questionId: "",
     });
   }
 
@@ -116,14 +117,19 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
         document,
       });
 
+      upsertDocumentValue({
+        sharedKey: "question",
+        valueToUpdate: toggledAttempt.question,
+        document
+      });
+
       resetTextInDocument({ document, defaultText: toggledAttempt.text });
 
       console.log(sharedAttemptId, sharedLanguage)
 
       setCurrentAttempt({
-        attemptId: parseInt(toggledAttempt.attemptId.toString()),
-        question: null,
-        // question: toggledAttempt.question || 'fake-question-id',
+        attemptId: toggledAttempt.attemptId,
+        question: toggledAttempt.question as Question,
         language: toggledAttempt.language
       })
     } catch (err) {
