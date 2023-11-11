@@ -17,9 +17,14 @@ const upsertAttempt = async (attemptData: AttemptMessageData) => {
 
 const findAttemptFromDatabase = async (attemptId: number, roomName: string) => {
   const query = { attemptId, roomName }
-  const doc = await AttemptModel.findOne(query)
-  console.log("Found doc from attempt collection", doc)
-  return doc;
+  try {
+    const doc = await AttemptModel.findOne(query)
+    console.log("Found doc from attempt collection", doc);
+    return doc;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 }
 
 const findAllAttemptsFrom = async (roomName: string) => {
