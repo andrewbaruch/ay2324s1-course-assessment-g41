@@ -1,7 +1,7 @@
-import { Attempt } from "@/@types/attempt";
 import { Language } from "@/@types/language";
 import { Question } from "@/@types/models/question";
 import { getAttempt } from "@/services/history";
+import QuestionService from "@/services/question";
 import { resetTextInDocument, sendAttemptToDocServer, upsertDocumentValue } from "@/utils/document";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
   const { sharedValue: sharedQuestion }: { sharedValue: Question } = useGetDocumentValue({
     sharedKey: "question",
     document,
-    defaultValue: null
+    defaultValue: null,
   })
   
   // shared current attempt id
@@ -35,7 +35,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
   })
 
   const [currentAttempt, setCurrentAttempt] = useState({ attemptId: sharedAttemptId, question: sharedQuestion, language: sharedLanguage });
-  const { attempts: listOfSavedAttempts } = useGetAllAttempts({ roomName, dependencies: [currentAttempt.attemptId] })
+  const { attempts: listOfSavedAttempts } = useGetAllAttempts({ roomName, currentAttempt })
 
   useEffect(() => {
     if (!document || !provider) return;
@@ -63,24 +63,26 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
 
   const createNewAttempt = () => {
     if (!provider || !document) {
+      console.log('provider and document not initiated, no attempt to create');
       return;
     }
 
     const currentAttemptId = document.getMap("attemptId").get("attemptId") as number;
     const language = document.getMap("language").get("language") as Language;
     const text = document.getText("monaco");
-    const question = document.getMap("question").get("question") as Question;
-
-    // write all of previous attempt and send to server
-    console.log('sending statless message', { currentAttemptId, language });
-    sendAttemptToDocServer({
-      provider,
-      attemptId: currentAttemptId,
-      language,
-      text: text.toJSON(),
-      questionId: question?.id,
-    });
-
+    const question = document.getMap("question").get("question") as Question | undefined;
+    
+    if (currentAttemptId && currentAttemptId > 0) {
+      // write all of previous attempt and send to server
+      console.log('sending statless message', { currentAttemptId, language });
+      sendAttemptToDocServer({
+        provider,
+        attemptId: currentAttemptId,
+        language,
+        text: text.toJSON(),
+        questionId: question?.id || "-1", // "-1" indicates no question selected.
+      });
+    }
     // create new attempt
     console.log('creating attempt on new attempt', listOfSavedAttempts.length + 1);
     const newAttemptId = Math.max(...listOfSavedAttempts.map(attempt => attempt.attemptId)) + 1

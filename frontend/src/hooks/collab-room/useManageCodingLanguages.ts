@@ -13,7 +13,6 @@ const useManageCodingLanguages = ({ document }: { document: Doc | null }) => {
       document
     })
   };
-  
 
   return {
     supportedLanguages,

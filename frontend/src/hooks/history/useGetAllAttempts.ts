@@ -2,7 +2,7 @@ import { Attempt } from "@/@types/attempt";
 import { useEffect, useState } from "react"
 import * as HistoryService from "../../services/history"
 
-export const useGetAllAttempts = ({ roomName, dependencies }: { roomName: string, dependencies: any[] }) => {
+export const useGetAllAttempts = ({ roomName, currentAttempt }: { roomName: string, currentAttempt: Attempt }) => {
   
   const [attempts, setAttempts] = useState<Attempt[]>([]);
 
@@ -12,7 +12,7 @@ export const useGetAllAttempts = ({ roomName, dependencies }: { roomName: string
       setAttempts(allAttempts);
     }
     getAttempts();
-  }, [roomName, ...dependencies]);
+  }, [roomName, currentAttempt]);
 
   return {
     attempts
