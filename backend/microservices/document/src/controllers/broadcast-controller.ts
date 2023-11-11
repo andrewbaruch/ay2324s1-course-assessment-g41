@@ -1,21 +1,12 @@
 import { onAuthenticatePayload, onChangePayload, onStatelessPayload, onStoreDocumentPayload } from "@hocuspocus/server";
-import { Language } from "@/models/language";
 import * as AttemptService from "@/services/attempt";
 import * as RoomService from "@/services/room";
 import * as AuthService from "@/services/auth";
 import { parseCookie } from "@/utils/parseCookie";
-import { YText } from "yjs/dist/src/internals";
 
 const autoSaveAttempt = (data: onStoreDocumentPayload) => {
-  const { documentName } = data
-  const ymap = data.document.getMap();
-  const attemptId = ymap.get("attemptId") as string;
-  const text = ymap.get("monaco") as YText;
-  const language = ymap.get("language") as Language;
-  const questionId = ymap.get("questionId") as string;
-  AttemptService.saveAttempt({
-    attemptId, text: text.toJSON(), language, roomName: documentName, questionId
-  })
+  const attempt = AttemptService.extractAttemptFromDocument({ document: data.document });
+  AttemptService.saveAttempt({ ...attempt, roomName: data.documentName, questionId: "test-question-id" });
 }
 
 const checkAuthForUser = async (data: onAuthenticatePayload) => {

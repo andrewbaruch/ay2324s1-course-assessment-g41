@@ -15,10 +15,6 @@ class BroadcastRouter implements Extension {
     await BroadcastController.saveAttempt(data)
   }
 
-  async onChange(data: onChangePayload) {
-    await BroadcastController.handleChangeData(data);
-  }
-
   async onStateless(data: onStatelessPayload) {
     await BroadcastController.handleStatelessMessage(data);
   }
