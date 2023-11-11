@@ -7,16 +7,13 @@ export async function getAttempt(req: Request, res: Response) {
   if (!doc) {
     res.status(400).send()
   } else {
-    res.json(doc).send()
+    res.status(200).json(doc)
   }
+  return
 }
 
 export async function getAllAttemptsInRoom(req: Request, res: Response) {
   const { roomName } = req.params;
   const doc = await AttemptService.findAllAttemptsFrom(roomName);
-  if (!doc) {
-    res.status(400).send()
-  } else {
-    res.json(doc).send()
-  }
+  res.status(200).json(doc)
 }

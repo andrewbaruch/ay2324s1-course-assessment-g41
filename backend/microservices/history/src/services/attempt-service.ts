@@ -24,7 +24,7 @@ const findAttemptFromDatabase = async (attemptId: string, roomName: string) => {
 
 const findAllAttemptsFrom = async (roomName: string) => {
   const query = { roomName };
-  const doc = await AttemptModel.find(query);
+  const doc = await AttemptModel.find(query).sort('attemptId');
   console.log("Found all attempts from room", doc);
   return doc;
 }
