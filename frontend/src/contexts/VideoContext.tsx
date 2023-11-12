@@ -43,7 +43,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
-  const peerConnectionRef = useRef<Peer.Instance | null>(null);
+  const callPeerConnectionRef = useRef<Peer.Instance | null>(null);
+  const answerPeerConnectionRef = useRef<Peer.Instance | null>(null);
   const prevCameraOnRef = useRef(isCameraOn);
   const prevMicrophoneOnRef = useRef(isMicrophoneOn);
   const prevLocalStreamRef = useRef<MediaStream | null>(null);
@@ -176,7 +177,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       socket.emit("callUser", { roomId: roomId, signalData: data });
     });
 
-    peerConnectionRef.current = peer;
+    callPeerConnectionRef.current = peer;
     toast({
       title: "Call Initiated",
       description: `Calling room ${roomId}`,
@@ -195,7 +196,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
         socket.emit("answerCall", { roomId, signal: data });
       });
 
-      peerConnectionRef.current = peer;
+      answerPeerConnectionRef.current = peer;
       toast({
         title: "Call Answered",
         description: `Joined room ${roomId}`,
@@ -209,18 +210,29 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   const leaveCall = useCallback(() => {
     console.log("VideoContext: Leaving call");
-    if (peerConnectionRef.current) {
-      peerConnectionRef.current.destroy();
-      peerConnectionRef.current = null;
-      toast({
-        title: "Left Call",
-        description: "You have left the call.",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-      });
+    // Close call peer connection
+    if (callPeerConnectionRef.current) {
+      callPeerConnectionRef.current.destroy();
+      callPeerConnectionRef.current = null;
     }
-  }, [toast]);
+    // Close answer peer connection
+    if (answerPeerConnectionRef.current) {
+      answerPeerConnectionRef.current.destroy();
+      answerPeerConnectionRef.current = null;
+    }
+
+    // if (peerConnectionRef.current) {
+    //   peerConnectionRef.current.destroy();
+    //   peerConnectionRef.current = null;
+    //   toast({
+    //     title: "Left Call",
+    //     description: "You have left the call.",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //   });
+    // }
+  }, []);
 
   useEffect(() => {
     socket.on("error", (error) => {
@@ -245,9 +257,9 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
     socket.on("callAccepted", (signal) => {
       console.log("VideoContext: Call accepted by peer");
-      if (peerConnectionRef.current) {
+      if (callPeerConnectionRef.current) {
         console.log("VideoContext: Signaling call acceptance");
-        peerConnectionRef.current.signal(signal);
+        callPeerConnectionRef.current.signal(signal);
       }
     });
 
@@ -277,7 +289,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     // Initiate or reinitiate call if room ID is set and either:
     // - There's no existing peer connection
     // - The local stream has been updated
-    if (roomId && (!peerConnectionRef.current || prevLocalStreamRef.current !== localStream)) {
+    if (roomId && (!callPeerConnectionRef.current || prevLocalStreamRef.current !== localStream)) {
       console.log(`VideoContext: Initiating call with room ID ${roomId}.`);
       callPeer();
     }
