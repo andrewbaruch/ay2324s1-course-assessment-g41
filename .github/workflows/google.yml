@@ -12,6 +12,9 @@ env:
   MATCHING_IMAGE: matching
   COLLAB_IMAGE: collab
   CLIENT_IMAGE: client
+  VIDEO_IMAGE: video
+  HISTORY_IMAGE: history
+  DOCUMENT_IMAGE: document
 
 jobs:
   setup-build-publish-deploy:
@@ -85,6 +88,33 @@ jobs:
           --build-arg GITHUB_REF="$GITHUB_REF" \
           --file ./frontend/Dockerfile.dev \
           ./frontend
+
+    - name: Build Video
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          --file .backend/microservices/videostreaming/Dockerfile.local \
+          ./backend
+    
+    - name: Build History
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$HISTORY_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          --file ./backend/microservices/history/Dockerfile.local \
+          ./backend
+
+    - name: Build Doc
+      run: |-
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$DOCUMENT_IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          --file ./backend/microservices/document/Dockerfile.local \
+          ./backend
     
     # Push the Docker image to Google Artifact Registry
     - name: Publish User
@@ -106,4 +136,16 @@ jobs:
 
     - name: Publish Client
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_COLLAB:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_IMAGE:$GITHUB_SHA"
+
+    - name: Publish History
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$HISTORY_IMAGE:$GITHUB_SHA"
+
+    - name: Publish Video
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:$GITHUB_SHA"
+
+    - name: Publish Document
+      run: |-
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$DOCUMENT_IMAGE:$GITHUB_SHA"
