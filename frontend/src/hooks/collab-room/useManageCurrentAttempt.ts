@@ -1,7 +1,6 @@
 import { Language } from "@/@types/language";
 import { Question } from "@/@types/models/question";
 import { getAttempt } from "@/services/history";
-import QuestionService from "@/services/question";
 import { resetTextInDocument, sendAttemptToDocServer, upsertDocumentValue } from "@/utils/document";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { useEffect, useState } from "react";
@@ -34,7 +33,11 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
     defaultValue: 1
   })
 
-  const [currentAttempt, setCurrentAttempt] = useState({ attemptId: sharedAttemptId, question: sharedQuestion, language: sharedLanguage });
+  const [currentAttempt, setCurrentAttempt] = useState<{
+    attemptId: number,
+    question: Question | null,
+    language: Language,
+  }>({ attemptId: sharedAttemptId, question: sharedQuestion, language: sharedLanguage });
   const { attempts: listOfSavedAttempts } = useGetAllAttempts({ roomName, currentAttempt })
   console.log(currentAttempt, "currentAttempt");
   console.log(listOfSavedAttempts, "list of saved attempts");
@@ -42,19 +45,13 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
   useEffect(() => {
     if (!document || !provider) return;
 
-    if (listOfSavedAttempts.length === 0) {
-      // initialise the first attempt
-      sendAttemptToDocServer({
-        provider,
-        attemptId: sharedAttemptId,
-        language: sharedLanguage,
-        text: "",
-        questionId: sharedQuestion?.id,
-      });
-    }
+    // note: server creates a default attempt per room.
+    // on initialisation, set current attempt as the first default attempt
+    toggleToAttempt(1);
   }, [document, provider]);
 
   useEffect(() => {
+    // side-effect meant to sync chnages across different clients
     console.log('setting current attempt to', sharedAttemptId, sharedLanguage);
     setCurrentAttempt({
       attemptId: sharedAttemptId,
@@ -82,7 +79,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
         attemptId: currentAttemptId,
         language,
         text: text.toJSON(),
-        questionId: question?.id || "-1", // "-1" indicates no question selected.
+        questionId: question?.id || null,
       });
     }
     // create new attempt
@@ -99,8 +96,15 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
       attemptId: newAttemptId,
       language,
       text: "",
-      questionId: "",
+      questionId: null,
     });
+
+    setCurrentAttempt({
+      ...currentAttempt,
+      attemptId: newAttemptId,
+      question: null,
+      language: language,
+    })
   }
 
   const toggleToAttempt = async (nextAttemptId: number) => {
@@ -108,7 +112,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
       console.log(nextAttemptId);
       const toggledAttempt = await getAttempt(nextAttemptId, roomName);
       console.log('retrieved attempt', toggledAttempt);
-      // update to prev attempt values
+      // change shared values to prev attempt values
       upsertDocumentValue({
         sharedKey: "attemptId",
         valueToUpdate: toggledAttempt.attemptId,
@@ -130,10 +134,11 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
       resetTextInDocument({ document, defaultText: toggledAttempt.text });
 
       console.log(sharedAttemptId, sharedLanguage)
-
+      
+      // change local state
       setCurrentAttempt({
         attemptId: toggledAttempt.attemptId,
-        question: toggledAttempt.question as Question,
+        question: toggledAttempt.question as Question | null,
         language: toggledAttempt.language
       })
     } catch (err) {

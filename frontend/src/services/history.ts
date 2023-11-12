@@ -5,24 +5,18 @@ import { BE_API } from "@/utils/api";
 import authorizedAxios from "@/utils/axios/authorizedAxios";
 import QuestionService from "./question";
 
+const fetchQuestionFromAttempt = (attempt: { questionId: string, text: string, language: Language, attemptId: number }) => {
+  if (!attempt.questionId || attempt.questionId === '' || attempt.questionId === '-1') {
+    return null;
+  }
+  return QuestionService.getQuestion(attempt.questionId);
+}
+
 const getAllAttemptsInRoom = async (roomName: string): Promise<(Attempt & { roomName: string, text: string })[]> => {
   const response = await authorizedAxios.get(`${BE_API.history}/${roomName}`);
-  console.log(response);
   const listOfAttempts: { questionId: string, text: string, language: Language, attemptId: number }[] = response.data
   console.log('attempts', listOfAttempts);
-  let questions: (Question | null)[] = []
-  try {
-    questions = await Promise.all(listOfAttempts.map(attempt => QuestionService.getQuestion(attempt.questionId)));
-  } catch (err) {
-    listOfAttempts.forEach(async (attempt) => {
-      try {
-        const question = await QuestionService.getQuestion(attempt.questionId);
-        questions.push(question);
-      } catch (err) {
-        questions.push(null);
-      }
-    })
-  }
+  const questions: (Question | null)[] = await Promise.all(listOfAttempts.map(attempt => fetchQuestionFromAttempt(attempt)));
 
   return listOfAttempts.map( (attempt, index) => {
     const { text, language, attemptId } = attempt
@@ -39,20 +33,15 @@ const getAllAttemptsInRoom = async (roomName: string): Promise<(Attempt & { room
 
 const getAttempt = async (attemptId: number, roomName: string): Promise<Attempt & { roomName: string, text: string }> => {
   const response = await authorizedAxios.get(`${BE_API.history}/${roomName}/${attemptId}`);
-  const { questionId, text, language }: { questionId: string, text: string, language: Language } = response.data;
-  let question: Question | null
-  try {
-    question = await QuestionService.getQuestion(questionId);
-  } catch (err) {
-    question = null;
-  }
+  const attempt: { questionId: string, text: string, language: Language, attemptId: number } = response.data;
+  const question = await fetchQuestionFromAttempt(attempt);
   
   return {
     attemptId,
     question,
     roomName,
-    text,
-    language
+    text: attempt.text,
+    language: attempt.language
   };
 }
 

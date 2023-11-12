@@ -46,7 +46,7 @@ export const sendAttemptToDocServer = ({
     attemptId: number,
     text: string,
     language: Language,
-    questionId: string,
+    questionId: string | null | undefined,
     provider: HocuspocusProvider | null,
   }) => {
   provider?.sendStateless(JSON.stringify({
