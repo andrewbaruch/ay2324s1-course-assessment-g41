@@ -258,15 +258,26 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
     socket.current?.on("callUser", (data) => {
       console.log("VideoContext: Received call from peer");
-
-      // karwi: used to handle user might reinit
+      toast({
+        title: "Incoming Call",
+        description: "You're receiving a call.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
       answerCall(data.signal);
     });
 
     socket.current?.on("callAccepted", (signal) => {
       console.log("VideoContext: Call accepted by peer");
+      toast({
+        title: "Call Accepted",
+        description: "Your call has been accepted.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
       if (callPeerConnectionRef.current) {
-        console.log("VideoContext: Signaling call acceptance");
         callPeerConnectionRef.current.signal(signal);
       }
     });
@@ -274,17 +285,35 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     socket.current?.on("streamStopped", () => {
       console.log("VideoContext: Remote peer's stream stopped.");
       setRemoteStream(null);
+      toast({
+        title: "Stream Stopped",
+        description: "The remote peer's stream has stopped.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
     });
 
     socket.current?.on("roomFull", (roomId) => {
       console.log(`VideoContext: Cannot join room ${roomId}, it is already full.`);
-      // Display an appropriate message to the user
+      toast({
+        title: "Room Full",
+        description: `Cannot join room ${roomId}, it is already full.`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     });
 
     socket.current?.on("peerDisconnected", ({ peerId }) => {
       console.log(`VideoContext: Peer disconnected: ${peerId}`);
-      // Handle the disconnection logic here
-      // For example, you might want to set the remoteStream to null
+      toast({
+        title: "Peer Disconnected",
+        description: "A peer has disconnected.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
       if (peerId !== socket.current?.id) {
         setRemoteStream(null);
       }
