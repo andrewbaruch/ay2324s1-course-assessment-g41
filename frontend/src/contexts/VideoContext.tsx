@@ -15,8 +15,6 @@ import { useToast } from "@chakra-ui/react";
 interface VideoContextValue {
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
-  startLocalStream: () => Promise<void>;
-  stopLocalStream: () => void;
   isCameraOn: boolean;
   isMicrophoneOn: boolean;
   toggleCamera: () => void;
@@ -45,8 +43,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
   const callPeerConnectionRef = useRef<Peer.Instance | null>(null);
   const answerPeerConnectionRef = useRef<Peer.Instance | null>(null);
-  const prevCameraOnRef = useRef(isCameraOn);
-  const prevMicrophoneOnRef = useRef(isMicrophoneOn);
   const prevLocalStreamRef = useRef<MediaStream | null>(null);
   const socket = useRef(
     io(HOST_API, {
@@ -58,32 +54,36 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   const toast = useToast();
 
-  const startLocalStream = useCallback(async () => {
-    console.log("VideoContext: startLocalStream");
-    try {
-      console.log("VideoContext: Starting local stream");
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: isCameraOn,
-        audio: isMicrophoneOn,
-      });
-      setLocalStream(stream);
-      toast({
-        title: "Local stream started",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-    } catch (error) {
-      console.error("VideoContext: Error accessing media devices.", error);
-      toast({
-        title: "Failed to start local stream",
-        description: String(error),
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [isCameraOn, isMicrophoneOn, toast]);
+  const startLocalStream = useCallback(
+    async (isVideoOn: boolean, isAudioOn: boolean) => {
+      console.log("VideoContext: startLocalStream");
+      try {
+        console.log("VideoContext: Starting local stream");
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: isVideoOn,
+          audio: isAudioOn,
+        });
+        console.log("VideoContext: stream:", stream);
+        setLocalStream(stream);
+        toast({
+          title: "Local stream started",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error("VideoContext: Error accessing media devices.", error);
+        toast({
+          title: "Failed to start local stream",
+          description: String(error),
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    },
+    [toast],
+  );
 
   const stopLocalStream = useCallback(() => {
     console.log("VideoContext: stopLocalStream");
@@ -96,40 +96,34 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, [localStream, socket, roomId]);
 
   const toggleCamera = useCallback(() => {
-    console.log("VideoContext: toggleCamera");
+    if (localStream) {
+      const videoTrack = localStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+      }
+    } else {
+      startLocalStream(true, false); // Start the stream if not already started
+    }
     setIsCameraOn((prev) => !prev);
-  }, []);
+  }, [localStream, startLocalStream]);
 
   const toggleMicrophone = useCallback(() => {
-    console.log("VideoContext: toggleMicrophone");
+    if (localStream) {
+      const audioTrack = localStream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+      }
+    } else {
+      startLocalStream(false, true); // Start the stream if not already started
+    }
     setIsMicrophoneOn((prev) => !prev);
-  }, []);
+  }, [localStream, startLocalStream]);
 
   useEffect(() => {
-    console.log("VideoContext: Camera or microphone state changed");
-
-    // Check if the values have changed
-    if (prevCameraOnRef.current === isCameraOn && prevMicrophoneOnRef.current === isMicrophoneOn) {
-      // If there's no change, do nothing
-      return;
-    }
-
-    // Update the refs with the new values
-    prevCameraOnRef.current = isCameraOn;
-    prevMicrophoneOnRef.current = isMicrophoneOn;
-
-    // If the camera or microphone needs to be started or stopped, do so
-    if (isCameraOn || isMicrophoneOn) {
-      startLocalStream();
-    } else {
-      stopLocalStream();
-    }
-
-    // Cleanup function for unmounting
     return () => {
-      stopLocalStream();
+      stopLocalStream(); // Stop the stream when the component unmounts
     };
-  }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
+  }, [stopLocalStream]);
 
   const createAndSetupPeer = useCallback(
     (initiator: boolean, signal?: SignalData) => {
@@ -235,6 +229,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, []);
 
   useEffect(() => {
+    console.log("VideoContext: Setting up socket event listeners");
+
     socket.on("error", (error) => {
       console.error("VideoContext: Socket error: ", error);
       toast({
@@ -245,8 +241,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
         isClosable: true,
       });
     });
-
-    console.log("VideoContext: Setting up socket event listeners");
 
     socket.on("callUser", (data) => {
       console.log("VideoContext: Received call from peer");
@@ -289,6 +283,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       socket.off("error");
       socket.off("streamStopped");
       socket.off("roomFull");
+      socket.off("peerDisconnected");
     };
   }, [answerCall, socket, toast]);
 
@@ -319,8 +314,6 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       value={{
         localStream,
         remoteStream,
-        startLocalStream,
-        stopLocalStream,
         isCameraOn,
         isMicrophoneOn,
         toggleCamera,
