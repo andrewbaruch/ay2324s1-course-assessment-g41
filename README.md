@@ -62,4 +62,8 @@ Prefix your commits with these identifiers for better organization of Git histor
 - docker compose -f docker-compose-dev.yml up to compose the dev environment which uses binded volumes for the app code and node modules from the corresponding directory. **REQUIRED NODE DEPENDENCIES MUST ALWAYS BE INSTALLED TO USE docker-compose-dev
 
 ### Testing the app
-- ./clean-compose.sh <compose-file> to compose the app cleanly.
+- `./clean-compose.sh <compose-file>` to compose the app cleanly.
+- The compose file for each assignment is within the /assignment-compose folder. ie. Simply run `./clean-compose.sh assignment-compose/docker-compose-A2-4.yml` for A2, A3 and A4 to start up the app. 
+- Required env file is to be copied to the corresponding folder
+  - Frontend: frontend/.env
+  - Backend Servies: backend/microservices/<service>/.env

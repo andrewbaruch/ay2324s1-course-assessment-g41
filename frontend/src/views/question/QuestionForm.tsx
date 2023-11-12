@@ -23,7 +23,9 @@ import {
 } from "@chakra-ui/react";
 
 import { Question, QuestionCategories, QuestionComplexity } from "@/@types/models/question";
+import { Role } from "@/@types/user";
 import { useForm } from "react-hook-form";
+import useAuthRole from "@/hooks/guards/useAuthRole";
 import { useQuestions } from "@/hooks/questions/useQuestionList";
 import { QuestionDetails } from "./QuestionDetails";
 import { useRouter } from "next/navigation";
@@ -39,7 +41,9 @@ export const QuestionForm = ({ question = null }: { question: Question | null })
   } = useForm({
     defaultValues: question ? { ...question } : undefined,
   });
-  const { addQuestion, editQuestion } = useQuestions();
+
+  useAuthRole([Role.ADMIN])
+  const { addQuestion, editQuestion } = useQuestions({});
   const toast = useToast();
   const router = useRouter();
   const bgColor = useColorModeValue("white", "navy.800");
@@ -181,18 +185,18 @@ export const QuestionForm = ({ question = null }: { question: Question | null })
           try {
             question
               ? editQuestion({
-                  id: question.id,
-                  categories: data.categories ? data.categories : [],
-                  title: data.title,
-                  description: data.description,
-                  complexity: data.complexity,
-                })
+                id: question.id,
+                categories: data.categories ? data.categories : [],
+                title: data.title,
+                description: data.description,
+                complexity: data.complexity,
+              })
               : addQuestion({
-                  categories: data.categories ? data.categories : [],
-                  title: data.title,
-                  description: data.description,
-                  complexity: data.complexity,
-                });
+                categories: data.categories ? data.categories : [],
+                title: data.title,
+                description: data.description,
+                complexity: data.complexity,
+              });
             router.push("/coding-questions");
           } catch (err: any) {
             toast({

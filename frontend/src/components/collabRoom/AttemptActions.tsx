@@ -17,27 +17,32 @@ import { DeleteIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 
 const AttemptActions = () => {
-  const { listOfAttempts, onNewAttempt, onDeleteAttempt, setCurrentAttempt, currentAttempt } =
+  const { listOfAttempts, onNewAttempt, onDeleteAttempt, onAttemptChange, currentAttempt } =
     useCollabContext();
-  const [currentPage, setCurrentPage] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const onCloseDeleteModal = () => setIsDeleteModalOpen(false);
   const cancelRef = React.useRef(null);
 
+  const currentPage = listOfAttempts.findIndex(
+    (attempt) => attempt.attemptId === currentAttempt.attemptId,
+  );
+
+  console.log(currentPage, 'currentPage', listOfAttempts);
+
   const handlePageChange = useCallback(
-    (pageIndex: number) => {
+    async (pageIndex: number) => {
       const selectedAttempt = listOfAttempts[pageIndex];
       if (selectedAttempt) {
-        setCurrentAttempt(selectedAttempt);
-        setCurrentPage(pageIndex);
+        await onAttemptChange(selectedAttempt.attemptId);
       }
     },
-    [listOfAttempts, setCurrentAttempt],
+    [listOfAttempts, onAttemptChange],
   );
 
   useEffect(() => {
-    handlePageChange(0); // Set the first page as default display
-  }, [handlePageChange]);
+    // on mount, create a new attempt
+    handlePageChange(1); // Set the first page as default display
+  }, []);
 
   const handleNewAttempt = () => {
     if (currentAttempt) {

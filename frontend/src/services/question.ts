@@ -66,11 +66,16 @@ class QuestionService {
     }
   }
 
-  static async getQuestions() {
+  static async getQuestions({
+    difficulties = undefined, sorting = undefined
+  }: {
+      difficulties?: QuestionComplexity[] | number[] | undefined,
+      sorting?: "asc" | "desc" | undefined | null,
+  }) {
     if (typeof window === "undefined") {
       return [];
     }
-
+    console.log(difficulties, 'difficulties');
     const {
       data,
     }: {
@@ -81,7 +86,11 @@ class QuestionService {
         topics: string[];
         _id: string;
       }[];
-    } = await authorizedAxios.get(BE_API.questions.root);
+      } = await authorizedAxios.get(
+        `${BE_API.questions.root}${difficulties
+          ? `?difficulties=${difficulties.join(",")}`
+          : ""}`
+      );
     return data.map(
       (d) =>
         ({

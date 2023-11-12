@@ -4,15 +4,18 @@
     "@types/cors": "^2.8.15",
     "axios": "^1.5.1",
     "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "esbuild": "^0.19.5",
     "express": "^4.18.2",
     "expressjs": "^1.0.1",
     "fs": "^0.0.1-security",
     "glob": "^10.3.10",
+    "ioredis": "^5.3.2",
     "pg": "^8.11.3",
+    "redis": "^4.6.10",
+    "redis-json": "^6.0.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "tscpaths": "^0.0.9"
@@ -31,6 +34,7 @@
   "scripts": {
     "build": "tsc --build --clean",
     "start": "node build.mjs && node dist/microservices/matching/src/index.mjs",
+    "dev": "nodemon --inspect -e ts --watch ./ --watch ../../packages --exec npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

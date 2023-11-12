@@ -1,11 +1,11 @@
-import PubSubClient from "@/clients/pubsub";
 import { MATCHING_REQUEST_TOPIC_PUBLISH } from "@/constants/matching-request";
+import ComplexityPublisher from "@/publishers/complexity-publisher";
 
 class ComplexityMatchingPushService {
-  private readonly pubSubClient: PubSubClient;
+  private readonly pubSubClient: ComplexityPublisher;
 
   constructor() {
-    this.pubSubClient = new PubSubClient()
+    this.pubSubClient = new ComplexityPublisher()
   }
 
   pushMatchingRequest(userId: string, questionComplexity: string) {

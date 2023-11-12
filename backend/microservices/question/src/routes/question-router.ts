@@ -9,14 +9,9 @@ router.use(authJWT)
 
 router.get('/', QuestionController.getFilteredQuestions);
 
-// router.post('/', AuthorizationMiddleware.authQuestion, QuestionController.createQuestion);
-// router.get('/:id', QuestionController.getQuestionById);
-// router.patch('/:id', AuthorizationMiddleware.authQuestion, QuestionController.updateQuestion);
-// router.delete('/:id', AuthorizationMiddleware.authQuestion, QuestionController.deleteQuestion);
-
-router.post('/', QuestionController.createQuestion);
+router.post('/', AuthorizationMiddleware.authQuestion, QuestionController.createQuestion);
 router.get('/:id', QuestionController.getQuestionById);
-router.patch('/:id', QuestionController.updateQuestion);
-router.delete('/:id', QuestionController.deleteQuestion);
+router.patch('/:id', AuthorizationMiddleware.authQuestion, QuestionController.updateQuestion);
+router.delete('/:id', AuthorizationMiddleware.authQuestion, QuestionController.deleteQuestion);
 
 export default router;

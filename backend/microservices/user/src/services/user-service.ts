@@ -121,10 +121,10 @@ class UserService {
       `;
 
       let preferred_difficulty = null
-      if (fieldsToUpdate.preferred_difficulty && fieldsToUpdate.preferred_difficulty in Difficulty) {
+      if (fieldsToUpdate.preferred_difficulty !== undefined && fieldsToUpdate.preferred_difficulty !== null && fieldsToUpdate.preferred_difficulty in Difficulty) {
         preferred_difficulty = fieldsToUpdate.preferred_difficulty
       }
-        
+
       const { rows: updatedRows } = await postgresClient.query(query, [
         fieldsToUpdate.name ?? null,
         fieldsToUpdate.email ?? null,
