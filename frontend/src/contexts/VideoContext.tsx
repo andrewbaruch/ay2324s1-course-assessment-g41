@@ -245,6 +245,17 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   useEffect(() => {
     console.log("VideoContext: Setting up socket event listeners");
 
+    socket.current?.on("connect", () => {
+      console.log("VideoContext: Successfully connected to socket server");
+      toast({
+        title: "Connected",
+        description: "Connected to the socket server.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    });
+
     socket.current?.on("error", (error) => {
       console.error("VideoContext: Socket error: ", error);
       toast({
