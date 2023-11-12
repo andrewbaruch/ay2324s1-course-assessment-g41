@@ -35,7 +35,7 @@ const IndividualRoom = ({ attempt }: {
       >
         <Card mb={{ base: "0px", "2xl": "20px" }} height="60vh" p={5} overflow="scroll">
           <Heading size="md" mb="20px">Your Saved Code</Heading>
-          <SimpleCodeEditor text={attempt.text} />
+          <SimpleCodeEditor text={attempt.text} language={attempt.language} />
         </Card>
         <TabView question={attempt.question} />
       </Splitter>

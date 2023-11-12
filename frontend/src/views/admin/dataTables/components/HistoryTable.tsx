@@ -25,23 +25,23 @@ import {
 // Custom components
 import Card from "src/components/card/Card";
 import Menu from "src/components/menu/MainMenu";
+import { Link } from "@chakra-ui/next-js";
 
 type RowObj = {
-  name: string;
-  progress: string;
-  quantity: number;
+  roomName: string;
+  language: string;
+  attemptId: number;
   date: string;
 };
 
 const columnHelper = createColumnHelper<RowObj>();
 
 // const columns = columnsDataCheck;
-export default function ColumnTable(props: { tableData: any }) {
+export default function HistoryTable(props: { tableData: any }) {
   const { tableData } = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
-  let defaultData = tableData;
   const columns = [
     columnHelper.accessor("name", {
       id: "name",
@@ -52,7 +52,7 @@ export default function ColumnTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          NAME
+          Room Name
         </Text>
       ),
       cell: (info: any) => (
@@ -63,8 +63,8 @@ export default function ColumnTable(props: { tableData: any }) {
         </Flex>
       ),
     }),
-    columnHelper.accessor("progress", {
-      id: "progress",
+    columnHelper.accessor("language", {
+      id: "language",
       header: () => (
         <Text
           justifyContent="space-between"
@@ -72,7 +72,7 @@ export default function ColumnTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          PROGRESS
+          Language
         </Text>
       ),
       cell: (info) => (
@@ -81,8 +81,8 @@ export default function ColumnTable(props: { tableData: any }) {
         </Text>
       ),
     }),
-    columnHelper.accessor("quantity", {
-      id: "quantity",
+    columnHelper.accessor("attemptId", {
+      id: "attemptId",
       header: () => (
         <Text
           justifyContent="space-between"
@@ -90,7 +90,7 @@ export default function ColumnTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          QUANTITY
+          Attempt Id
         </Text>
       ),
       cell: (info) => (
@@ -108,19 +108,20 @@ export default function ColumnTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          DATE
+          Last Updated
         </Text>
       ),
       cell: (info) => (
         <Text color={textColor} fontSize="sm" fontWeight="700">
-          {info.getValue()}
+          {new Date(info.getValue()).toLocaleDateString('en-SG', {
+            day: '2-digit', month: '2-digit', year: '2-digit'
+          })}
         </Text>
       ),
     }),
   ];
-  const [data, setData] = React.useState(() => [...defaultData]);
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
     state: {
       sorting,
@@ -130,13 +131,14 @@ export default function ColumnTable(props: { tableData: any }) {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
+
   return (
     <Card flexDirection="column" w="100%" px="0px" overflowX={{ sm: "scroll", lg: "hidden" }}>
       <Flex px="25px" mb="8px" justifyContent="space-between" align="center">
         <Text color={textColor} fontSize="22px" mb="4px" fontWeight="700" lineHeight="100%">
-          Check Table
+          History Table
         </Text>
-        <Menu />
+        {/* <Menu /> */}
       </Flex>
       <Box>
         <Table variant="simple" color="gray.500" mb="24px" mt="12px">
@@ -174,11 +176,12 @@ export default function ColumnTable(props: { tableData: any }) {
           <Tbody>
             {table
               .getRowModel()
-              .rows.slice(0, 11)
+              .rows
               .map((row) => {
+                const cellsInRow = row.getVisibleCells();
                 return (
                   <Tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => {
+                    {cellsInRow.map((cell) => {
                       return (
                         <Td
                           key={cell.id}
@@ -186,7 +189,9 @@ export default function ColumnTable(props: { tableData: any }) {
                           minW={{ sm: "150px", md: "200px", lg: "auto" }}
                           borderColor="transparent"
                         >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          <Link href={`/attempts/${row.getValue("name")}/${row.getValue("attemptId")}`}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </Link>
                         </Td>
                       );
                     })}

@@ -6,17 +6,9 @@ import {
   MdLock,
   MdOutlineShoppingCart,
   MdLink,
+  MdHistory,
 } from "react-icons/md";
 
-// Admin Imports
-// import MainDashboard from './pages/admin/default';
-// import NFTMarketplace from './pages/admin/nft-marketplace';
-// import Profile from './pages/admin/profile';
-// import DataTables from './pages/admin/data-tables';
-// import RTL from './pages/rtl/rtl-default';
-
-// Auth Imports
-// import SignInCentered from './pages/auth/sign-in';
 import { IRoute } from "src/@types/navigation";
 
 const routes: IRoute[] = [
@@ -52,18 +44,11 @@ const routes: IRoute[] = [
     secondary: true,
   },
   {
-    name: "Profile",
+    name: "Past Attempts",
     layout: "",
-    path: "/profile",
-    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
-    // component: SignInCentered,
-  },
-  {
-    name: "Sign In",
-    layout: "/auth",
-    path: "/sign-in",
-    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
-    // component: SignInCentered,
+    path: "/attempts",
+    icon: <Icon as={MdHistory} width="20px" height="20px" color="inherit" />,
+    // component: MainDashboard,
   },
 ];
 
