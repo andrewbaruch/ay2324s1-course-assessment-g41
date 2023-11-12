@@ -95,7 +95,7 @@ jobs:
           --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --file .backend/microservices/videostreaming/Dockerfile.local \
+          --file ./backend/microservices/videostreaming/Dockerfile.local \
           ./backend
     
     - name: Build History
