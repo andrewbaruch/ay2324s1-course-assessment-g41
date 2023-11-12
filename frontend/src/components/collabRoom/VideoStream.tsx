@@ -2,27 +2,31 @@
 import React, { useRef, useEffect } from "react";
 import { Flex, Box, IconButton, Button, Stack, useColorModeValue } from "@chakra-ui/react";
 import { MdVideocam, MdVideocamOff, MdMic, MdMicOff } from "react-icons/md";
+import { useVideoContext } from "@/contexts/VideoContext";
 
 interface VideoStreamProps {
-  localStream: MediaStream | null;
-  remoteStream: MediaStream | null;
-  onToggleCamera: () => void;
-  onToggleMicrophone: () => void;
-  isCameraOn: boolean;
-  isMicrophoneOn: boolean;
+  // localStream: MediaStream | null;
+  // remoteStream: MediaStream | null;
+  // onToggleCamera: () => void;
+  // toggleMicrophone: () => void;
+  // isCameraOn: boolean;
+  // isMicrophoneOn: boolean;
+  // isLoading: boolean;
 }
 
-const VideoStream: React.FC<VideoStreamProps> = ({
-  localStream,
-  remoteStream,
-  onToggleCamera,
-  onToggleMicrophone,
-  isCameraOn,
-  isMicrophoneOn,
-}) => {
+const VideoStream: React.FC<VideoStreamProps> = () => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const bgColor = useColorModeValue("whiteAlpha.600", "blackAlpha.600");
+  const {
+    localStream,
+    remoteStream,
+    toggleCamera,
+    toggleMicrophone,
+    isCameraOn,
+    isMicrophoneOn,
+    isLoading,
+  } = useVideoContext();
 
   useEffect(() => {
     if (localVideoRef.current) {
@@ -67,21 +71,21 @@ const VideoStream: React.FC<VideoStreamProps> = ({
             <IconButton
               aria-label="Toggle camera"
               icon={isCameraOn ? <MdVideocam /> : <MdVideocamOff />}
-              onClick={onToggleCamera}
+              onClick={toggleCamera}
               size="sm"
               variant="ghost"
             />
             <IconButton
               aria-label="Toggle microphone"
               icon={isMicrophoneOn ? <MdMic /> : <MdMicOff />}
-              onClick={onToggleMicrophone}
+              onClick={toggleMicrophone}
               size="sm"
               variant="ghost"
             />
           </Flex>
         </Box>
       ) : (
-        <Button onClick={onToggleCamera} colorScheme="blue" size="md">
+        <Button onClick={toggleCamera} colorScheme="blue" size="md" isLoading={isLoading}>
           Start Video Call
         </Button>
       )}
