@@ -27,7 +27,7 @@ const AttemptActions = () => {
     (attempt) => attempt.attemptId === currentAttempt.attemptId,
   );
 
-  console.log(currentPage, 'currentPage', listOfAttempts);
+  console.log(currentPage, "currentPage", listOfAttempts);
 
   const handlePageChange = useCallback(
     async (pageIndex: number) => {
@@ -62,7 +62,7 @@ const AttemptActions = () => {
           <IconButton
             aria-label="Previous Page"
             icon={<ChevronLeftIcon />}
-            isDisabled={currentPage === 0}
+            isDisabled={currentPage <= 0}
             onClick={() => handlePageChange(currentPage - 1)}
           />
           <Text mx={2}>{currentPage + 1}</Text>
