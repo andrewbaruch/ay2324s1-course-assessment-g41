@@ -1,23 +1,20 @@
-// context/VideoContextProvider.tsx
-import { SignalingClient } from "@/@types/video";
-import { useToast } from "@chakra-ui/react";
 import React, {
   createContext,
   useContext,
   useState,
   useCallback,
   useEffect,
-  ReactNode,
   useRef,
+  ReactNode,
 } from "react";
+import Peer, { SignalData } from "simple-peer";
+import io, { Socket } from "socket.io-client";
+import { HOST_API } from "@/config";
+import { useToast } from "@chakra-ui/react";
 
 interface VideoContextValue {
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
-  startLocalStream: () => Promise<void>;
-  stopLocalStream: () => void;
-  // karwi: clean up using the returned callback
-  connectToRemoteStream: () => Promise<() => void>;
   isCameraOn: boolean;
   isMicrophoneOn: boolean;
   toggleCamera: () => void;
@@ -36,339 +33,340 @@ export const useVideoContext = () => {
 
 interface VideoContextProviderProps {
   children: ReactNode;
-  signalingClient: SignalingClient;
+  roomId: string;
 }
 
-export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
-  children,
-  signalingClient,
-}) => {
+const initializeSocket = (roomId: string) => {
+  return io(HOST_API, {
+    path: "/videostreaming/socket.io",
+    query: { roomId },
+  });
+};
+
+export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ children, roomId }) => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
-  const prevCameraOnRef = useRef(isCameraOn);
-  const prevMicrophoneOnRef = useRef(isMicrophoneOn);
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const callPeerConnectionRef = useRef<Peer.Instance | null>(null);
+  const answerPeerConnectionRef = useRef<Peer.Instance | null>(null);
+  const prevLocalStreamRef = useRef<MediaStream | null>(null);
   const toast = useToast();
-  const [peers, setPeers] = useState(new Set<string>());
+  const socket = useRef<Socket | null>(null);
 
-  const handleError = useCallback(
-    (error: unknown, message: string) => {
-      if (error instanceof Event) {
-        console.error("VideoContext: Error event:", error);
-      } else {
-        console.error("VideoContext: Error object:", error);
+  useEffect(() => {
+    // Initialize socket on first render
+    if (!socket.current) {
+      socket.current = initializeSocket(roomId);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
       }
+    };
+  }, [roomId]);
 
-      toast({
-        title: "Error",
-        description: message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+  const startLocalStream = useCallback(
+    async (isVideoOn: boolean, isAudioOn: boolean) => {
+      console.log("VideoContext: startLocalStream");
+      try {
+        console.log("VideoContext: Starting local stream");
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: isVideoOn,
+          audio: isAudioOn,
+        });
+        console.log("VideoContext: stream:", stream);
+        setLocalStream(stream);
+        toast({
+          title: "Local stream started",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error("VideoContext: Error accessing media devices.", error);
+        toast({
+          title: "Failed to start local stream",
+          description: String(error),
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     },
     [toast],
   );
 
-  const startLocalStream = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: isCameraOn,
-        audio: isMicrophoneOn,
-      });
-      setLocalStream(stream);
-    } catch (error) {
-      console.error("Error accessing media devices.", error);
-    }
-  }, [isCameraOn, isMicrophoneOn]);
-
   const stopLocalStream = useCallback(() => {
+    console.log("VideoContext: stopLocalStream");
     if (localStream) {
-      localStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-      setLocalStream(null); // This ensures the reference is cleared and React re-renders if needed
+      localStream.getTracks().forEach((track) => track.stop());
+      setLocalStream(null);
+      console.log("VideoContext: emit streamStopped");
+      socket.current?.emit("streamStopped", { roomId });
     }
-  }, [localStream]);
+  }, [localStream, socket, roomId]);
 
-  const toggleCamera = useCallback(async () => {
-    setIsCameraOn((prev) => !prev);
+  const toggleCamera = useCallback(() => {
     if (localStream) {
       const videoTrack = localStream.getVideoTracks()[0];
       if (videoTrack) {
         videoTrack.enabled = !videoTrack.enabled;
-      } else {
-        // No video track, need to get one
-        const newStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        newStream.getVideoTracks().forEach((track) => localStream.addTrack(track));
       }
+    } else {
+      startLocalStream(true, false); // Start the stream if not already started
     }
-  }, [localStream]);
+    setIsCameraOn((prev) => !prev);
+  }, [localStream, startLocalStream]);
 
-  const toggleMicrophone = useCallback(async () => {
-    setIsMicrophoneOn((prev) => !prev);
+  const toggleMicrophone = useCallback(() => {
     if (localStream) {
       const audioTrack = localStream.getAudioTracks()[0];
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
-      } else {
-        // No audio track, need to get one
-        const newStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        newStream.getAudioTracks().forEach((track) => localStream.addTrack(track));
       }
-    }
-  }, [localStream]);
-
-  useEffect(() => {
-    console.log("VideoContext: Camera or microphone state changed");
-
-    // Check if the values have changed
-    if (prevCameraOnRef.current === isCameraOn && prevMicrophoneOnRef.current === isMicrophoneOn) {
-      // If there's no change, do nothing
-      return;
-    }
-
-    // Update the refs with the new values
-    prevCameraOnRef.current = isCameraOn;
-    prevMicrophoneOnRef.current = isMicrophoneOn;
-
-    // If the camera or microphone needs to be started or stopped, do so
-    if (isCameraOn || isMicrophoneOn) {
-      startLocalStream();
     } else {
-      stopLocalStream();
+      startLocalStream(false, true); // Start the stream if not already started
     }
-
-    // Cleanup function for unmounting
-    return () => {
-      stopLocalStream();
-    };
-  }, [isCameraOn, isMicrophoneOn, startLocalStream, stopLocalStream]);
-
-  // Handle new peer joining
-  const handleNewPeer = useCallback((peerId: string) => {
-    console.log(`New peer joined: ${peerId}`);
-    setPeers((prevPeers) => new Set([...prevPeers, peerId]));
-    // Additional logic for a new peer (e.g., create RTCPeerConnection, UI update)
-  }, []);
-
-  // Handle peer disconnection
-  const handlePeerDisconnected = useCallback((peerId: string) => {
-    console.log(`Peer disconnected: ${peerId}`);
-    setPeers((prevPeers) => {
-      const updatedPeers = new Set(prevPeers);
-      updatedPeers.delete(peerId);
-      return updatedPeers;
-    });
-    // Additional cleanup logic for the disconnected peer
-  }, []);
+    setIsMicrophoneOn((prev) => !prev);
+  }, [localStream, startLocalStream]);
 
   useEffect(() => {
-    console.log("VideoContext: Setting up signaling client callbacks");
-    signalingClient.onNewPeer(handleNewPeer);
-    signalingClient.onPeerDisconnected(handlePeerDisconnected);
-
-    // ... other initialization code ...
-
     return () => {
-      console.log("VideoContext: Cleaning up signaling client callbacks");
-      // Clean up on unmount or when dependencies change
-      signalingClient.onNewPeer(() => {});
-      signalingClient.onPeerDisconnected(() => {});
+      stopLocalStream(); // Stop the stream when the component unmounts
     };
-  }, [handleNewPeer, handlePeerDisconnected, signalingClient]);
+  }, [stopLocalStream]);
 
-  useEffect(() => {
-    console.log("VideoContext: Peers state updated", Array.from(peers));
-  }, [peers]);
-
-  const connectToRemoteStream = useCallback(async () => {
-    console.log("VideoContext: Connecting to remote stream");
-
-    const attemptReconnect = async (maxAttempts: number, delay: number): Promise<void> => {
-      console.log(`VideoContext: Attempting to reconnect. Max attempts: ${maxAttempts}`);
-      for (let i = 0; i < maxAttempts; i++) {
-        console.log(`VideoContext: Reconnect attempt ${i + 1}`);
-        try {
-          await signalingClient.connect();
-          toast({ title: "Reconnected", status: "success", duration: 3000 });
-          console.log("VideoContext: Successfully reconnected");
-          return;
-        } catch (error) {
-          console.error("VideoContext: Reconnect attempt failed", error);
-          if (i < maxAttempts - 1) {
-            console.log(`VideoContext: Waiting ${delay}ms before next reconnect attempt`);
-            await new Promise((resolve) => setTimeout(resolve, delay));
-          }
-        }
-      }
-      console.log("VideoContext: All reconnect attempts failed");
-      handleError(new Error("Failed to reconnect"), "Could not re-establish connection.");
-    };
-
-    try {
-      await signalingClient.connect();
-      console.log("VideoContext: Connected to signaling server");
-      toast({ title: "Connected", status: "success", duration: 3000 });
-
-      // Peer connection setup
-      console.log("VideoContext: Setting up peer connection");
-      const peerConnection = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-      });
-      peerConnectionRef.current = peerConnection;
-
-      peerConnection.ontrack = (event) => {
-        console.log("VideoContext: Received new track", event.streams[0]);
-        setRemoteStream(event.streams[0]);
-      };
-
-      peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          console.log("VideoContext: Sending ICE candidate", event.candidate);
-          signalingClient.sendIceCandidate(event.candidate).catch((error) => {
-            handleError(error, "Failed to send ICE candidate.");
-          });
-        }
-      };
-
-      const offer = await peerConnection.createOffer();
-      console.log("VideoContext: Created offer", offer);
-      await peerConnection.setLocalDescription(offer);
-      signalingClient.sendOffer(offer);
-
-      signalingClient.onOffer(async (offer, peerId) => {
-        console.log(`VideoContext: Received offer from peer ${peerId}`, offer);
-        try {
-          await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-          const answer = await peerConnection.createAnswer();
-          console.log("VideoContext: Created answer", answer);
-          await peerConnection.setLocalDescription(answer);
-          signalingClient.sendAnswer(answer);
-        } catch (error) {
-          handleError(error, "Error handling incoming offer.");
-        }
+  const createAndSetupPeer = useCallback(
+    (initiator: boolean, signal?: SignalData) => {
+      const peer = new Peer({
+        initiator,
+        trickle: false,
+        stream: localStream ?? undefined,
       });
 
-      signalingClient.onAnswer(async (answer) => {
-        console.log("VideoContext: Received answer", answer);
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-      });
-
-      signalingClient.onIceCandidate(async (candidate) => {
-        console.log("VideoContext: Received ICE candidate", candidate);
-        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-      });
-
-      signalingClient.onDisconnect(async () => {
-        console.log("VideoContext: Disconnected from signaling server, attempting to reconnect");
-        await attemptReconnect(3, 5000);
-      });
-
-      peerConnection.onnegotiationneeded = async () => {
-        console.log("VideoContext: Negotiation needed");
-        try {
-          const offer = await peerConnection.createOffer();
-          await peerConnection.setLocalDescription(offer);
-          signalingClient.sendOffer(offer);
-        } catch (error) {
-          console.error("Failed to create offer on negotiation needed", error);
-        }
-      };
-
-      peerConnection.onconnectionstatechange = () => {
-        console.log(
-          `VideoContext: Peer connection state changed to ${peerConnection.connectionState}`,
-        );
-        switch (peerConnection.connectionState) {
-          case "connected":
-            console.log("VideoContext: Peer connection established");
-            toast({ title: "Connected", status: "success", duration: 3000 });
-            break;
-          case "disconnected":
-            console.log("VideoContext: Peer connection disconnected");
-            handleError(
-              new Error("Connection failed"),
-              "Connection lost. Please try reconnecting.",
-            );
-            break;
-          case "failed":
-            console.log("VideoContext: Peer connection failed");
-            handleError(
-              new Error("Connection failed"),
-              "Connection failed. Please try reconnecting.",
-            );
-            break;
-          case "closed":
-            console.log("VideoContext: Peer connection closed");
-            toast({ title: "Disconnected", status: "warning", duration: 3000 });
-            break;
-          default:
-            console.log(
-              `VideoContext: Peer connection state is now ${peerConnection.connectionState}`,
-            );
-            break;
-        }
-      };
-    } catch (error) {
-      handleError(error, "Failed to connect to remote stream.");
-      await attemptReconnect(3, 5000);
-    }
-
-    return () => {
-      console.log("VideoContext: Disconnecting from remote stream");
-      signalingClient.disconnect();
-      if (peerConnectionRef.current) {
-        console.log("VideoContext: Closing peer connection");
-        peerConnectionRef.current.close();
-        peerConnectionRef.current = null;
-      }
-    };
-  }, [handleError, signalingClient, toast]);
-
-  useEffect(() => {
-    console.log("VideoContext: Local stream updated");
-
-    const peerConnection = peerConnectionRef.current;
-    if (peerConnection) {
-      console.log("VideoContext: Updating peer connection with new local stream");
-
-      // Remove any existing tracks
-      const senders = peerConnection.getSenders();
-      console.log(
-        `VideoContext: Removing ${senders.length} existing sender(s) from peer connection`,
-      );
-      senders.forEach((sender) => {
-        console.log(`VideoContext: Removing sender: ${sender.track?.kind}`);
-        peerConnection.removeTrack(sender);
-      });
-
-      if (localStream) {
-        console.log("VideoContext: Adding new tracks from local stream to peer connection");
-        // Add new tracks to the connection
-        localStream.getTracks().forEach((track) => {
-          console.log(`VideoContext: Adding track to peer connection: ${track.kind}`);
-          peerConnection.addTrack(track, localStream);
+      peer.on("error", (err) => {
+        console.error("VideoContext: Peer connection error:", err);
+        toast({
+          title: "Peer Connection Error",
+          description: String(err),
+          status: "error",
+          duration: 5000,
+          isClosable: true,
         });
-      } else {
-        console.log("VideoContext: Local stream is null, no tracks to add");
-      }
-    } else {
-      console.log("VideoContext: Peer connection not established, cannot update tracks");
-    }
-  }, [localStream, signalingClient]);
+      });
 
-  // The rest of your context provider remains the same
+      peer.on("connect", () => {
+        console.log("VideoContext: Peer connection established");
+      });
+
+      peer.on("close", () => {
+        console.log("VideoContext: Peer connection closed");
+      });
+
+      peer.on("stream", setRemoteStream);
+
+      if (signal) {
+        peer.signal(signal);
+      }
+
+      return peer;
+    },
+    [localStream, toast],
+  );
+
+  const callPeer = useCallback(() => {
+    console.log(`VideoContext: Calling peer ${roomId}`);
+    const peer = createAndSetupPeer(true);
+
+    peer.on("signal", (data) => {
+      socket.current?.emit("callUser", { roomId: roomId, signalData: data });
+    });
+
+    callPeerConnectionRef.current = peer;
+    toast({
+      title: "Call Initiated",
+      description: `Calling room ${roomId}`,
+      status: "info",
+      duration: 5000,
+      isClosable: true,
+    });
+  }, [createAndSetupPeer, socket, roomId, toast]);
+
+  const answerCall = useCallback(
+    (signal: SignalData) => {
+      console.log("VideoContext: Answering call");
+      const peer = createAndSetupPeer(false, signal);
+
+      peer.on("signal", (data) => {
+        socket.current?.emit("answerCall", { roomId, signal: data });
+      });
+
+      answerPeerConnectionRef.current = peer;
+      toast({
+        title: "Call Answered",
+        description: `Joined room ${roomId}`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+    [createAndSetupPeer, socket, roomId, toast],
+  );
+
+  const leaveCall = useCallback(() => {
+    console.log("VideoContext: Leaving call");
+    // Close call peer connection
+    if (callPeerConnectionRef.current) {
+      callPeerConnectionRef.current.destroy();
+      callPeerConnectionRef.current = null;
+    }
+    // Close answer peer connection
+    if (answerPeerConnectionRef.current) {
+      answerPeerConnectionRef.current.destroy();
+      answerPeerConnectionRef.current = null;
+    }
+
+    // if (peerConnectionRef.current) {
+    //   peerConnectionRef.current.destroy();
+    //   peerConnectionRef.current = null;
+    //   toast({
+    //     title: "Left Call",
+    //     description: "You have left the call.",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //   });
+    // }
+  }, []);
+
+  useEffect(() => {
+    console.log("VideoContext: Setting up socket event listeners");
+
+    socket.current?.on("connect", () => {
+      console.log("VideoContext: Successfully connected to socket server");
+      toast({
+        title: "Connected",
+        description: "Connected to the socket server.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    });
+
+    socket.current?.on("error", (error) => {
+      console.error("VideoContext: Socket error: ", error);
+      toast({
+        title: "Socket Error",
+        description: "An error occurred with the socket connection.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    });
+
+    socket.current?.on("callUser", (data) => {
+      console.log("VideoContext: Received call from peer");
+      toast({
+        title: "Incoming Call",
+        description: "You're receiving a call.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
+      answerCall(data.signal);
+    });
+
+    socket.current?.on("callAccepted", (signal) => {
+      console.log("VideoContext: Call accepted by peer");
+      toast({
+        title: "Call Accepted",
+        description: "Your call has been accepted.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      if (callPeerConnectionRef.current) {
+        callPeerConnectionRef.current.signal(signal);
+      }
+    });
+
+    socket.current?.on("streamStopped", () => {
+      console.log("VideoContext: Remote peer's stream stopped.");
+      setRemoteStream(null);
+      toast({
+        title: "Stream Stopped",
+        description: "The remote peer's stream has stopped.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+    });
+
+    socket.current?.on("roomFull", (roomId) => {
+      console.log(`VideoContext: Cannot join room ${roomId}, it is already full.`);
+      toast({
+        title: "Room Full",
+        description: `Cannot join room ${roomId}, it is already full.`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    });
+
+    socket.current?.on("peerDisconnected", ({ peerId }) => {
+      console.log(`VideoContext: Peer disconnected: ${peerId}`);
+      toast({
+        title: "Peer Disconnected",
+        description: "A peer has disconnected.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
+      if (peerId !== socket.current?.id) {
+        setRemoteStream(null);
+      }
+    });
+
+    return () => {
+      console.log("VideoContext: Cleaning up socket event listeners");
+      socket.current?.off("callUser");
+      socket.current?.off("callAccepted");
+      socket.current?.off("error");
+      socket.current?.off("streamStopped");
+      socket.current?.off("roomFull");
+      socket.current?.off("peerDisconnected");
+    };
+  }, [answerCall, socket, toast]);
+
+  useEffect(() => {
+    console.log("VideoContext: Checking for call initiation or reinitiation.");
+
+    // Initiate or reinitiate call if room ID is set and either:
+    // - The local stream has been updated and not null
+    if (roomId && localStream && prevLocalStreamRef.current !== localStream) {
+      console.log(`VideoContext: Initiating call with room ID ${roomId}.`);
+      callPeer();
+    }
+
+    // Store the current local stream for comparison in the next effect run
+    prevLocalStreamRef.current = localStream;
+
+    return () => {
+      console.log(
+        "VideoContext: Leaving call due to component unmount, room ID change, or local stream update.",
+      );
+      leaveCall();
+    };
+  }, [roomId, localStream, callPeer, leaveCall]);
+
   return (
     <VideoContext.Provider
       value={{
         localStream,
         remoteStream,
-        startLocalStream,
-        stopLocalStream,
-        connectToRemoteStream,
         isCameraOn,
         isMicrophoneOn,
         toggleCamera,
@@ -379,3 +377,5 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({
     </VideoContext.Provider>
   );
 };
+
+export default VideoContextProvider;

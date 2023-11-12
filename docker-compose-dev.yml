@@ -62,8 +62,6 @@ services:
     restart: on-failure
     networks:
       - backend
-    depends_on:
-      - redis
     environment:
       <<: *common-variables
       REDIS_URL: redis://redis:6379
