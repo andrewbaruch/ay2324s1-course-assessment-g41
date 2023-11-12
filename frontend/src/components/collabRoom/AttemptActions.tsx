@@ -81,6 +81,7 @@ const AttemptActions = () => {
               onClick={() => setIsDeleteModalOpen(true)}
               colorScheme="red"
               variant="outline"
+              isDisabled={currentPage <= 0}
             />
             <AlertDialog
               isOpen={isDeleteModalOpen}
