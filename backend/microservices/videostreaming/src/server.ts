@@ -65,53 +65,38 @@ class ServerApp {
           });
       }
 
+      if (!socket.rooms.has(roomId)) {
+        console.warn(`Socket ${socket.id} is not in room ${roomId}`);
+        return;
+      }
+
       socket.on('disconnect', () => {
         console.log(`Client disconnected: ${socket.id}`);
         if (roomId) {
-          if (socket.rooms.has(roomId)) {
-            // Inform other clients in the room about the disconnection
-            socket.to(roomId).emit('peerDisconnected', { peerId: socket.id });
+          // Inform other clients in the room about the disconnection
+          socket.to(roomId).emit('peerDisconnected', { peerId: socket.id });
 
-            // Additional cleanup if needed
-            console.log(`Client ${socket.id} left room: ${roomId}`);
-          } else {
-            console.warn(`Socket ${socket.id} is not in room ${roomId}`);
-            // Optionally, send an error message to the socket
-          }
+          // Additional cleanup if needed
+          console.log(`Client ${socket.id} left room: ${roomId}`);
         }
       });
 
       // karwi: fix non member socket
       socket.on('callUser', (data) => {
-        if (socket.rooms.has(data.roomId)) {
-          console.log(`Broadcasting call signal in room: ${data.roomId}`);
-          socket
-            .to(data.roomId)
-            .emit('callUser', { signal: data.signalData, name: data.name });
-        } else {
-          console.warn(`Socket ${socket.id} is not in room ${data.roomId}`);
-          // Optionally, send an error message to the socket
-        }
+        console.log(`Broadcasting call signal in room: ${data.roomId}`);
+        socket
+          .to(data.roomId)
+          .emit('callUser', { signal: data.signalData, name: data.name });
       });
 
       socket.on('answerCall', (data) => {
-        if (socket.rooms.has(data.roomId)) {
-          console.log(`Broadcasting answer signal in room: ${data.roomId}`);
-          socket.to(data.roomId).emit('callAccepted', data.signal);
-        } else {
-          console.warn(`Socket ${socket.id} is not in room ${data.roomId}`);
-          // Optionally, send an error message to the socket
-        }
+        console.log(`Broadcasting answer signal in room: ${data.roomId}`);
+        socket.to(data.roomId).emit('callAccepted', data.signal);
       });
 
       socket.on('streamStopped', (data) => {
-        if (socket.rooms.has(data.roomId)) {
-          console.log(`Received 'streamStopped' event in room ${data.roomId}`);
-          socket.to(data.roomId).emit('streamStopped');
-        } else {
-          console.warn(`Socket ${socket.id} is not in room ${data.roomId}`);
-          // Optionally, send an error message to the socket
-        }
+        console.log(`Received 'streamStopped' event in room ${data.roomId}`);
+        socket.to(data.roomId).emit('streamStopped');
       });
 
       // Additional socket event listeners as needed
