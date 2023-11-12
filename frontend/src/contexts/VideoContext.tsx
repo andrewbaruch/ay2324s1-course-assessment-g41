@@ -133,6 +133,25 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
         stream: localStream ?? undefined,
       });
 
+      peer.on("error", (err) => {
+        console.error("Peer connection error:", err);
+        toast({
+          title: "Peer Connection Error",
+          description: String(err),
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+
+      peer.on("connect", () => {
+        console.log("Peer connection established");
+      });
+
+      peer.on("close", () => {
+        console.log("Peer connection closed");
+      });
+
       peer.on("stream", setRemoteStream);
 
       if (signal) {
@@ -141,7 +160,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
       return peer;
     },
-    [localStream],
+    [localStream, toast],
   );
 
   const callPeer = useCallback(() => {
