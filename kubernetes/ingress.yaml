@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: example-ingress
+  name: ingress
   annotations:
     kubernetes.io/ingress.class: "gce"
     kubernetes.io/ingress.allow-http: "false"
@@ -17,28 +17,36 @@ spec:
             name: frontend-service
             port:
               number: 80
+      - path: /sockjs-node
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+      - path: /_next/webpack-hmr
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+
   - host: api.example.com
     http:
       paths:
-      - path: /users
+      - path: /user
         pathType: Prefix
         backend:
           service:
             name: user-service
             port:
               number: 80
-      - path: /questions
+      - path: /question
         pathType: Prefix
         backend:
           service:
             name: question-service
-            port:
-              number: 80
-      - path: /collab
-        pathType: Prefix
-        backend:
-          service:
-            name: collab-service
             port:
               number: 80
       - path: /matching
@@ -46,5 +54,33 @@ spec:
         backend:
           service:
             name: matching-service
+            port:
+              number: 80
+      - path: /collaboration
+        pathType: Prefix
+        backend:
+          service:
+            name: collab-service
+            port:
+              number: 80
+      - path: /document
+        pathType: Prefix
+        backend:
+          service:
+            name: document-service
+            port:
+              number: 80
+      - path: /history
+        pathType: Prefix
+        backend:
+          service:
+            name: history-service
+            port:
+              number: 80
+      - path: /videostreaming
+        pathType: Prefix
+        backend:
+          service:
+            name: videostreaming-service
             port:
               number: 80
