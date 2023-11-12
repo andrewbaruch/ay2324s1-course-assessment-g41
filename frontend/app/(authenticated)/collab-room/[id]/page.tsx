@@ -8,26 +8,12 @@ import { useDocumentProvider } from "@/hooks/room/useDocumentProvider";
 import { VideoContextProvider } from "@/contexts/VideoContext";
 import useRoomAccess from "@/hooks/guards/useRoomAccess";
 import { HocuspocusProvider } from "@hocuspocus/provider";
-import { closeRoom } from "@/services/room";
 import useManageAttempt from "@/hooks/collab-room/useManageCurrentAttempt";
 import useManageCodingLanguages from "@/hooks/collab-room/useManageCodingLanguages";
 import useManageUsersInRoom from "@/hooks/collab-room/useManageUsersInRoom";
 import { useMatchingContext } from "@/contexts/MatchingContext";
 import useManageQuestionsInRoom from "@/hooks/collab-room/useManageQuestions";
-
-// Mock Data
-
-// Mock Handlers
-const handleDeleteAttempt = (attemptId: number) => {
-  console.log(`Delete attempt with id ${attemptId}`);
-};
-
-const handleCloseRoom = async (yProvider: HocuspocusProvider | null, roomName: string) => {
-  console.log("Close room");
-  if (!yProvider) return;
-  yProvider.disconnect();
-  await closeRoom(roomName);
-};
+import { useRouter } from "next/navigation";
 
 interface CollabRoomContainerProps {
   params: { id: string };
@@ -38,11 +24,23 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
   const { id } = params;
 
   useRoomAccess(id);
+  const router = useRouter();
+
+  const handleClose = (provider: HocuspocusProvider | null) => {
+    if (!provider) return
+    console.log('disconnecting provider');
+    provider.disconnect()
+    router.push("/dashboard")
+  }
 
   const { handleEditorMount, provider, document } = useDocumentProvider({ roomName: id });
   const { activeUsers } = useManageUsersInRoom({ provider });
-  const { currentAttempt, listOfSavedAttempts, createNewAttempt, toggleToAttempt } =
-    useManageAttempt({ document, provider, roomName: id });
+  const { currentAttempt,
+    listOfSavedAttempts,
+    createNewAttempt,
+    toggleToAttempt,
+    saveAttempt
+  } = useManageAttempt({ document, provider, roomName: id });
   const { supportedLanguages, handleLanguageChange } = useManageCodingLanguages({ document });
   const { complexity } = useMatchingContext();
   const { filteredQuestions, handleQuestionChange } = useManageQuestionsInRoom({
@@ -58,8 +56,8 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
         listOfAttempts={listOfSavedAttempts}
         listOfActiveUsers={activeUsers}
         currentAttempt={currentAttempt}
-        onDeleteAttempt={handleDeleteAttempt}
-        onCloseRoom={() => handleCloseRoom(provider, id)}
+        onSaveAttempt={saveAttempt}
+        onCloseRoom={() => handleClose(provider)}
         onNewAttempt={createNewAttempt}
         onQuestionChange={handleQuestionChange}
         onAttemptChange={toggleToAttempt}

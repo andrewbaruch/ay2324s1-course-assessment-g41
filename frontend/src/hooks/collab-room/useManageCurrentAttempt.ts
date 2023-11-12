@@ -145,7 +145,19 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
       console.error(err)
       // handle toast message here
     }
-    
+  }
+
+  const saveAttempt = () => {
+    if (!document) return;
+
+    const text = document?.getText("monaco");
+    sendAttemptToDocServer({
+      provider,
+      attemptId: currentAttempt.attemptId,
+      language: currentAttempt.language,
+      text: text.toJSON(),
+      questionId: currentAttempt.question?.id || null,
+    });
   }
 
   return {
@@ -153,6 +165,7 @@ const useManageAttempt = ({ document, provider, roomName }: {document: Y.Doc | n
     listOfSavedAttempts,
     createNewAttempt,
     toggleToAttempt,
+    saveAttempt
   }
 };
 
