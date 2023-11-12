@@ -160,7 +160,9 @@ export default function NftMarketplace() {
               <Text color={textColor} fontSize="xl" fontWeight="600">
                 My Attempts
               </Text>
-              <Button variant="action">See all</Button>
+              <Link href={"/attempts"}>
+                <Button variant="action">See all</Button>
+              </Link>
             </Flex>
             {
               allUserAttempts.sort((a, b) => {
