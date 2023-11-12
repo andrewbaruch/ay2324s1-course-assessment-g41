@@ -47,9 +47,25 @@ class ServerApp {
       const roomId = socket.handshake.query.roomId as string;
 
       if (roomId) {
-        console.log(`Client ${socket.id} joining room: ${roomId}`);
-        // await this.addToRoom(roomId, socket.id);
-        socket.join(roomId);
+        // Fetch sockets in the room
+        this.io
+          .in(roomId)
+          .fetchSockets()
+          .then((sockets) => {
+            if (sockets.length < 2) {
+              console.log(`Client ${socket.id} joining room: ${roomId}`);
+              socket.join(roomId);
+            } else {
+              console.log(
+                `Room ${roomId} is full. Client ${socket.id} cannot join.`
+              );
+              // Optionally, send a message back to the client
+              socket.emit('roomFull', roomId);
+            }
+          })
+          .catch((error) => {
+            console.error(`Error fetching sockets for room ${roomId}:`, error);
+          });
       }
 
       socket.on('disconnect', async () => {

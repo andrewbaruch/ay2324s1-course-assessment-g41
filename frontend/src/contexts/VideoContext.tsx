@@ -256,12 +256,18 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       setRemoteStream(null);
     });
 
+    socket.on("roomFull", (roomId) => {
+      console.log(`Cannot join room ${roomId}, it is already full.`);
+      // Display an appropriate message to the user
+    });
+
     return () => {
       console.log("VideoContext: Cleaning up socket event listeners");
       socket.off("callUser");
       socket.off("callAccepted");
       socket.off("error");
       socket.off("streamStopped");
+      socket.off("roomFull");
     };
   }, [answerCall, socket, toast]);
 
