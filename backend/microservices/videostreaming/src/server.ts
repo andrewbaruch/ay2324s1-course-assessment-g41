@@ -68,14 +68,20 @@ class ServerApp {
       socket.on('disconnect', () => {
         console.log(`Client disconnected: ${socket.id}`);
         if (roomId) {
-          // Inform other clients in the room about the disconnection
-          socket.to(roomId).emit('peerDisconnected', { peerId: socket.id });
+          if (socket.rooms.has(roomId)) {
+            // Inform other clients in the room about the disconnection
+            socket.to(roomId).emit('peerDisconnected', { peerId: socket.id });
 
-          // Additional cleanup if needed
-          console.log(`Client ${socket.id} left room: ${roomId}`);
+            // Additional cleanup if needed
+            console.log(`Client ${socket.id} left room: ${roomId}`);
+          } else {
+            console.warn(`Socket ${socket.id} is not in room ${roomId}`);
+            // Optionally, send an error message to the socket
+          }
         }
       });
 
+      // karwi: fix non member socket
       socket.on('callUser', (data) => {
         if (socket.rooms.has(data.roomId)) {
           console.log(`Broadcasting call signal in room: ${data.roomId}`);
