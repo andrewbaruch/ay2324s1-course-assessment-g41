@@ -8,7 +8,7 @@ import React, {
   ReactNode,
 } from "react";
 import Peer, { SignalData } from "simple-peer";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 import { HOST_API } from "@/config";
 import { useToast } from "@chakra-ui/react";
 
@@ -36,6 +36,13 @@ interface VideoContextProviderProps {
   roomId: string;
 }
 
+const initializeSocket = (roomId: string) => {
+  return io(HOST_API, {
+    path: "/videostreaming/socket.io",
+    query: { roomId },
+  });
+};
+
 export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ children, roomId }) => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -44,15 +51,22 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const callPeerConnectionRef = useRef<Peer.Instance | null>(null);
   const answerPeerConnectionRef = useRef<Peer.Instance | null>(null);
   const prevLocalStreamRef = useRef<MediaStream | null>(null);
-  const socket = useRef(
-    io(HOST_API, {
-      // karwi: extract constant
-      path: "/videostreaming/socket.io",
-      query: { roomId },
-    }),
-  ).current;
-
   const toast = useToast();
+  const socket = useRef<Socket | null>(null);
+
+  useEffect(() => {
+    // Initialize socket on first render
+    if (!socket.current) {
+      socket.current = initializeSocket(roomId);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
+  }, [roomId]);
 
   const startLocalStream = useCallback(
     async (isVideoOn: boolean, isAudioOn: boolean) => {
@@ -91,7 +105,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       localStream.getTracks().forEach((track) => track.stop());
       setLocalStream(null);
       console.log("VideoContext: emit streamStopped");
-      socket.emit("streamStopped", { roomId });
+      socket.current?.emit("streamStopped", { roomId });
     }
   }, [localStream, socket, roomId]);
 
@@ -168,7 +182,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     const peer = createAndSetupPeer(true);
 
     peer.on("signal", (data) => {
-      socket.emit("callUser", { roomId: roomId, signalData: data });
+      socket.current?.emit("callUser", { roomId: roomId, signalData: data });
     });
 
     callPeerConnectionRef.current = peer;
@@ -187,7 +201,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       const peer = createAndSetupPeer(false, signal);
 
       peer.on("signal", (data) => {
-        socket.emit("answerCall", { roomId, signal: data });
+        socket.current?.emit("answerCall", { roomId, signal: data });
       });
 
       answerPeerConnectionRef.current = peer;
@@ -231,7 +245,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   useEffect(() => {
     console.log("VideoContext: Setting up socket event listeners");
 
-    socket.on("error", (error) => {
+    socket.current?.on("error", (error) => {
       console.error("VideoContext: Socket error: ", error);
       toast({
         title: "Socket Error",
@@ -242,14 +256,14 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       });
     });
 
-    socket.on("callUser", (data) => {
+    socket.current?.on("callUser", (data) => {
       console.log("VideoContext: Received call from peer");
 
       // karwi: used to handle user might reinit
       answerCall(data.signal);
     });
 
-    socket.on("callAccepted", (signal) => {
+    socket.current?.on("callAccepted", (signal) => {
       console.log("VideoContext: Call accepted by peer");
       if (callPeerConnectionRef.current) {
         console.log("VideoContext: Signaling call acceptance");
@@ -257,33 +271,33 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       }
     });
 
-    socket.on("streamStopped", () => {
+    socket.current?.on("streamStopped", () => {
       console.log("VideoContext: Remote peer's stream stopped.");
       setRemoteStream(null);
     });
 
-    socket.on("roomFull", (roomId) => {
+    socket.current?.on("roomFull", (roomId) => {
       console.log(`VideoContext: Cannot join room ${roomId}, it is already full.`);
       // Display an appropriate message to the user
     });
 
-    socket.on("peerDisconnected", ({ peerId }) => {
+    socket.current?.on("peerDisconnected", ({ peerId }) => {
       console.log(`VideoContext: Peer disconnected: ${peerId}`);
       // Handle the disconnection logic here
       // For example, you might want to set the remoteStream to null
-      if (peerId !== socket.id) {
+      if (peerId !== socket.current?.id) {
         setRemoteStream(null);
       }
     });
 
     return () => {
       console.log("VideoContext: Cleaning up socket event listeners");
-      socket.off("callUser");
-      socket.off("callAccepted");
-      socket.off("error");
-      socket.off("streamStopped");
-      socket.off("roomFull");
-      socket.off("peerDisconnected");
+      socket.current?.off("callUser");
+      socket.current?.off("callAccepted");
+      socket.current?.off("error");
+      socket.current?.off("streamStopped");
+      socket.current?.off("roomFull");
+      socket.current?.off("peerDisconnected");
     };
   }, [answerCall, socket, toast]);
 
