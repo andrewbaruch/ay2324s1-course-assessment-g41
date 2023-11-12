@@ -71,6 +71,13 @@ class ServerApp {
         socket.to(data.roomId).emit('callAccepted', data.signal);
       });
 
+      socket.on('streamStopped', (data) => {
+        console.log(
+          `Server: Received 'streamStopped' event from ${socket.id} for room ${data.roomId}`
+        );
+        socket.to(data.roomId).emit('streamStopped');
+      });
+
       // Additional socket event listeners as needed
     });
   }

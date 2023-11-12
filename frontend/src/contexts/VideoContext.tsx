@@ -85,11 +85,14 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, [isCameraOn, isMicrophoneOn, toast]);
 
   const stopLocalStream = useCallback(() => {
+    console.log("VideoContext: stopLocalStream");
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
       setLocalStream(null);
+      console.log("VideoContext: emit streamStopped");
+      socket.emit("streamStopped", { roomId });
     }
-  }, [localStream]);
+  }, [localStream, socket, roomId]);
 
   const toggleCamera = useCallback(() => {
     console.log("VideoContext: toggleCamera");
@@ -248,11 +251,17 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       }
     });
 
+    socket.on("streamStopped", () => {
+      console.log("VideoContext: Remote peer's stream stopped.");
+      setRemoteStream(null);
+    });
+
     return () => {
       console.log("VideoContext: Cleaning up socket event listeners");
       socket.off("callUser");
       socket.off("callAccepted");
       socket.off("error");
+      socket.off("streamStopped");
     };
   }, [answerCall, socket, toast]);
 
