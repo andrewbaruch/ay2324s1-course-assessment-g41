@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import { socketAuthMiddleware } from './middlewares/auth-middleware';
 // import { createClient } from 'redis';
 
 class ServerApp {
@@ -35,13 +36,13 @@ class ServerApp {
     this.app.use(cors({ origin: '*' }));
   }
 
-  // karwi: authentication
   // karwi: room authentication
   // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
   // karwi: ensure no duplicate user
   // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
-  // karwi: remove redis client
   private configSocket() {
+    this.io.use(socketAuthMiddleware);
+
     this.io.on('connection', async (socket) => {
       console.log(`Connected client with ID: ${socket.id}`);
       const roomId = socket.handshake.query.roomId as string;

@@ -1,24 +1,29 @@
-import { Request, Response } from 'express';
-import authService from '@/services/auth-service';
+import { Socket } from 'socket.io';
+import cookie from 'cookie';
+import authService from '@/services/auth-service'; // Adjust the import path as needed
 
-if (!process.env.ACCESS_COOKIE_KEY) {
-  console.log('Missing ACCESS_COOKIE_KEY');
-  process.exit();
-}
-const accessTokenKey = process.env.ACCESS_COOKIE_KEY;
+const accessTokenKey = process.env.ACCESS_COOKIE_KEY || '';
 
-export function authJWT(req: Request, res: Response, next: Function) {
-  const token = req.cookies[accessTokenKey];
+export function socketAuthMiddleware(
+  socket: Socket,
+  next: (err?: Error) => void
+): void {
+  try {
+    const handshakeData = socket.request;
+    // Parse cookies from the handshake headers
+    const cookies = cookie.parse(handshakeData.headers.cookie || '');
+    const token = cookies[accessTokenKey];
 
-  if (token) {
-    try {
-      res.locals.userId = authService.verifyAccessToken(token).userId;
-
+    if (token) {
+      // Verify the token
+      const decoded = authService.verifyAccessToken(token); // Adjust based on how you verify tokens
+      // Attach the user ID to the socket object for later use
+      (socket as any).userId = decoded.userId;
       next();
-    } catch (err) {
-      res.status(401).send();
+    } else {
+      next(new Error('Authentication error'));
     }
-  } else {
-    res.status(401).send();
+  } catch (error) {
+    next(new Error('Authentication error'));
   }
 }
