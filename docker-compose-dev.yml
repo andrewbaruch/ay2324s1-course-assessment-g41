@@ -4,6 +4,7 @@ x-common-variables: &common-variables
   POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
   POSTGRES_COLLAB: postgresql://postgres:postgres@postgres-collab:5432/postgres?connect_timeout=300
   MONGO: mongodb://user:password@mongo:27017
+  MONGO_HISTORY: mongodb://user:password@mongo-history:27017
   EXE_ENV: DEV
   JWT_SECRET: EXAMPLE_SECRERT # pass around JWT secret so each service can verify user TODO: add to github secrets on deployment
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
@@ -30,6 +31,42 @@ services:
       - backend
     environment:
       <<: *common-variables
+      LOGIN_REDIRECT_URL: http://localhost:3000/dashboard
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  redis-document:
+    container_name: redis-document
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    networks:
+      - backend
+
+  videostreaming:
+    container_name: videostreaming
+    build:
+      dockerfile: ./microservices/videostreaming/Dockerfile.local
+      context: ./backend
+    volumes:
+      - ./backend/microservices/videostreaming:/home/node/app/
+      - /home/node/app/node_modules
+    ports:
+      - 8081:3000
+    restart: on-failure
+    networks:
+      - backend
+    depends_on:
+      - redis
+    environment:
+      <<: *common-variables
+      REDIS_URL: redis://redis:6379
 
   question:
     container_name: question
@@ -63,6 +100,49 @@ services:
     environment:
       <<: *common-variables
       SERVER_PORT: 3000
+
+  history:
+    container_name: history
+    build:
+      dockerfile: ./microservices/history/Dockerfile.local
+      context: ./backend
+    volumes:
+      - ./backend/microservices/history:/home/microservices/history/
+      - /home/microservices/history/node_modules
+    ports:
+      - 5003:3000
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      <<: *common-variables
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/history/key.json"
+      COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+
+  document:
+    container_name: document
+    build:
+      dockerfile: ./microservices/document/Dockerfile.local
+      context: ./backend
+    volumes:
+      - ./backend/microservices/document:/home/microservices/document/
+      - /home/microservices/document/node_modules
+    ports:
+      - 5002:3000
+    depends_on:
+      - redis-document
+    restart: on-failure
+    networks:
+      - backend
+    environment:
+      <<: *common-variables
+      SERVER_PORT: 3000
+      COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/document/key.json"
+      REDIS_DOCUMENT_SYNC_HOST: "redis-document"
+      REDIS_DOCUMENT_SYNC_PORT: 6379
+      REDIS_DOCUMENT_SYNC_PASSWORD: "6359e3fccdc9490ab2d590b39db5661b"
+      REDIS_DOCUMENT_URL: redis://redis-document:6379
 
   postgres:
     container_name: postgres
@@ -124,11 +204,28 @@ services:
       - 27017:27017
     networks:
       - backend
+  
+  mongo-history:
+    container_name: mongo-history
+    build:
+      context: ./mongo-history
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=admin
+    volumes:
+      - mongo-history:/data/db
+    ports:
+      - 64000:27017
+    networks:
+      - backend
 
   mongo-express:
     image: mongo-express
     ports:
-      - "8081:8081"
+      - "8082:8082"
     environment:
       - ME_CONFIG_MONGODB_URL="mongo://user:password@mongo:27017/"
       - ME_CONFIG_MONGODB_SERVER=mongo
@@ -154,6 +251,8 @@ services:
       <<: *common-variables
       GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
       COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+      MATCHING_REQUEST_REDIS_URL: "redis://redis:6379"
+      MATCHING_PAIR_REDIS_URL: "redis://redis:6379"
 
   nginx:
     depends_on:
@@ -184,3 +283,4 @@ volumes:
   postgres:
   postgres-collab:
   mongo:
+  mongo-history:

@@ -11,7 +11,12 @@ const questionListAtom = atom<QuestionListAtom>({
   questions: [],
 });
 
-export const useQuestions = () => {
+export const useQuestions = ({
+  difficulties = undefined, sorting = undefined
+}: {
+    difficulties?: QuestionComplexity[] | undefined,
+    sorting?: "asc" | "desc" | undefined | null
+}) => {
   const [questionListWrapper, setQuestionListWrapper] = useAtom(questionListAtom);
 
   const setQuestionList = (questionList: Question[]) => {
@@ -21,7 +26,9 @@ export const useQuestions = () => {
   };
 
   useEffect(() => {
-    QuestionService.getQuestions().then((questions) => {
+    QuestionService.getQuestions({
+      difficulties, sorting
+    }).then((questions) => {
       setQuestionList(questions);
     });
   }, []);
@@ -38,7 +45,7 @@ export const useQuestions = () => {
     categories: string[];
   }) => {
     await QuestionService.addQuestion({ title, description, complexity, categories });
-    setQuestionList(await QuestionService.getQuestions());
+    setQuestionList(await QuestionService.getQuestions({}));
   };
 
   const removeQuestion = async ({ id }: { id: string }) => {

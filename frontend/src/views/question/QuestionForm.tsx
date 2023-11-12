@@ -43,7 +43,7 @@ export const QuestionForm = ({ question = null }: { question: Question | null })
   });
 
   useAuthRole([Role.ADMIN])
-  const { addQuestion, editQuestion } = useQuestions();
+  const { addQuestion, editQuestion } = useQuestions({});
   const toast = useToast();
   const router = useRouter();
   const bgColor = useColorModeValue("white", "navy.800");

@@ -1,4 +1,4 @@
-import { useProfile } from "src/contexts/auth/ProfileContext";
+import { useProfile } from "@/contexts/ProfileContext";
 
 /**
  * Get the authProvider stored in the context

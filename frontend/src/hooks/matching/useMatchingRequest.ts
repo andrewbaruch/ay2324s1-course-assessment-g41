@@ -1,7 +1,5 @@
 import { QuestionComplexity } from "@/@types/models/question";
-import { User } from "@/@types/user";
 import MatchingService from "@/services/matching";
-import { use } from "react";
 
 export const useMatching = () => {
   const sendMatchingRequest = (complexity: QuestionComplexity): Promise<void> => {

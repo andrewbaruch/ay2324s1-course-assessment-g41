@@ -3,13 +3,15 @@ import { PATH_AUTH } from "src/routes/paths";
 import useAuthProvider from "../auth/useAuthProvider";
 import { useToast } from "@chakra-ui/react";
 import useLogout from "../auth/useLogout";
-import { useSearchParams } from "next/navigation";
 
-type CheckAuth = (params: {
-  logoutOnError?: boolean;
-  disableNotification?: boolean;
-  redirectTo?: string;
-}) => Promise<any>;
+type CheckAuth = (
+  params: {
+    logoutOnError?: boolean;
+    disableNotification?: boolean;
+    redirectTo?: string;
+  },
+  roomId?: string,
+) => Promise<any>;
 
 /**
  * Get a callback for calling the authProvider.checkAuth() method.
@@ -49,7 +51,6 @@ const useCheckAuth = (): CheckAuth => {
   const authProvider = useAuthProvider();
   const toast = useToast();
   const logout = useLogout();
-  const searchParams = useSearchParams();
 
   const checkAuth = useCallback(
     async ({
@@ -81,7 +82,7 @@ const useCheckAuth = (): CheckAuth => {
       }
     },
 
-    [authProvider, toast, logout, searchParams],
+    [authProvider, toast, logout],
   );
 
   return checkAuth;

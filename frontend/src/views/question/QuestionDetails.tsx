@@ -34,7 +34,7 @@ export const QuestionDetails = ({
   isPreview = false,
   hasWritePerms = false,
 }: Question & { isPreview?: boolean, hasWritePerms?: boolean }) => {
-  const { removeQuestion } = useQuestions();
+  const { removeQuestion } = useQuestions({});
   const [isEdit, setIsEdit] = useState(false);
   const bgColor = useColorModeValue("white", "navy.800");
 

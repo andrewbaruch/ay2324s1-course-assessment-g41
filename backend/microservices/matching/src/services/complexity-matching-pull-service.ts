@@ -82,8 +82,7 @@ class ComplexityMatchingPullService {
     this.matchingPairs[user1.userId] = user2.userId;
     this.matchingPairs[user2.userId] = user1.userId;
 
-    // const room = await this.retrieveRoomId(user1.userId, user2.userId);
-    const room = "DummyRoom";
+    const room = await this.retrieveRoomId(user1.userId, user2.userId);
 
     console.log(`user1=${user1.userId}, user2=${user2.userId}`);
     console.log(`matchingTopicData=${matchingTopicData} `);

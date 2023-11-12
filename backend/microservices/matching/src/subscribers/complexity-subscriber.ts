@@ -12,11 +12,11 @@ import { Message } from "@google-cloud/pubsub";
  * Listener that "pulls" messages from Google PubSub on the question complexity topic.
  */
 class ComplexitySubscriber {
-  private readonly pubSubClient: PubSubClient;
+  private readonly pubSubClient: typeof PubSubClient;
   private readonly complexityMatchingPullService: ComplexityMatchingPullService;
 
   constructor() {
-    this.pubSubClient = new PubSubClient();
+    this.pubSubClient = PubSubClient;
     this.complexityMatchingPullService = new ComplexityMatchingPullService();
   }
 
@@ -72,7 +72,7 @@ class ComplexitySubscriber {
           {
             userId2: user2.userId,
             complexity: complexity,
-            roomId: room,
+            roomId: room.name,
           }
         );
         const insertUser2 = await complexityMatchingPairCache.set(
@@ -80,7 +80,7 @@ class ComplexitySubscriber {
           {
             userId2: user1.userId,
             complexity: complexity,
-            roomId: room,
+            roomId: room.name,
           }
         );
         // update matchingPairCache

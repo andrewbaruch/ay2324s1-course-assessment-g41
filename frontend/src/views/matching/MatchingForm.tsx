@@ -29,6 +29,8 @@ import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
 import { useRouter } from "next/navigation";
 import { Status } from "@/@types/status";
+import { openRoom } from "@/services/room";
+import { useMatchingContext } from "@/contexts/MatchingContext";
 
 export const MatchingForm = () => {
   const {
@@ -48,6 +50,7 @@ export const MatchingForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [progressValue, setProgressValue] = useState(100);
   const router = useRouter();
+  const { setComplexity } = useMatchingContext()
 
   return (
     <Stack
@@ -128,9 +131,24 @@ export const MatchingForm = () => {
                       clearInterval(intervalId);
                       intervalId = null;
                       if (response.roomId) {
-                        router.push(`/collab-room/${response.roomId}`);
+                        openRoom(response.roomId).then(res => {
+                          // save complexity
+                          const enumIndex = Object.values(QuestionComplexity).findIndex(
+                            (complexityVal) => complexityVal === data.complexity
+                          );
+                          setComplexity(enumIndex + 1);
+                          router.push(`/collab-room/${response.roomId}`);
+                        }).catch(err => {
+                          toast({
+                            description: err?.message || "Unknown error occured. Please try again later.",
+                            status: "error",
+                            isClosable: true,
+                            duration: 3000,
+                            position: "bottom",
+                          })
+                          router.push('/dashboard');
+                        });
                       }
-
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {
