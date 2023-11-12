@@ -4,13 +4,11 @@ import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { socketAuthMiddleware } from './middlewares/auth-middleware';
-// import { createClient } from 'redis';
 
 class ServerApp {
   private app: express.Application;
   private httpServer: any;
   private io: SocketIOServer;
-  private redisClient: any;
   private port: number | string;
 
   constructor() {
@@ -23,8 +21,6 @@ class ServerApp {
       },
       path: '/socket.io', // Set custom path here
     });
-    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-    // this.redisClient = createClient({ url: redisUrl });
     this.port = process.env.SERVER_PORT || 3000;
     this.configMiddleware();
     this.configSocket();
@@ -72,7 +68,6 @@ class ServerApp {
       socket.on('disconnect', async () => {
         console.log(`Client disconnected: ${socket.id}`);
         if (roomId) {
-          // await this.removeFromRoom(roomId, socket.id);
         }
       });
 
@@ -98,16 +93,6 @@ class ServerApp {
       // Additional socket event listeners as needed
     });
   }
-
-  // private async addToRoom(roomId: string, clientId: string) {
-  //   // await this.redisClient.sAdd(roomId, clientId);
-  //   console.log(`Added client ${clientId} to room ${roomId}`);
-  // }
-
-  // private async removeFromRoom(roomId: string, clientId: string) {
-  //   // await this.redisClient.sRem(roomId, clientId);
-  //   console.log(`Removed client ${clientId} from room ${roomId}`);
-  // }
 
   public start() {
     this.httpServer.listen(this.port, () => {

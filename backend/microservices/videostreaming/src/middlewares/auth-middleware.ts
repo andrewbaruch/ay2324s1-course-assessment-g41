@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import cookie from 'cookie';
-import authService from '@/services/auth-service'; // Adjust the import path as needed
+import authService from '@/services/auth-service';
 
 const accessTokenKey = process.env.ACCESS_COOKIE_KEY || '';
 

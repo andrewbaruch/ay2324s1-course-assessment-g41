@@ -19,7 +19,7 @@ docker rm $CONTAINER_NAME 2>/dev/null || true
 
 # Rebuild the Docker image
 echo "Building the Docker image..."
-docker build -t $IMAGE_NAME .
+docker build -f ./backend/microservices/$IMAGE_NAME/Dockerfile.local -t $IMAGE_NAME ./backend
 
 # Run the new container
 echo "Starting a new container..."
