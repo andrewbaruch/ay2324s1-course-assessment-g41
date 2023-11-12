@@ -9,7 +9,7 @@ x-common-variables: &common-variables
   JWT_SECRET: EXAMPLE_SECRERT # pass around JWT secret so each service can verify user TODO: add to github secrets on deployment
   REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
   ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
-  SERVER_PORT: 3000  
+  SERVER_PORT: 3000
 
 networks:
   frontend:
@@ -247,10 +247,12 @@ services:
     restart: on-failure
     networks:
       - backend
-    environment: 
+    environment:
       <<: *common-variables
       GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
       COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+      MATCHING_REQUEST_REDIS_URL: "redis://redis:6379"
+      MATCHING_PAIR_REDIS_URL: "redis://redis:6379"
 
   nginx:
     depends_on:
@@ -276,8 +278,6 @@ services:
       - /app/node_modules
     networks:
       - frontend
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 
 volumes:
   postgres:

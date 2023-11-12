@@ -69,7 +69,7 @@ class QuestionService {
   static async getQuestions({
     difficulties = undefined, sorting = undefined
   }: {
-      difficulties?: QuestionComplexity[] | undefined,
+      difficulties?: QuestionComplexity[] | number[] | undefined,
       sorting?: "asc" | "desc" | undefined | null,
   }) {
     if (typeof window === "undefined") {

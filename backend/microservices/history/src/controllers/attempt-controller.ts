@@ -32,6 +32,7 @@ export async function getAllAttemptsInRoom(req: Request, res: Response) {
       doc.push(defaultAttempt);
     }
   }
+  console.log(doc, 'mongoose');
   res.status(200).json(doc)
 }
 

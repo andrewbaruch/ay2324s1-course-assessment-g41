@@ -63,7 +63,7 @@ Prefix your commits with these identifiers for better organization of Git histor
 
 ### Testing the app
 - `./clean-compose.sh <compose-file>` to compose the app cleanly.
-- The compose file for each assignment is within the /assignment-compose folder. ie. Simply run `./clean-compose.sh assignment-compose/docker-compose-A2-3.yml` for A2, A3 and A4 to start up the app. 
+- The compose file for each assignment is within the /assignment-compose folder. ie. Simply run `./clean-compose.sh assignment-compose/docker-compose-A2-4.yml` for A2, A3 and A4 to start up the app. 
 - Required env file is to be copied to the corresponding folder
   - Frontend: frontend/.env
   - Backend Servies: backend/microservices/<service>/.env

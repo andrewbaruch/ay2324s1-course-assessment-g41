@@ -9,6 +9,8 @@ const AttemptSchema = new MongoClient.Schema({
     label: String,
     value: String,
   },
+}, {
+    timestamps: true,
 });
 
 const AttemptModel = MongoClient.model("Attempt", AttemptSchema);
