@@ -1,5 +1,8 @@
 import PubSubClient from "@/clients/pubsub";
-import { MATCHING_REQUEST_TOPIC_SUBSCRIPTION, MATCHING_REQUEST_VALID_DURATION_IN_SECONDS } from "@/constants/matching-request";
+import {
+  MATCHING_REQUEST_TOPIC_SUBSCRIPTION,
+  MATCHING_REQUEST_VALID_DURATION_IN_SECONDS,
+} from "@/constants/matching-request";
 import ComplexityMatchingPullService from "@/services/complexity-matching-pull-service";
 import complexityMatchingPairCache from "@/utils/complexity-matching-pair-cache";
 import complexityMatchingRequestCache from "@/utils/complexity-matching-request-cache";
@@ -13,23 +16,24 @@ class ComplexitySubscriber {
   private readonly complexityMatchingPullService: ComplexityMatchingPullService;
 
   constructor() {
-    this.pubSubClient = new PubSubClient()
-    this.complexityMatchingPullService = new ComplexityMatchingPullService()
+    this.pubSubClient = new PubSubClient();
+    this.complexityMatchingPullService = new ComplexityMatchingPullService();
   }
 
   start() {
-    complexityMatchingRequestCache.flushAll();
-    complexityMatchingPairCache.flushAll();
-    this.pubSubClient.subscribeToTopic(MATCHING_REQUEST_TOPIC_SUBSCRIPTION, (message) => this.handleMessage(message, this.complexityMatchingPullService))
+    this.pubSubClient.subscribeToTopic(
+      MATCHING_REQUEST_TOPIC_SUBSCRIPTION,
+      (message) =>
+        this.handleMessage(message, this.complexityMatchingPullService)
+    );
   }
 
-  private async handleMessage(message: Message, complexityMatchingPullService: ComplexityMatchingPullService) {
+  private async handleMessage(
+    message: Message,
+    complexityMatchingPullService: ComplexityMatchingPullService
+  ) {
     message.ack();
     try {
-      console.log("=======================================");
-      console.log(complexityMatchingRequestCache.keys());
-      console.log(complexityMatchingPairCache.keys());
-
       console.log("=======================================");
       console.log(`Received message ${message.id}:`);
       console.log(`\tData: ${message.data}`);
@@ -37,40 +41,60 @@ class ComplexitySubscriber {
 
       const parsedData = JSON.parse(message.data.toString());
 
-      if (complexityMatchingPullService.isUserAlreadyMatched(parsedData.userId)) {
-        console.log(`${parsedData.userId} is already matched`)
-        return
-      };
+      if (
+        await complexityMatchingPullService.isUserAlreadyMatched(
+          parsedData.userId
+        )
+      ) {
+        console.log(`${parsedData.userId} is already matched`);
+        return;
+      }
 
-      const complexity = complexityMatchingPullService.registerRequestForMatch(parsedData)
+      const complexity =
+        complexityMatchingPullService.registerRequestForMatch(parsedData);
+
       // add to request cache
-      complexityMatchingRequestCache.set(parsedData.userId, { complexity: complexity }, MATCHING_REQUEST_VALID_DURATION_IN_SECONDS);
+      await complexityMatchingRequestCache.set(parsedData.userId, complexity);
+      await complexityMatchingRequestCache.expire(
+        parsedData.userId,
+        MATCHING_REQUEST_VALID_DURATION_IN_SECONDS
+      );
 
-      complexityMatchingPullService.removeExpiredRequestsOfComplexity(complexity)
-      const { room, user1, user2 } = await complexityMatchingPullService.matchUsersIfMoreThanTwo(complexity)
+      complexityMatchingPullService.removeExpiredRequestsOfComplexity(
+        complexity
+      );
+      const { room, user1, user2 } =
+        await complexityMatchingPullService.matchUsersIfMoreThanTwo(complexity);
 
       if (room) {
-        // update matchingPairCache
-        console.log(
-          "matched pair, inserting into cache",
-          complexityMatchingPairCache.set(user1.userId, {
+        const insertUser1 = await complexityMatchingPairCache.set(
+          user1.userId,
+          {
             userId2: user2.userId,
             complexity: complexity,
-            roomId: room.name,
-          }),
-          complexityMatchingPairCache.set(user2.userId, {
+            roomId: room,
+          }
+        );
+        const insertUser2 = await complexityMatchingPairCache.set(
+          user2.userId,
+          {
             userId2: user1.userId,
             complexity: complexity,
-            roomId: room.name,
-          })
+            roomId: room,
+          }
         );
+        // update matchingPairCache
+        console.log("matched pair, inserting into cache");
       }
-      console.log(`matchingpairs=${JSON.stringify(complexityMatchingPullService.matchingPairs)}`);
+      console.log(
+        `matchingpairs=${JSON.stringify(
+          complexityMatchingPullService.matchingPairs
+        )}`
+      );
     } catch (err) {
       // allow graceful timeout from waiting
-      console.error(`message ${message.id} has an error:`, err)
+      console.error(`message ${message.id} has an error:`, err);
     }
-    
   }
 }
 

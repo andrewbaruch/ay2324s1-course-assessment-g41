@@ -18,6 +18,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Spacer,
+  Progress,
 } from "@chakra-ui/react";
 
 import { useState } from "react";
@@ -26,7 +27,6 @@ import { QuestionComplexity } from "@/@types/models/question";
 import { useForm } from "react-hook-form";
 import { useMatching } from "@/hooks/matching/useMatchingRequest";
 
-import useGetIdentity from "@/hooks/auth/useGetIdentity";
 import { useRouter } from "next/navigation";
 import { Status } from "@/@types/status";
 
@@ -39,12 +39,14 @@ export const MatchingForm = () => {
     trigger,
     formState: { errors },
   } = useForm({});
+  const requestExpiryTimeInSeconds: number = 30;
+
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const [isLoading, setIsLoading] = useState(false);
-  // const { identity, loading, loaded, error } = useGetIdentity();
+  const [progressValue, setProgressValue] = useState(100);
   const router = useRouter();
 
   return (
@@ -67,10 +69,6 @@ export const MatchingForm = () => {
       </Text>
 
       <Stack spacing={2} display="flex" px={0}>
-        <FormControl>
-          <FormLabel htmlFor="userId">User Id</FormLabel>
-          <Input placeholder="User Id" defaultValue="1" {...register("userId")} />
-        </FormControl>
         <FormControl isInvalid={errors.complexity ? true : false}>
           <FormLabel htmlFor="complexity">Complexity</FormLabel>
           <Select
@@ -99,21 +97,33 @@ export const MatchingForm = () => {
         type="submit"
         onClick={handleSubmit((data) => {
           try {
-            // TODO: uncomment the hook call useGetIdentity() above and the router.push change to the commented one to use the roomId instead.
-
-            // console.log(identity, loading, loaded, error);
             console.log(data);
             onOpen();
             setIsLoading(true);
+            setProgressValue(() => 100);
 
-            sendMatchingRequest(data.userId, data.complexity).then(async () => {
+            sendMatchingRequest(data.complexity).then(async () => {
               await new Promise((r) => setTimeout(r, 1000));
+
               let intervalId: NodeJS.Timeout | null = setInterval(() => {
-                getMatchingStatus(data.userId)
+                setProgressValue((prevProgress) => {
+                  if (intervalId && prevProgress <= 0) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    onOpen();
+                    setIsLoading(false);
+                    return 0;
+                  } else {
+                    return prevProgress - (1 / requestExpiryTimeInSeconds) * 100;
+                  }
+                });
+
+                getMatchingStatus()
                   .then((response) => {
                     console.log(response);
                     const responseStatus = response.status;
                     console.log("in frontend, status code", response);
+
                     if (intervalId && responseStatus == Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
@@ -121,7 +131,6 @@ export const MatchingForm = () => {
                         router.push(`/collab-room/${response.roomId}`);
                       }
 
-                      // router.push(`/collab-room/${response.roomId}`);
                       return;
                     }
                     if (intervalId && responseStatus == Status.expired) {
@@ -162,26 +171,23 @@ export const MatchingForm = () => {
 
             {isLoading ? (
               <AlertDialogBody>
-                <Spinner />
+                <Progress value={progressValue} width="25" />
               </AlertDialogBody>
             ) : (
-                <>
-                  <AlertDialogBody>
-                    There seems to be no other peers :(
+              <>
+                <AlertDialogBody>
+                  There seems to be no other peers :(
                   <Spacer />
                   Do try again in a few minutes!
                 </AlertDialogBody>
 
-                  <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={onClose}>
-                      Cancel
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancel
                   </Button>
-                    {/* <Button onClick={onClose} ml={3}>
-                    Try again
-                  </Button> */}
-                  </AlertDialogFooter>
-                </>
-              )}
+                </AlertDialogFooter>
+              </>
+            )}
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
