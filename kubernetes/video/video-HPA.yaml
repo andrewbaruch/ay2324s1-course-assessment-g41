@@ -1,18 +1,18 @@
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: matching-hpa
+  name: video-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: matching-deployment
-  minReplicas: 1  
-  maxReplicas: 2
+    name: video-deployment
+  minReplicas: 1
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 80 
+        averageUtilization: 60

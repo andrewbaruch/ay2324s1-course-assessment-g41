@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: matching-config
-data:
-  ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
-  REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
-  SERVER_PORT: "3000"

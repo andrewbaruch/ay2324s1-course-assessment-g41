@@ -1,57 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: matching-deployment
+  name: videostreaming-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: matching
+      app: video
   template:
     metadata:
       labels:
-        app: matching
+        app: video
     spec:
       containers:
-        - name: matching
-          image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/matching:<commit-sha> 
-          ports:
-            - containerPort: 3000
-          env:
-            - name: SERVER_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: matching-config
-                  key: SERVER_PORT
-            - name: ACCESS_COOKIE_KEY
-              valueFrom:
-                configMapKeyRef:
-                  name: matching-config
-                  key: ACCESS_COOKIE_KEY
-            - name: EXE_ENV
-              valueFrom:
-                configMapKeyRef:
-                  name: global-config
-                  key: EXE_ENV
-            - name: JWT_SECRET
-              valueFrom:
-                configMapKeyRef:
-                  name: global-config
-                  key: JWT_SECRET
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /home/microservices/matching/key.json
-          resources:
-            requests: 
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
-          volumeMounts:
-            - name: google-cloud-key
-              mountPath: /home/microservices/matching
-              readOnly: true
-      volumes:
-        - name: google-cloud-key
-          secret:
-            secretName: google-cloud-key
+      - name: video
+        image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/videostreaming:${{ github.sha }}
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: global-config
+        - configMapRef:
+            name: video-config
+        resources:
+          requests:
+            cpu: "250m"  
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"

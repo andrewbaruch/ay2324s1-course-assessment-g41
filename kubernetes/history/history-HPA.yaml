@@ -1,18 +1,18 @@
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: collaboration-hpa
+  name: history-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: collaboration-deployment
-  minReplicas: 1 
-  maxReplicas: 2 
+    name: history-deployment
+  minReplicas: 1
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50 
+        averageUtilization: 60
