@@ -77,22 +77,35 @@ class ServerApp {
       });
 
       socket.on('callUser', (data) => {
-        console.log(`Broadcasting call signal in room: ${data.roomId}`);
-        socket
-          .to(data.roomId)
-          .emit('callUser', { signal: data.signalData, name: data.name });
+        if (socket.rooms.has(data.roomId)) {
+          console.log(`Broadcasting call signal in room: ${data.roomId}`);
+          socket
+            .to(data.roomId)
+            .emit('callUser', { signal: data.signalData, name: data.name });
+        } else {
+          console.warn(`Socket ${socket.id} is not in room ${data.roomId}`);
+          // Optionally, send an error message to the socket
+        }
       });
 
       socket.on('answerCall', (data) => {
-        console.log(`Broadcasting answer signal in room: ${data.roomId}`);
-        socket.to(data.roomId).emit('callAccepted', data.signal);
+        if (socket.rooms.has(data.roomId)) {
+          console.log(`Broadcasting answer signal in room: ${data.roomId}`);
+          socket.to(data.roomId).emit('callAccepted', data.signal);
+        } else {
+          console.warn(`Socket ${socket.id} is not in room ${data.roomId}`);
+          // Optionally, send an error message to the socket
+        }
       });
 
       socket.on('streamStopped', (data) => {
-        console.log(
-          `Server: Received 'streamStopped' event from ${socket.id} for room ${data.roomId}`
-        );
-        socket.to(data.roomId).emit('streamStopped');
+        if (socket.rooms.has(data.roomId)) {
+          console.log(`Received 'streamStopped' event in room ${data.roomId}`);
+          socket.to(data.roomId).emit('streamStopped');
+        } else {
+          console.warn(`Socket ${socket.id} is not in room ${data.roomId}`);
+          // Optionally, send an error message to the socket
+        }
       });
 
       // Additional socket event listeners as needed
