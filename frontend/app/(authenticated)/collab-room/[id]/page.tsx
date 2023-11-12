@@ -6,10 +6,7 @@ import CollabRoom from "@/components/collabRoom/CollabRoom";
 import { CodeEditor } from "@/views/codeEditor";
 import { useDocumentProvider } from "@/hooks/room/useDocumentProvider";
 import { VideoContextProvider } from "@/contexts/VideoContext";
-import { WebSocketSignalingClient } from "@/videoClients/default";
 import useRoomAccess from "@/hooks/guards/useRoomAccess";
-import { HOST_WEBSOCKET_API } from "@/config";
-import { BE_API } from "@/utils/api";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { closeRoom } from "@/services/room";
 import useManageAttempt from "@/hooks/collab-room/useManageCurrentAttempt";
@@ -28,7 +25,7 @@ const handleDeleteAttempt = (attemptId: number) => {
 const handleCloseRoom = async (yProvider: HocuspocusProvider | null, roomName: string) => {
   console.log("Close room");
   if (!yProvider) return;
-  yProvider.disconnect()
+  yProvider.disconnect();
   await closeRoom(roomName);
 };
 
@@ -43,20 +40,18 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
   useRoomAccess(id);
 
   const { handleEditorMount, provider, document } = useDocumentProvider({ roomName: id });
-  const { activeUsers } = useManageUsersInRoom({ provider })
-  const { currentAttempt, listOfSavedAttempts, createNewAttempt, toggleToAttempt } = useManageAttempt({ document, provider, roomName: id });
-  const { supportedLanguages, handleLanguageChange } = useManageCodingLanguages({ document })
+  const { activeUsers } = useManageUsersInRoom({ provider });
+  const { currentAttempt, listOfSavedAttempts, createNewAttempt, toggleToAttempt } =
+    useManageAttempt({ document, provider, roomName: id });
+  const { supportedLanguages, handleLanguageChange } = useManageCodingLanguages({ document });
   const { complexity } = useMatchingContext();
-  const { filteredQuestions, handleQuestionChange } = useManageQuestionsInRoom({ complexity, document });
-
-  const signalingClient = useMemo(() => {
-    const signalingUrl = `${HOST_WEBSOCKET_API}${BE_API.video.signaling}?roomId=${id}`;
-    console.log("karwi: signalingUrl:", signalingUrl);
-    return new WebSocketSignalingClient(signalingUrl);
-  }, [id]);
+  const { filteredQuestions, handleQuestionChange } = useManageQuestionsInRoom({
+    complexity,
+    document,
+  });
 
   return (
-    <VideoContextProvider signalingClient={signalingClient}>
+    <VideoContextProvider roomId={id}>
       <CollabRoom
         questionTotalList={filteredQuestions}
         languageTotalList={supportedLanguages}
