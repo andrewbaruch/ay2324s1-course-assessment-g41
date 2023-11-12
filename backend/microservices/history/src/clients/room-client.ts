@@ -1,5 +1,4 @@
 import axios from "axios";
-import { IncomingHttpHeaders } from "http";
 // TODO: implement service registry to retrieve collab service endpoint
 const { COLLAB_SERVICE_ENDPOINT } = process.env
 
@@ -12,7 +11,7 @@ const roomClient = axios.create({
 
 const getRoomsWithUser = async (userId: string) => {
   try {
-    const response = await roomClient.get(`/${userId}`);
+    const response = await roomClient.get(`/room/${userId}`);
     const { rooms }: { rooms: string[] } = response.data;
     return rooms;
   } catch (err) {
