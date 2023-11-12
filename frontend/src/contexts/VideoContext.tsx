@@ -334,9 +334,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     console.log("VideoContext: Checking for call initiation or reinitiation.");
 
     // Initiate or reinitiate call if room ID is set and either:
-    // - There's no existing peer connection
-    // - The local stream has been updated
-    if (roomId && (!callPeerConnectionRef.current || prevLocalStreamRef.current !== localStream)) {
+    // - The local stream has been updated and not null
+    if (roomId && localStream && prevLocalStreamRef.current !== localStream) {
       console.log(`VideoContext: Initiating call with room ID ${roomId}.`);
       callPeer();
     }
