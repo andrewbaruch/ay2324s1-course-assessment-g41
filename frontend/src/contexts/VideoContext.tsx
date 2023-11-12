@@ -269,8 +269,17 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     });
 
     socket.on("roomFull", (roomId) => {
-      console.log(`Cannot join room ${roomId}, it is already full.`);
+      console.log(`VideoContext: Cannot join room ${roomId}, it is already full.`);
       // Display an appropriate message to the user
+    });
+
+    socket.on("peerDisconnected", ({ peerId }) => {
+      console.log(`VideoContext: Peer disconnected: ${peerId}`);
+      // Handle the disconnection logic here
+      // For example, you might want to set the remoteStream to null
+      if (peerId !== socket.id) {
+        setRemoteStream(null);
+      }
     });
 
     return () => {
