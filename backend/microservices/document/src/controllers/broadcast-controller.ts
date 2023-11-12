@@ -4,16 +4,9 @@ import * as RoomService from "@/services/room";
 import * as AuthService from "@/services/auth";
 import { parseCookie } from "@/utils/parseCookie";
 
-const NO_QUESTION_ID = "-1"
-
 const autoSaveAttempt = (data: onStoreDocumentPayload) => {
   const attempt = AttemptService.extractAttemptFromDocument({ document: data.document });
   if (!attempt.attemptId) return; // if attempt id is invalid, don't save
-  const { questionId } = attempt;
-  if (!questionId) {
-    AttemptService.saveAttempt({ ...attempt, roomName: data.documentName, questionId: NO_QUESTION_ID });
-    return;
-  }
   AttemptService.saveAttempt({ ...attempt, roomName: data.documentName });
 }
 
@@ -44,7 +37,7 @@ const handleStatelessMessage = async (data: onStatelessPayload) => {
     attemptId,
     text,
     language,
-    questionId: questionId ? questionId : NO_QUESTION_ID,
+    questionId,
   })
 }
 
