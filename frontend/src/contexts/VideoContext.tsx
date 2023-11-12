@@ -46,8 +46,10 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const peerConnectionRef = useRef<Peer.Instance | null>(null);
   const prevCameraOnRef = useRef(isCameraOn);
   const prevMicrophoneOnRef = useRef(isMicrophoneOn);
+  const prevLocalStreamRef = useRef<MediaStream | null>(null);
   const socket = useRef(
     io(HOST_API, {
+      // karwi: extract constant
       path: "/videostreaming/socket.io",
       query: { roomId },
     }),
@@ -71,7 +73,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
         isClosable: true,
       });
     } catch (error) {
-      console.error("Error accessing media devices.", error);
+      console.error("VideoContext: Error accessing media devices.", error);
       toast({
         title: "Failed to start local stream",
         description: String(error),
@@ -134,7 +136,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       });
 
       peer.on("error", (err) => {
-        console.error("Peer connection error:", err);
+        console.error("VideoContext: Peer connection error:", err);
         toast({
           title: "Peer Connection Error",
           description: String(err),
@@ -145,11 +147,11 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       });
 
       peer.on("connect", () => {
-        console.log("Peer connection established");
+        console.log("VideoContext: Peer connection established");
       });
 
       peer.on("close", () => {
-        console.log("Peer connection closed");
+        console.log("VideoContext: Peer connection closed");
       });
 
       peer.on("stream", setRemoteStream);
@@ -219,7 +221,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   useEffect(() => {
     socket.on("error", (error) => {
-      console.error("Socket error: ", error);
+      console.error("VideoContext: Socket error: ", error);
       toast({
         title: "Socket Error",
         description: "An error occurred with the socket connection.",
@@ -255,27 +257,26 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, [answerCall, socket, toast]);
 
   useEffect(() => {
-    console.log(`VideoContext: Room ID changed to ${roomId}. Initiating call if room ID is set.`);
-    if (roomId && !peerConnectionRef.current) {
+    console.log("VideoContext: Checking for call initiation or reinitiation.");
+
+    // Initiate or reinitiate call if room ID is set and either:
+    // - There's no existing peer connection
+    // - The local stream has been updated
+    if (roomId && (!peerConnectionRef.current || prevLocalStreamRef.current !== localStream)) {
+      console.log(`VideoContext: Initiating call with room ID ${roomId}.`);
       callPeer();
     }
+
+    // Store the current local stream for comparison in the next effect run
+    prevLocalStreamRef.current = localStream;
 
     return () => {
-      console.log("VideoContext: Leaving call due to component unmount or room ID change.");
+      console.log(
+        "VideoContext: Leaving call due to component unmount, room ID change, or local stream update.",
+      );
       leaveCall();
     };
-    // karwi: fix deps
-  }, [roomId]);
-
-  useEffect(() => {
-    // karwi: leave call when localstream is null?
-    console.log("VideoContext: Local stream updated. Restarting call if in an existing call.");
-    if (localStream && peerConnectionRef.current) {
-      console.log("VideoContext: Leaving and reinitiating call due to local stream change.");
-      leaveCall();
-      callPeer();
-    }
-  }, [localStream, callPeer, leaveCall]);
+  }, [roomId, localStream, callPeer, leaveCall]);
 
   return (
     <VideoContext.Provider
