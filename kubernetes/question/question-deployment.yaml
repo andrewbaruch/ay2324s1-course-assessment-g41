@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: question
-        image: question
+        image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/questions:<commit-sha>
         ports:
         - containerPort: 3000
         envFrom:

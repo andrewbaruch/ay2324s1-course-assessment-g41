@@ -14,10 +14,10 @@ spec:
     spec:
       containers:
       - name: client
-        image: client
-        env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /app/key.json
+        image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/client:<commit-sha>
+        envFrom:
+        - configMapRef:
+            name: client-config
         ports:
         - containerPort: 80
         resources:
