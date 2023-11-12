@@ -8,14 +8,28 @@ class UserService {
   async create(email: string, image: string): Promise<User> {
     try {
         const query =
-          'INSERT INTO users (email, image) VALUES ($1, $2) RETURNING *;';
+          'INSERT INTO users (name, email, image) VALUES ($1, $2, $3) RETURNING *;';
 
-        const result = await postgresClient.query<User>(query, [
+        const result = await postgresClient.query<UserDao>(query, [
+          email,
           email,
           image,
         ]);
+
+        const dbUser = result.rows[0]
+
+        const user: User = {
+          id: dbUser.id,
+          email: dbUser.email,
+          image: dbUser.image,
+          name: dbUser.name,
+          preferred_language: dbUser.preferred_language,
+          preferred_difficulty: dbUser.preferred_difficulty,
+          preferred_topics: [],
+          roles: [],  
+        }
         
-        return result.rows[0]
+        return user
     } catch (error) {
         if (error instanceof Error) {
         throw parseError(error);
@@ -92,7 +106,7 @@ class UserService {
     }
   }
 
-  async update(userId: string, fieldsToUpdate: Partial<UserDao>): Promise<void> {
+  async update(userId: string, fieldsToUpdate: Partial<UserDao>): Promise<User | null> {
     try {
       const query = `
         UPDATE users
@@ -102,15 +116,16 @@ class UserService {
           image = COALESCE($3, image),
           preferred_language = COALESCE($4, preferred_language),
           preferred_difficulty = COALESCE($5, preferred_difficulty)
-        WHERE id = $6;
+        WHERE id = $6
+        RETURNING *;
       `;
 
       let preferred_difficulty = null
-      if (fieldsToUpdate.preferred_difficulty && fieldsToUpdate.preferred_difficulty in Difficulty) {
+      if (fieldsToUpdate.preferred_difficulty !== undefined && fieldsToUpdate.preferred_difficulty !== null && fieldsToUpdate.preferred_difficulty in Difficulty) {
         preferred_difficulty = fieldsToUpdate.preferred_difficulty
       }
-        
-      await postgresClient.query(query, [
+
+      const { rows: updatedRows } = await postgresClient.query(query, [
         fieldsToUpdate.name ?? null,
         fieldsToUpdate.email ?? null,
         fieldsToUpdate.image ?? null,
@@ -118,6 +133,12 @@ class UserService {
         preferred_difficulty,
         userId,
       ]);
+
+      if (updatedRows.length > 0) {
+        const updatedUser = updatedRows[0] as User;
+        return updatedUser;
+      }
+      return null;
     } catch (error) {
       console.log(error)
 

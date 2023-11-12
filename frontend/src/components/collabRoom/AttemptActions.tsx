@@ -27,19 +27,22 @@ const AttemptActions = () => {
     (attempt) => attempt.attemptId === currentAttempt.attemptId,
   );
 
+  console.log(currentPage, 'currentPage', listOfAttempts);
+
   const handlePageChange = useCallback(
-    (pageIndex: number) => {
+    async (pageIndex: number) => {
       const selectedAttempt = listOfAttempts[pageIndex];
       if (selectedAttempt) {
-        onAttemptChange(selectedAttempt.attemptId);
+        await onAttemptChange(selectedAttempt.attemptId);
       }
     },
     [listOfAttempts, onAttemptChange],
   );
 
   useEffect(() => {
-    handlePageChange(0); // Set the first page as default display
-  }, [handlePageChange]);
+    // on mount, create a new attempt
+    handlePageChange(1); // Set the first page as default display
+  }, []);
 
   const handleNewAttempt = () => {
     if (currentAttempt) {

@@ -1,5 +1,15 @@
-import NodeCache from "node-cache";
+import Redis from "ioredis";
 
-const complexityMatchingRequestCache = new NodeCache();
+const complexityMatchingRequestCacheUrl =
+  process.env.MATCHING_REQUEST_REDIS_URL;
+
+if (!complexityMatchingRequestCacheUrl) {
+  console.log("Missing env variable complexityMatchingRequestCacheUrl");
+  process.exit();
+}
+
+const complexityMatchingRequestCache = new Redis(
+  complexityMatchingRequestCacheUrl
+);
 
 export default complexityMatchingRequestCache;

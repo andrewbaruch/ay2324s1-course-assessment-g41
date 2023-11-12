@@ -2,6 +2,9 @@
 const ROOTS_USER = "/user";
 const ROOTS_QUESTION = "/question";
 const ROOTS_COLLAB = "/collaboration";
+const ROOTS_MATCHING = "/matching";
+const ROOTS_DOCUMENT = "/document";
+const ROOTS_HISTORY = "/history";
 const ROOTS_VIDEO = "/videostreaming";
 
 // karwi: refactor groups. each shd be microservice
@@ -22,10 +25,14 @@ export const BE_API = {
   questions: {
     root: `${ROOTS_QUESTION}/question`,
   },
+  matching: {
+    request: `${ROOTS_MATCHING}/request`
+  },
   collaboration: {
-    broadcast: `${ROOTS_COLLAB}/broadcast`,
     room: `${ROOTS_COLLAB}/room`,
   },
+  document: ROOTS_DOCUMENT,
+  history: `${ROOTS_HISTORY}/history`,
   topics: `${ROOTS_USER}/topics`,
   languages: `${ROOTS_USER}/languages`,
   video: {

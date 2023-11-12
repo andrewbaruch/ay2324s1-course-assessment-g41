@@ -19,8 +19,9 @@ export function authJWT(req: Request, res: Response, next: Function) {
 
   if (token) {
     try {
-      res.locals.userId = verifyAccessToken(token, JWT_SECRET).userId;
-
+      const verifiedToken = verifyAccessToken(token, JWT_SECRET)
+      res.locals.userId = verifiedToken.userId;
+      res.locals.roles = verifiedToken.roles;
       next();
     } catch(err) {
       res.status(401).send()

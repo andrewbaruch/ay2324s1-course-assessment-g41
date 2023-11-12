@@ -1,11 +1,12 @@
 import { QuestionComplexity } from "@/@types/models/question";
+import { BE_API } from "@/utils/api";
 import authorizedAxios from "@/utils/axios/authorizedAxios";
 
 class MatchingService {
   static async setUpPairCoding(questionComplexity: QuestionComplexity) {
     try {
       const data = { questionComplexity };
-      await authorizedAxios.post("/matching/user", data);
+      await authorizedAxios.post(BE_API.matching.request, data);
     } catch (error) {
       console.error("Error while sending matching request:", error);
     }
@@ -13,7 +14,7 @@ class MatchingService {
 
   static async getMatchingStatus() {
     try {
-      const response = await authorizedAxios.get(`/matching/user/status`);
+      const response = await authorizedAxios.get(`${BE_API.matching.request}/status`);
       return response.data;
     } catch (error) {
       console.error("Error while sending matching request:", error);

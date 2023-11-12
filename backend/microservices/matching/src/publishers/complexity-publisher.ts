@@ -1,10 +1,10 @@
 import PubSubClient from "@/clients/pubsub";
 
 class ComplexityPublisher {
-  private readonly pubSubClient: PubSubClient;
+  private readonly pubSubClient: typeof PubSubClient;
 
   constructor() {
-    this.pubSubClient = new PubSubClient();
+    this.pubSubClient = PubSubClient;
   }
 
   publishToTopic(topic: string, data: string) {

@@ -10,10 +10,10 @@ export interface User {
 }
 
 export enum Difficulty {
-    Easy = 1,
+    Easy = 0,
     Medium,
     Hard,
-  }
+}
 
 export interface Language {
     id: string;

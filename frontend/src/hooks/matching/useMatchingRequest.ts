@@ -1,48 +1,17 @@
-// import { QuestionComplexity } from "@/@types/models/question";
-// import { User } from "@/@types/user";
-// // import MatchingService from "@/services/matchingService";
-// import { use } from "react";
+import { QuestionComplexity } from "@/@types/models/question";
+import MatchingService from "@/services/matching";
 
-// export const useMatching = () => {
-//   // function startPolling(callApiFn, testFn, doFn, time) {
-//   //   let intervalId = setInterval(() => {
-//   //     callApiFn()
-//   //       .then((data) => {
-//   //         if (intervalId && testFn(data)) {
+export const useMatching = () => {
+  const sendMatchingRequest = (complexity: QuestionComplexity): Promise<void> => {
+    return MatchingService.setUpPairCoding(complexity);
+  };
 
-//   //           stopPolling();
-//   //           doFn(data);
-//   //         }
-//   //       })
-//   //       .catch((e) => {
-//   //         stopPolling();
-//   //         throw new Error("Polling cancelled due to API error");
-//   //       });
-//   //   }, time);
+  const getMatchingStatus = () => {
+    return MatchingService.getMatchingStatus();
+  };
 
-//   //   function stopPolling() {
-//   //     if (intervalId) {
-//   //       console.log(new Date(), "Stopping polling...");
-//   //       clearInterval(intervalId);
-//   //       intervalId = null;
-//   //     } else {
-//   //       console.log(new Date(), "Polling was already stopped...");
-//   //     }
-//   //   }
-
-//   //   return stopPolling;
-//   // }
-
-//   const sendMatchingRequest = (user: String, complexity: QuestionComplexity): Promise<void> => {
-//     return MatchingService.setUpPairCoding(user, complexity);
-//   };
-
-//   const getMatchingStatus = (user: String) => {
-//     return MatchingService.getMatchingStatus(user);
-//   };
-
-//   return {
-//     sendMatchingRequest,
-//     getMatchingStatus,
-//   };
-// };
+  return {
+    sendMatchingRequest,
+    getMatchingStatus,
+  };
+};

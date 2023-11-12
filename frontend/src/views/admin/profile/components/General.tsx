@@ -1,5 +1,5 @@
 // Import necessary libraries
-import { Button, SimpleGrid, Text, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Box, Button, SimpleGrid, Text, useColorModeValue, useToast } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import Card from "src/components/card/Card";
 import { OptionBase } from "chakra-react-select";
@@ -7,12 +7,13 @@ import { useLanguages } from "@/hooks/services/useLanguages";
 import { useTopics } from "@/hooks/services/useTopics";
 import { UserRequest } from "@/@types/user";
 import { useRequest } from "ahooks";
-import { updateUser } from "@/services/users";
+import { updateUser, deleteUser } from "@/services/users";
 import useGetIdentity from "@/hooks/auth/useGetIdentity";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ControlledSelect from "@/components/form/ControlledSelect";
 import ControlledInput from "@/components/form/ControlledInput";
 import { updateTopics } from "@/services/topics";
+import useLogout from "@/hooks/auth/useLogout";
 import { useGetLanguages } from "@/hooks/room/useGetLanguages";
 
 type PreFormInput = Omit<UserRequest, "preferred_difficulty" | "preferred_topics">;
@@ -57,6 +58,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   const { topics } = useTopics();
   const toast = useToast();
   const { identity } = useGetIdentity();
+  const callLogout = useLogout()
 
   console.log("[form values]", toIFormInput(identity));
 
@@ -90,7 +92,8 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   const { run: updateUserProfile } = useRequest(runUpdates, {
     manual: true,
     onSuccess: (result, params) => {
-      reset(toIFormInput(identity)); // Reset form state after submission is successful
+      const updatedUser = result[0].data;
+      reset(toIFormInput(updatedUser)); // Reset form state after submission is successful
       toast({
         title: "Profile Update Success",
         description: "Your profile has been updated successfully!",
@@ -102,6 +105,30 @@ export default function GeneralInformation(props: { [x: string]: any }) {
     onError: (error, params) => {
       toast({
         title: "Update Failed",
+        description: `Failed to update profile. ${error.message}`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+  });
+
+  const { run: deleteUserProfile } = useRequest(deleteUser, {
+    manual: true,
+    onSuccess: (result, params) => {
+      reset(toIFormInput({})); // Reset form state after submission is successful
+      toast({
+        title: "Profile Delete Success",
+        description: "Your profile has been deleted successfully! You will be redirected to the login page soon.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      callLogout()
+    },
+    onError: (error, params) => {
+      toast({
+        title: "Profile deletion failed. Please try again later.",
         description: `Failed to update profile. ${error.message}`,
         status: "error",
         duration: 5000,
@@ -154,7 +181,8 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             }
             placeholder="Select option"
           />
-          <ControlledSelect
+          <Box />
+          {/* <ControlledSelect
             control={control}
             name="preferred_topics"
             id="topics"
@@ -168,7 +196,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             }
             placeholder="Select option"
             isMulti
-          />
+          /> */}
           <ControlledSelect
             control={control}
             name="preferred_difficulty"
@@ -191,6 +219,17 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             isLoading={isSubmitting}
           >
             Submit
+          </Button>
+          <Button
+            me="100%"
+            mb="50px"
+            w="140px"
+            minW="140px"
+            mt={{ base: "20px", "2xl": "auto" }}
+            fontWeight="500"
+            onClick={deleteUserProfile}
+          >
+            Delete
           </Button>
         </SimpleGrid>
       </form>

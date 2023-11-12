@@ -1,33 +1,43 @@
+import { upsertDocumentValue } from "@/utils/document";
 import { useEffect, useState } from "react";
 import { Doc } from "yjs";
 
-export const useSharedDocument = ({
+export const useGetDocumentValue = ({
   sharedKey,
-  valueToShare,
-  document: doc,
+  document,
+  defaultValue
 }: {
-  sharedKey: string;
-  valueToShare: any;
-  document: Doc | null;
-}) => {
-  const [sharedValue, setSharedValue] = useState({ label: "Plain Text", value: "plaintext" });
+    sharedKey: string;
+    document: Doc | null;
+    defaultValue: any
+  }) => {
+  const [val, setVal] = useState(defaultValue);
+
   useEffect(() => {
-    if (!doc) return;
-    console.log("detect language change");
-    // shared data type
-    // reference: https://docs.yjs.dev/getting-started/working-with-shared-types
-    const ymap = doc.getMap("language");
-    doc.transact(() => {
-      ymap.set(sharedKey, valueToShare);
+    if (!document) return;
+    if (document?.getMap(sharedKey).get(sharedKey)) return;
+
+    upsertDocumentValue({
+      sharedKey,
+      document,
+      valueToUpdate: defaultValue
     });
 
+  }, [document])
+
+  useEffect(() => {
+    if (!document) return;
+    const ymap = document.getMap(sharedKey);
+    // event handler that subscribes to changes in specified ymap[sharedKey] value 
+    // and resets states for all who gets
     ymap.observe((e) => {
       if (e?.target?._map.get(sharedKey)?.content.getContent().length === 0) return;
-      setSharedValue(e?.target._map.get(sharedKey)?.content.getContent()[0]);
+      setVal(e?.target._map.get(sharedKey)?.content.getContent()[0]);
     });
-  }, [doc, valueToShare, sharedKey]);
+
+  }, [sharedKey, document, document?.get(sharedKey), val])
 
   return {
-    sharedValue,
+    sharedValue: val
   };
-};
+}
