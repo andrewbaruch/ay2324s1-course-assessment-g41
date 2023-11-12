@@ -15,7 +15,23 @@ export async function getAttempt(req: Request, res: Response) {
 
 export async function getAllAttemptsInRoom(req: Request, res: Response) {
   const { roomName } = req.params;
-  const doc = await AttemptService.findAllAttemptsFrom(roomName);
+  let doc = await AttemptService.findAllAttemptsFrom(roomName);
+  if (doc.length === 0) {
+    // create default attempt for room
+    const defaultAttempt = await AttemptService.upsertAttempt({
+      attemptId: 1,
+      questionId: null,
+      roomName,
+      text: "",
+      language: {
+        label: "Plain Text",
+        value: "plaintext"
+      }
+    })
+    if (defaultAttempt) {
+      doc.push(defaultAttempt);
+    }
+  }
   res.status(200).json(doc)
 }
 
