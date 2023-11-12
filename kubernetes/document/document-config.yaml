@@ -3,7 +3,6 @@ kind: ConfigMap
 metadata:
   name: document-config
 data:
-  SERVER_PORT: "3000"
   COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
   GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/document/key.json"
   REDIS_DOCUMENT_SYNC_HOST: "redis-document"

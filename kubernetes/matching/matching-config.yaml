@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: matching-config
 data:
-  ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
-  REFRESH_COOKIE_KEY: EXAMPLE_PEERPREPREFRESHTOKEN
-  SERVER_PORT: "3000"
+  GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
+  COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+  MATCHING_REQUEST_REDIS_URL: "redis://redis:6379"
+  MATCHING_PAIR_REDIS_URL: "redis://redis:6379"

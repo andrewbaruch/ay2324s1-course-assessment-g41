@@ -3,6 +3,4 @@ kind: ConfigMap
 metadata:
   name: collaboration-config
 data:
-  ACCESS_COOKIE_KEY: EXAMPLE_PEERPREPACCESSTOKEN
-  EXE_ENV: DEV
-  JWT_SECRET: EXAMPLE_SECRERT
+  POSTGRES_COLLAB: postgresql://postgres:postgres@postgres-collab:5432/postgres?connect_timeout=300
