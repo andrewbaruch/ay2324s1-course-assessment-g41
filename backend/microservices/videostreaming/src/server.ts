@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { socketAuthMiddleware } from './middlewares/auth-middleware';
+import { createAdapter } from 'socket.io-redis';
 
 // karwi: refactor into layers
 class ServerApp {
@@ -39,6 +40,11 @@ class ServerApp {
   // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
 
   private configSocket() {
+    const redisAdapter = createAdapter(
+      process.env.REDIS_URL || 'redis://localhost:6379'
+    );
+    this.io.adapter(redisAdapter);
+
     this.io.use(socketAuthMiddleware);
 
     this.io.on('connection', async (socket) => {
