@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { socketAuthMiddleware } from './middlewares/auth-middleware';
 
+// karwi: refactor into layers
 class ServerApp {
   private app: express.Application;
   private httpServer: any;
