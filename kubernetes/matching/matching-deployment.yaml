@@ -21,7 +21,7 @@ spec:
         - configMapRef:
             name: global-config
         - configMapRef:
-            name: history-config
+            name: matching-config
         resources:
           requests: 
             memory: "64Mi"

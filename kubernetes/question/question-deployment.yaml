@@ -22,6 +22,8 @@ spec:
         envFrom:
         - configMapRef:
             name: question-config
+        - configMapRef:
+            name: global-config
         resources:
           requests:
             cpu: "250m"
