@@ -42,6 +42,9 @@ jobs:
       run: |-
         gcloud auth configure-docker \
         "$GAR_LOCATION-docker.pkg.dev"
+    
+    - name: Create GCP Key File
+      run: echo '${{ secrets.GCP_KEY }}' > key.json
 
     # Build the Docker image
     - name: Build User
@@ -95,7 +98,7 @@ jobs:
           --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --file ./backend/microservices/videostreaming/Dockerfile.local \
+          --file ./backend/microservices/videostreaming/Dockerfile \
           ./backend
     
     - name: Build History
@@ -104,7 +107,7 @@ jobs:
           --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$HISTORY_IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --file ./backend/microservices/history/Dockerfile.local \
+          --file ./backend/microservices/history/Dockerfile \
           ./backend
 
     - name: Build Doc
@@ -113,7 +116,7 @@ jobs:
           --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$DOCUMENT_IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --file ./backend/microservices/document/Dockerfile.local \
+          --file ./backend/microservices/document/Dockerfile \
           ./backend
     
     # Push the Docker image to Google Artifact Registry
