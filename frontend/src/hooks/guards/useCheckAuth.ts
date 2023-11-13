@@ -10,6 +10,7 @@ type CheckAuth = (
     logoutOnError?: boolean;
     disableNotification?: boolean;
     redirectTo?: string;
+    message?: string;
   },
   roomId?: string,
 ) => Promise<any>;
@@ -60,20 +61,21 @@ const useCheckAuth = (): CheckAuth => {
       logoutOnError = true,
       disableNotification = false,
       redirectTo = PATH_AUTH.general.login,
+      message = "Please log in to continue",
     }) => {
       const callLogout = () => {
+        if (!disableNotification) {
+          toast({
+            title: "Notification",
+            description: message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+
         if (logoutOnError) {
           logout(redirectTo);
-
-          if (!disableNotification) {
-            toast({
-              title: "Notification",
-              description: "Please log in to continue",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-          }
         }
       };
 
