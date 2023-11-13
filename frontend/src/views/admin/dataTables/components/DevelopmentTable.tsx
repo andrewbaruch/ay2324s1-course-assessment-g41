@@ -37,7 +37,7 @@ const columnHelper = createColumnHelper<RowObj>();
 
 // const columns = columnsDataCheck;
 export default function ComplexTable(props: { tableData: any }) {
-  console.log('in complex table')
+  console.log("in complex table");
   const { tableData } = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const textColor = useColorModeValue("secondaryGray.900", "white");
@@ -143,7 +143,7 @@ export default function ComplexTable(props: { tableData: any }) {
     debugTable: true,
   });
 
-  console.log(table)
+  console.log(table);
   return (
     <Card flexDirection="column" w="100%" px="0px" overflowX={{ sm: "scroll", lg: "hidden" }}>
       <Flex px="25px" mb="8px" justifyContent="space-between" align="center">

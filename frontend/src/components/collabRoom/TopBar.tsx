@@ -70,7 +70,8 @@ const TopBar = () => {
               Leave Room
             </AlertDialogHeader>
             <AlertDialogBody>
-              Are you sure you want to leave this room? You will be redirected to the dashboard page.
+              Are you sure you want to leave this room? You will be redirected to the dashboard
+              page.
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseCloseRoomModal}>

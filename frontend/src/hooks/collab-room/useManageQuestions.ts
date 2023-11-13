@@ -4,7 +4,13 @@ import { upsertDocumentValue } from "@/utils/document";
 import { useEffect, useState } from "react";
 import { Doc } from "yjs";
 
-const useManageQuestionsInRoom = ({ complexity, document }: { complexity: QuestionComplexity | null | undefined | number, document: Doc | null }) => {
+const useManageQuestionsInRoom = ({
+  complexity,
+  document,
+}: {
+  complexity: QuestionComplexity | null | undefined | number;
+  document: Doc | null;
+}) => {
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
 
   const handleQuestionChange = async (newQuestionId: string) => {
@@ -12,8 +18,8 @@ const useManageQuestionsInRoom = ({ complexity, document }: { complexity: Questi
     upsertDocumentValue({
       sharedKey: "question",
       valueToUpdate: question,
-      document
-    })
+      document,
+    });
   };
 
   useEffect(() => {
@@ -21,19 +27,18 @@ const useManageQuestionsInRoom = ({ complexity, document }: { complexity: Questi
 
     const getQuestions = async () => {
       const questions = await QuestionService.getQuestions({
-        difficulties: [complexity]
+        difficulties: [complexity],
       });
       console.log(questions);
       setFilteredQuestions(questions);
-    }
+    };
     getQuestions();
-  }, [complexity])
-  
+  }, [complexity]);
 
   return {
     filteredQuestions,
     handleQuestionChange,
-  }
-}
+  };
+};
 
 export default useManageQuestionsInRoom;

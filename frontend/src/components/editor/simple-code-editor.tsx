@@ -5,17 +5,17 @@ import { useColorMode } from "@chakra-ui/react";
 import { codeEditorOptions, themifyCodeEditor } from "@/utils/codeEditor";
 import { Language } from "@/@types/language";
 
-const CodeEditor = ({ text, language }: { text: string, language: Language }) => {
+const CodeEditor = ({ text, language }: { text: string; language: Language }) => {
   const { colorMode } = useColorMode();
   const options = {
     ...codeEditorOptions,
     readOnly: true,
-  }
+  };
 
   return (
     <Editor
       height="60vh"
-      onMount={() => { }}
+      onMount={() => {}}
       defaultValue={text}
       language={language ? language.value : "plaintext"}
       options={options}

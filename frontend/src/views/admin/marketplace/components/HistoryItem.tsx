@@ -32,11 +32,11 @@ export default function NFT(props: {
     >
       <Flex direction={{ base: "column" }} justify="center">
         <Flex position="relative" align="center">
-          {
-            image ? (<Box>
+          {image ? (
+            <Box>
               <Image alt="" src={image} w="66px" h="66px" borderRadius="20px" me="16px" />
-            </Box>) : null
-          }
+            </Box>
+          ) : null}
 
           <Flex
             direction="column"

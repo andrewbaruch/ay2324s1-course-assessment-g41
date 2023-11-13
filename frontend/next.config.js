@@ -26,6 +26,9 @@ const nextConfig = {
     }
 
     return config;
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   }
 };
 

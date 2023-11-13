@@ -16,7 +16,9 @@ const QuestionDetailsPage = ({ params }: { params: { id: string } }) => {
     });
   }, [params]);
 
-  return <QuestionDetails {...(question as Question)} isPreview={false} hasWritePerms={hasWritePerms} />;
+  return (
+    <QuestionDetails {...(question as Question)} isPreview={false} hasWritePerms={hasWritePerms} />
+  );
 };
 
 export default QuestionDetailsPage;

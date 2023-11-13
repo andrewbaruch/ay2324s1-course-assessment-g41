@@ -33,7 +33,7 @@ export const QuestionDetails = ({
   categories,
   isPreview = false,
   hasWritePerms = false,
-}: Question & { isPreview?: boolean, hasWritePerms?: boolean }) => {
+}: Question & { isPreview?: boolean; hasWritePerms?: boolean }) => {
   const { removeQuestion } = useQuestions({});
   const [isEdit, setIsEdit] = useState(false);
   const bgColor = useColorModeValue("white", "navy.800");
@@ -90,37 +90,34 @@ export const QuestionDetails = ({
           </Accordion>
         ) : null}
       </Stack>
-      {isPreview ? null :
-        hasWritePerms ?
-          (
-            <HStack>
-              <Button size="sm" leftIcon={<BsPencilSquare />} onClick={() => setIsEdit(!isEdit)}>
-                Edit
+      {isPreview ? null : hasWritePerms ? (
+        <HStack>
+          <Button size="sm" leftIcon={<BsPencilSquare />} onClick={() => setIsEdit(!isEdit)}>
+            Edit
           </Button>
-              <Link href={"/coding-questions"}>
-                <Button
-                  size="sm"
-                  leftIcon={<BsTrash2 />}
-                  onClick={() => {
-                    removeQuestion({ id });
-                  }}
-                >
-                  Delete
+          <Link href={"/coding-questions"}>
+            <Button
+              size="sm"
+              leftIcon={<BsTrash2 />}
+              onClick={() => {
+                removeQuestion({ id });
+              }}
+            >
+              Delete
             </Button>
-              </Link>
-            </HStack>
-          ) : null
-      }
+          </Link>
+        </HStack>
+      ) : null}
     </Flex>
   ) : (
-      <QuestionForm
-        question={{
-          title,
-          complexity,
-          description,
-          id,
-          categories,
-        }}
-      />
-    );
+    <QuestionForm
+      question={{
+        title,
+        complexity,
+        description,
+        id,
+        categories,
+      }}
+    />
+  );
 };

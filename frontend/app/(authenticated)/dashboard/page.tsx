@@ -41,7 +41,7 @@ export default function NftMarketplace() {
   const textColorBrand = useColorModeValue("brand.500", "white");
   const { attempts: allUserAttempts } = useGetAllUserAttempts();
 
-  console.log('all user attempts', allUserAttempts);
+  console.log("all user attempts", allUserAttempts);
 
   return (
     <Box pt={{ base: "180px", md: "80px", xl: "80px" }}>
@@ -149,47 +149,55 @@ export default function NftMarketplace() {
           </Flex>
         </Flex>
         <Flex flexDirection="column" gridArea={{ xl: "1 / 3 / 2 / 4", "2xl": "1 / 2 / 2 / 3" }}>
-          {allUserAttempts.length > 0 && (<Card p="0px" mb="20px">
-            <Flex
-              align={{ sm: "flex-start", lg: "center" }}
-              justify="space-between"
-              w="100%"
-              px="22px"
-              py="18px"
-            >
-              <Text color={textColor} fontSize="xl" fontWeight="600">
-                My Attempts
-              </Text>
-              <Link href={"/attempts"}>
-                <Button variant="action">See all</Button>
-              </Link>
-            </Flex>
-            {
-              allUserAttempts.sort((a, b) => {
-                if (a.updatedAt && b.updatedAt) {
-                  return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-                }
-                return a.attemptId - b.attemptId;
-              }).map(attempt => (
-                <Link href={`/attempts/${attempt.roomName}/${attempt.attemptId}`}>
-                  <HistoryItem
-                    name={attempt.roomName}
-                    date={attempt.updatedAt
-                      ? new Date(attempt.updatedAt)
-                        .toLocaleDateString('en-SG', {
-                          day: '2-digit', month: '2-digit', year: '2-digit'
-                        })
-                      : ""}
-                    author={attempt.language.label}
-                  />
+          {allUserAttempts.length > 0 && (
+            <Card p="0px" mb="20px">
+              <Flex
+                align={{ sm: "flex-start", lg: "center" }}
+                justify="space-between"
+                w="100%"
+                px="22px"
+                py="18px"
+              >
+                <Text color={textColor} fontSize="xl" fontWeight="600">
+                  My Attempts
+                </Text>
+                <Link href={"/attempts"}>
+                  <Button variant="action">See all</Button>
                 </Link>
-              )).slice(0, 10)
-            }
-          </Card>)}
-          <Card px="0px" >
+              </Flex>
+              {allUserAttempts
+                .sort((a, b) => {
+                  if (a.updatedAt && b.updatedAt) {
+                    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+                  }
+                  return a.attemptId - b.attemptId;
+                })
+                .map((attempt) => (
+                  <Link
+                    href={`/attempts/${attempt.roomName}/${attempt.attemptId}`}
+                    key={`${attempt.roomName}/${attempt.attemptId}`}
+                  >
+                    <HistoryItem
+                      name={attempt.roomName}
+                      date={
+                        attempt.updatedAt
+                          ? new Date(attempt.updatedAt).toLocaleDateString("en-SG", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "2-digit",
+                            })
+                          : ""
+                      }
+                      author={attempt.language.label}
+                    />
+                  </Link>
+                ))
+                .slice(0, 10)}
+            </Card>
+          )}
+          <Card px="0px">
             <TableTopCreators tableData={tableDataTopCreators} />
           </Card>
-
         </Flex>
       </Grid>
       {/* Delete Product */}

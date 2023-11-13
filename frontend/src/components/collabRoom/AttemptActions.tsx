@@ -1,11 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import {
-  Button,
-  IconButton,
-  Text,
-  Flex,
-  Box,
-} from "@chakra-ui/react";
+import { Button, IconButton, Text, Flex, Box } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
 import { MdSaveAs } from "react-icons/md";
@@ -18,7 +12,7 @@ const AttemptActions = () => {
     (attempt) => attempt.attemptId === currentAttempt.attemptId,
   );
 
-  console.log(currentPage, 'currentPage', listOfAttempts);
+  console.log(currentPage, "currentPage", listOfAttempts);
 
   const handlePageChange = useCallback(
     async (pageIndex: number) => {

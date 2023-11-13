@@ -58,7 +58,7 @@ export default function GeneralInformation(props: { [x: string]: any }) {
   const { topics } = useTopics();
   const toast = useToast();
   const { identity } = useGetIdentity();
-  const callLogout = useLogout()
+  const callLogout = useLogout();
 
   console.log("[form values]", toIFormInput(identity));
 
@@ -119,12 +119,13 @@ export default function GeneralInformation(props: { [x: string]: any }) {
       reset(toIFormInput({})); // Reset form state after submission is successful
       toast({
         title: "Profile Delete Success",
-        description: "Your profile has been deleted successfully! You will be redirected to the login page soon.",
+        description:
+          "Your profile has been deleted successfully! You will be redirected to the login page soon.",
         status: "success",
         duration: 5000,
         isClosable: true,
       });
-      callLogout()
+      callLogout();
     },
     onError: (error, params) => {
       toast({

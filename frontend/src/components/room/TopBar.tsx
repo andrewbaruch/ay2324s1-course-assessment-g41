@@ -19,15 +19,11 @@ interface OptionType extends OptionBase {
   label: string;
 }
 
-const TopBar = ({ attempt }: { attempt: { language: { label: string, value: string } } }) => {
+const TopBar = ({ attempt }: { attempt: { language: { label: string; value: string } } }) => {
   return (
     <Flex align="center" justify="space-between" pb={4}>
       <Box w="100%" maxW={200}>
-        <Select
-          options={[attempt.language]}
-          isDisabled={true}
-          value={attempt.language}
-        />
+        <Select options={[attempt.language]} isDisabled={true} value={attempt.language} />
       </Box>
     </Flex>
   );

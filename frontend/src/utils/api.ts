@@ -26,7 +26,7 @@ export const BE_API = {
     root: `${ROOTS_QUESTION}/question`,
   },
   matching: {
-    request: `${ROOTS_MATCHING}/request`
+    request: `${ROOTS_MATCHING}/request`,
   },
   collaboration: {
     room: `${ROOTS_COLLAB}/room`,
