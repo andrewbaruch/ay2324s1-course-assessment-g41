@@ -54,7 +54,8 @@ function toUserRequest(input: IFormInput): UserRequest {
 
 export default function GeneralInformation(props: { [x: string]: any }) {
   const { ...rest } = props;
-  const { supportedLanguages: languages } = useGetLanguages();
+  // const { supportedLanguages: languages } = useGetLanguages();
+  const { languages } = useLanguages();
   const { topics } = useTopics();
   const toast = useToast();
   const { identity } = useGetIdentity();
@@ -175,9 +176,9 @@ export default function GeneralInformation(props: { [x: string]: any }) {
             label="Preferred Language"
             rules={{ required: false }}
             options={
-              languages.map((language) => ({
-                value: language.value,
-                label: language.label,
+              languages?.data.map((language) => ({
+                value: language.id,
+                label: language.name,
               })) || []
             }
             placeholder="Select option"
