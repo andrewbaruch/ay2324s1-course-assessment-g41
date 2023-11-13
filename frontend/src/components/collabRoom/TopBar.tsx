@@ -54,7 +54,7 @@ const TopBar = () => {
           onChange={handleLanguageChange}
           value={currentLanguage}
           placeholder="Select language"
-          isDisabled={currentPage <= 0}
+          isDisabled={currentPage < 0}
         />
       </Box>
 
