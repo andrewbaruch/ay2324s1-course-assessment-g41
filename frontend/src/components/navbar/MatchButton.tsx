@@ -7,7 +7,6 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  Progress,
   useToast,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -16,7 +15,7 @@ import { useMatching } from "@/hooks/matching/useMatchingRequest";
 import { Status } from "@/@types/status";
 import { openRoom } from "@/services/room";
 import { useMatchingContext } from "@/contexts/MatchingContext";
-import { useForm, Control } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import ControlledSelect from "../form/ControlledSelect";
 import { OptionBase } from "chakra-react-select";
 import { useRouter } from "next/navigation";
@@ -29,8 +28,8 @@ interface OptionType extends OptionBase {
 type ButtonProps = React.ComponentProps<typeof Button>;
 
 const MatchButton: FC<ButtonProps> = (buttonProps) => {
+  const [countdown, setCountdown] = useState<number>(30); // 30 seconds countdown
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [progressValue, setProgressValue] = useState<number>(100);
   const { control, watch } = useForm();
   const selectedComplexity = watch("complexity"); // Watch the complexity selection
   const toast = useToast();
@@ -40,6 +39,7 @@ const MatchButton: FC<ButtonProps> = (buttonProps) => {
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const { setComplexity } = useMatchingContext();
   const requestExpiryTimeInSeconds = 30;
+  let intervalId: NodeJS.Timeout;
 
   // Complexity options created from QuestionComplexity enum/object
   const complexityOptions: OptionType[] = Object.values(QuestionComplexity).map((complexity) => ({
@@ -60,36 +60,46 @@ const MatchButton: FC<ButtonProps> = (buttonProps) => {
     }
 
     setIsLoading(true);
-    setProgressValue(100);
+    setCountdown(requestExpiryTimeInSeconds); // Assuming 30 seconds for the countdown
     onClose();
 
     sendMatchingRequest(selectedComplexity).then(async () => {
       let intervalId = setInterval(() => {
-        setProgressValue((prevProgress) => {
-          if (prevProgress <= 0) {
+        setCountdown((prevCountdown) => {
+          if (prevCountdown <= 1) {
             clearInterval(intervalId);
             setIsLoading(false);
+            getMatchingStatus()
+              .then((response) => {
+                handleMatchingResponse(response, intervalId);
+              })
+              .catch(() => {
+                toast({
+                  status: "error",
+                  description: "Error occurred during matching. Please try again later.",
+                  isClosable: true,
+                  duration: 3000,
+                  position: "bottom",
+                });
+              });
             return 0;
           }
-          return prevProgress - (1 / requestExpiryTimeInSeconds) * 100;
+          return prevCountdown - 1;
         });
-
-        getMatchingStatus()
-          .then((response) => {
-            handleMatchingResponse(response, intervalId);
-          })
-          .catch(() => {
-            clearInterval(intervalId);
-            setIsLoading(false);
-            toast({
-              status: "error",
-              description: "Error occurred during matching. Please try again later.",
-              isClosable: true,
-              duration: 3000,
-              position: "bottom",
-            });
-          });
       }, 1000);
+    });
+  };
+
+  const cancelMatching = () => {
+    clearInterval(intervalId);
+    setIsLoading(false);
+    setCountdown(30); // Reset countdown
+    toast({
+      title: "Matching Cancelled",
+      description: "You have cancelled the matching process.",
+      status: "info",
+      duration: 3000,
+      isClosable: true,
     });
   };
 
@@ -116,11 +126,12 @@ const MatchButton: FC<ButtonProps> = (buttonProps) => {
   return (
     <>
       <Button
-        onClick={onOpen}
-        isDisabled={isLoading}
-        {...buttonProps} // Spread the button props here
+        onClick={isLoading ? cancelMatching : onOpen}
+        isDisabled={isLoading && countdown === 0}
+        colorScheme={isLoading ? "red" : "blue"} // Red for cancel, blue for start
+        {...buttonProps}
       >
-        {isLoading ? `Matching... (${progressValue}%)` : "Find Match"}
+        {isLoading ? `Cancel Matching (${countdown}s)` : "Find Match"}
       </Button>
 
       <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
@@ -142,7 +153,11 @@ const MatchButton: FC<ButtonProps> = (buttonProps) => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button onClick={startMatching} colorScheme="blue">
+              <Button
+                colorScheme="blue"
+                onClick={startMatching}
+                isDisabled={!selectedComplexity} // Disable button if no complexity is selected
+              >
                 Start Matching
               </Button>
               <Button ref={cancelRef} onClick={onClose} ml={3}>
