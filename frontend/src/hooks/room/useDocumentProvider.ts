@@ -20,6 +20,31 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
 
     // once editor is mounted, initialise the room service to bind editor to websocket broadcast
     const docService = new DocumentService(roomName, editor);
+    if (docService && docService.provider) {
+      console.log('listen to auth event')
+      docService.provider.on("authenticationFailed", () => {
+        console.log('fail to authenticate');
+        toast({
+          title: "OOPS! You are not authorized to enter this room.",
+          description:
+            "Are you sure you're at the right room? All changes to this document will not be broadcasted or saved.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+
+      docService.provider.on("authenticated", () => {
+        toast({
+          title: `Welcome to room ${roomName}.`,
+          description:
+            "All changes to this document is automatically saved. Start collaborating!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+    }
     setDocumentService(docService);
 
     return () => {
@@ -27,27 +52,6 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
       MatchingService.removeMatchingPair();
     };
   }, [editor]);
-
-  useEffect(() => {
-    if (!documentService) return;
-
-    if (documentService.provider && !documentService.provider.isAuthenticated) {
-      // not authorized
-      toast({
-        title: "OOPS! You are not authorized to enter this room.",
-        description:
-          "Are you sure you're at the right room? All changes to this document will not be broadcasted or saved.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-
-    return () => {
-      documentService?.provider?.disconnect();
-      MatchingService.removeMatchingPair();
-    };
-  }, [documentService]);
 
   const handleEditorMount = (editor: any) => {
     setEditor(editor);
