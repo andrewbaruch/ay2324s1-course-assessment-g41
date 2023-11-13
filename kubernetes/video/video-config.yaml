@@ -4,9 +4,9 @@ metadata:
   name: video-config
 data:
   REDIS_URL: "redis://redis:6379"
-  POSTGRES: postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300
-  POSTGRES_CONN_COUNT: 10
-  POSTGRES_TIMEOUT: 300
-  OAUTH_GOOGLE_CLIENT: client
-  OAUTH_GOOGLE_SECRET: secret
-  AUTH_DOMAIN: http://localhost:3000/user
+  POSTGRES: "postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=300"
+  POSTGRES_CONN_COUNT: "10"
+  POSTGRES_TIMEOUT: "300"
+  OAUTH_GOOGLE_CLIENT: "client"
+  OAUTH_GOOGLE_SECRET: "secret"
+  AUTH_DOMAIN: "http://localhost:3000/user"
