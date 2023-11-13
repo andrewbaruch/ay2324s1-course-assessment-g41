@@ -62,7 +62,7 @@
           pathType: Prefix
           backend:
             service:
-              name: collab-service
+              name: collaboration-service
               port:
                 number: 80
         - path: /document
