@@ -59,17 +59,15 @@ export default function HeaderLinks(props: { secondary: boolean }) {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <Button color={textColorBrand}>Find a match</Button>
-      {/* <SearchBar
-        mb={() => {
-          if (secondary) {
-            return { base: "10px", md: "unset" };
-          }
-          return "unset";
-        }}
+      <Button
+        onClick={() => {}}
+        color={textColorBrand}
+        size="md"
+        mb={secondary ? { base: "10px", md: "unset" } : "unset"}
         me="10px"
-        borderRadius="30px"
-      /> */}
+      >
+        Find a match
+      </Button>
       <SidebarResponsive routes={routes} />
       <Button
         variant="no-hover"
