@@ -6,7 +6,7 @@ WORKDIR /home/microservices/history
 # Copy the shared and microservices directories
 COPY shared ../../shared
 COPY microservices/history ./
-COPY key.json ./ 
+COPY ../key.json ./
 
 # Install dependencies for the shared directory
 RUN cd ../../shared && npm ci && cd ../microservices/history
