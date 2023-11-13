@@ -10,20 +10,21 @@ export function socketAuthMiddleware(
 ): void {
   try {
     const handshakeData = socket.request;
-    // Parse cookies from the handshake headers
     const cookies = cookie.parse(handshakeData.headers.cookie || '');
     const token = cookies[accessTokenKey];
 
     if (token) {
-      // Verify the token
-      const decoded = authService.verifyAccessToken(token); // Adjust based on how you verify tokens
-      // Attach the user ID to the socket object for later use
+      const decoded = authService.verifyAccessToken(token);
       (socket as any).userId = decoded.userId;
+
+      console.log(`User authenticated - ID: ${decoded.userId}`); // Log the authenticated user's ID
       next();
     } else {
+      console.log('Authentication error: Token not found');
       next(new Error('Authentication error'));
     }
   } catch (error) {
+    console.log('Authentication error: Invalid token');
     next(new Error('Authentication error'));
   }
 }
