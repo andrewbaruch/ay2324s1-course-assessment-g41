@@ -3,12 +3,14 @@ import { PATH_AUTH } from "src/routes/paths";
 import useAuthProvider from "../auth/useAuthProvider";
 import { useToast } from "@chakra-ui/react";
 import useLogout from "../auth/useLogout";
+import useTrackDependencies from "../dev/useTrackDependencies";
 
 type CheckAuth = (
   params: {
     logoutOnError?: boolean;
     disableNotification?: boolean;
     redirectTo?: string;
+    message?: string;
   },
   roomId?: string,
 ) => Promise<any>;
@@ -52,25 +54,28 @@ const useCheckAuth = (): CheckAuth => {
   const toast = useToast();
   const logout = useLogout();
 
+  useTrackDependencies("useCheckAuth", [authProvider, toast, logout]);
+
   const checkAuth = useCallback(
     async ({
       logoutOnError = true,
       disableNotification = false,
       redirectTo = PATH_AUTH.general.login,
+      message = "Please log in to continue",
     }) => {
       const callLogout = () => {
+        if (!disableNotification) {
+          toast({
+            title: "Notification",
+            description: message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+
         if (logoutOnError) {
           logout(redirectTo);
-
-          if (!disableNotification) {
-            toast({
-              title: "Notification",
-              description: "Please log in to continue",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-          }
         }
       };
 

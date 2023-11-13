@@ -8,6 +8,15 @@ import * as Y from "yjs";
 import { useGetAllAttempts } from "../history/useGetAllAttempts";
 import { useGetDocumentValue } from "../room/useSharedDocument";
 
+// karwi: extract to utils
+const log = (message: string, data: any = {}) => {
+  console.log(`[useManageAttempt] ${message}`, data);
+};
+
+const logError = (message: string, error: any = {}) => {
+  console.error(`[useManageAttempt Error] ${message}`, error);
+};
+
 const useManageAttempt = ({
   document,
   provider,
@@ -47,20 +56,30 @@ const useManageAttempt = ({
     language: Language;
   }>({ attemptId: sharedAttemptId, question: sharedQuestion, language: sharedLanguage });
   const { attempts: listOfSavedAttempts } = useGetAllAttempts({ roomName, currentAttempt });
-  console.log(currentAttempt, "currentAttempt");
-  console.log(listOfSavedAttempts, "list of saved attempts");
+
+  log("Current Attempt:", currentAttempt);
+  log("List of Saved Attempts:", listOfSavedAttempts);
 
   useEffect(() => {
-    if (!document || !provider) return;
+    if (!document || !provider) {
+      log("Document or provider not initiated, skipping effect");
+      return;
+    }
 
     // note: server creates a default attempt per room.
     // on initialisation, set current attempt as the first default attempt
+    log("Initializing attempt", { attemptId: 1 });
     toggleToAttempt(1);
   }, [document, provider]);
 
   useEffect(() => {
     // side-effect meant to sync chnages across different clients
-    console.log("setting current attempt to", sharedAttemptId, sharedLanguage);
+    log("useEffect triggered: Setting current attempt to", {
+      sharedAttemptId,
+      sharedLanguage,
+      sharedQuestion,
+    });
+
     setCurrentAttempt({
       attemptId: sharedAttemptId,
       question: sharedQuestion,
@@ -70,7 +89,8 @@ const useManageAttempt = ({
 
   const createNewAttempt = () => {
     if (!provider || !document) {
-      console.log("provider and document not initiated, no attempt to create");
+      log("createNewAttempt: Provider and document are not initiated, no attempt to create");
+
       return;
     }
 
@@ -81,7 +101,7 @@ const useManageAttempt = ({
 
     if (currentAttemptId && currentAttemptId > 0) {
       // write all of previous attempt and send to server
-      console.log("sending statless message", { currentAttemptId, language });
+      log("createNewAttempt: Sending stateless message", { currentAttemptId, language });
       sendAttemptToDocServer({
         provider,
         attemptId: currentAttemptId,
@@ -91,7 +111,8 @@ const useManageAttempt = ({
       });
     }
     // create new attempt
-    console.log("creating attempt on new attempt", listOfSavedAttempts.length + 1);
+    log("createNewAttempt: Creating attempt on new attempt", listOfSavedAttempts.length + 1);
+
     const newAttemptId = Math.max(...listOfSavedAttempts.map((attempt) => attempt.attemptId)) + 1;
     upsertDocumentValue({
       sharedKey: "attemptId",
@@ -117,9 +138,10 @@ const useManageAttempt = ({
 
   const toggleToAttempt = async (nextAttemptId: number) => {
     try {
-      console.log(nextAttemptId);
+      log("toggleToAttempt: Attempt ID to toggle", nextAttemptId);
       const toggledAttempt = await getAttempt(nextAttemptId, roomName);
-      console.log("retrieved attempt", toggledAttempt);
+      log("toggleToAttempt: Retrieved attempt", toggledAttempt);
+
       // change shared values to prev attempt values
       upsertDocumentValue({
         sharedKey: "attemptId",
@@ -141,8 +163,6 @@ const useManageAttempt = ({
 
       resetTextInDocument({ document, defaultText: toggledAttempt.text });
 
-      console.log(sharedAttemptId, sharedLanguage);
-
       // change local state
       setCurrentAttempt({
         attemptId: toggledAttempt.attemptId,
@@ -150,15 +170,21 @@ const useManageAttempt = ({
         language: toggledAttempt.language,
       });
     } catch (err) {
-      console.error(err);
-      // handle toast message here
+      logError("toggleToAttempt: Error occurred", err);
     }
   };
 
   const saveAttempt = () => {
     if (!document) return;
-
     const text = document?.getText("monaco");
+
+    log("saveAttempt: Saving current attempt", {
+      attemptId: currentAttempt.attemptId,
+      language: currentAttempt.language,
+      text: text.toJSON(),
+      questionId: currentAttempt.question?.id || null,
+    });
+
     sendAttemptToDocServer({
       provider,
       attemptId: currentAttempt.attemptId,

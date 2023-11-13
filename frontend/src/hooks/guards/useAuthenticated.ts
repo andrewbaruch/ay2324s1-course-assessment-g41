@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import useCheckAuth from "./useCheckAuth";
 import { isDebug } from "@/config";
+import useTrackDependencies from "../dev/useTrackDependencies";
 
 /**
  * Restrict access to authenticated users.
@@ -17,6 +18,8 @@ import { isDebug } from "@/config";
  */
 const useAuthenticated = () => {
   const checkAuth = useCheckAuth();
+
+  useTrackDependencies("useAuthenticated", [checkAuth]);
 
   useEffect(() => {
     const callCheckAuth = async () => {

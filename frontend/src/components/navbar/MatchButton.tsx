@@ -1,4 +1,4 @@
-import React, { useState, useRef, FC, useCallback } from "react";
+import React, { useState, useRef, FC, useCallback, useEffect } from "react";
 import {
   Button,
   AlertDialog,
@@ -46,6 +46,16 @@ const MatchButton: FC<ButtonProps> = (buttonProps) => {
     value: complexity,
     label: complexity,
   }));
+
+  useEffect(() => {
+    // This function is called when the component mounts
+    return () => {
+      // Cleanup function: called when the component unmounts
+      if (intervalId.current !== null) {
+        window.clearInterval(intervalId.current);
+      }
+    };
+  }, []);
 
   const cancelMatching = () => {
     clearInterval(intervalId.current);
