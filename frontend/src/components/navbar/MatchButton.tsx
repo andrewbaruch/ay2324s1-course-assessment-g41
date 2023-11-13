@@ -10,7 +10,7 @@ import {
   useToast,
   useDisclosure,
 } from "@chakra-ui/react";
-import { QuestionComplexity } from "@/@types/models/question"; // Assuming this is imported correctly
+import { QuestionComplexity } from "@/@types/models/question";
 import { useMatching } from "@/hooks/matching/useMatchingRequest";
 import { Status } from "@/@types/status";
 import { openRoom } from "@/services/room";
