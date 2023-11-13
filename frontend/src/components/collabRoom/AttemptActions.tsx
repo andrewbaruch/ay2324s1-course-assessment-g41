@@ -66,7 +66,7 @@ const AttemptActions = () => {
               onClick={handleSaveAttempt}
               colorScheme="green"
               variant="outline"
-              isDisabled={currentPage <= 0}
+              isDisabled={currentPage < 0}
             />
           </>
         )}

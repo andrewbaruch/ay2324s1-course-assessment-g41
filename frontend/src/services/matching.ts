@@ -20,6 +20,16 @@ class MatchingService {
       console.error("Error while sending matching request:", error);
     }
   }
+
+  static async removeMatchingPair() {
+    try {
+      const response = await authorizedAxios.delete(`${BE_API.matching.pair}`);
+      console.log('successfully deleted matching pair', response.data);
+      return response.data
+    } catch (err) {
+      console.error("Error while deleting matching pair", err);
+    }
+  }
 }
 
 export default MatchingService;
