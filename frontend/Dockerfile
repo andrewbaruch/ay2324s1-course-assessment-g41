@@ -1,17 +1,19 @@
-# Build stage
-FROM node:alpine as builder
+# Stage 1: Building the code
+FROM node:alpine AS builder
 WORKDIR /app
-COPY ./package.json ./yarn.lock ./
-RUN yarn install
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
-RUN yarn build
+RUN npm run build
 
-# Runtime stage
+# Stage 2: Run the server with SSR
 FROM node:alpine
 WORKDIR /app
-COPY --from=builder /app .
-COPY --from=builder /app/package.json ./
-RUN yarn install --production
-ENV NODE_ENV production
+COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
 EXPOSE 3000
-CMD ["yarn", "start"]
+CMD ["npm", "run", "start"]
