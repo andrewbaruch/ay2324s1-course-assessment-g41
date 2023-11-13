@@ -1,7 +1,8 @@
 import { Server as HocuspocusServer } from '@hocuspocus/server'
 import { Logger } from '@hocuspocus/extension-logger'
 import broadcastRouter from './routes/broadcast-router'
-import { Redis } from '@hocuspocus/extension-redis'
+import { Redis as ExtensionRedis } from '@hocuspocus/extension-redis'
+import Redis from "ioredis";
 
 /**
  * Handles the broadcast logic between multiple clients via Yjs. 
@@ -30,7 +31,7 @@ class BroadcastServer {
       process.exit();
     }
 
-    if (!process.env.REDIS_DOCUMENT_SYNC_HOST || !process.env.REDIS_DOCUMENT_SYNC_PORT) {
+    if (!process.env.REDIS_DOCUMENT_URL) {
       console.log("Missing REDIS SYNC");
       process.exit();
     }
@@ -48,9 +49,10 @@ class BroadcastServer {
       name: 'PeerPrep Document Broadcast Server',
       extensions: [
         new Logger(),
-        new Redis({
-          host: process.env.REDIS_DOCUMENT_SYNC_HOST,
-          port: parseInt(process.env.REDIS_DOCUMENT_SYNC_PORT as string),
+        new ExtensionRedis({
+          host: "",
+          port: 10,
+          createClient: () => new Redis(`${process.env.REDIS_DOCUMENT_URL}`)
         })
       ],
       onListen: async (data) => {
