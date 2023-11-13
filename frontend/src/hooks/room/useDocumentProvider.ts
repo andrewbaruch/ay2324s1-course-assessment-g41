@@ -10,7 +10,7 @@ import { useToast } from "@chakra-ui/react";
 export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
   const [editor, setEditor] = useState<any>(null);
   const [documentService, setDocumentService] = useState<DocumentService | null>(null);
-  const toast = useToast()
+  const toast = useToast();
 
   useEffect(() => {
     if (!editor) {

@@ -55,7 +55,7 @@ const TopBar = () => {
 
       {/* Position the Close Room button on the right */}
       <Button colorScheme="red" onClick={() => setIsCloseRoomModalOpen(true)}>
-        Close Room
+        Leave
       </Button>
 
       {/* AlertDialog for closing room confirmation */}
@@ -67,17 +67,17 @@ const TopBar = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Close Room
+              Leave Room
             </AlertDialogHeader>
             <AlertDialogBody>
-              Are you sure you want to close this room? All unsaved changes will be lost.
+              Are you sure you want to leave this room? You will be redirected to the dashboard page.
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseCloseRoomModal}>
                 Cancel
               </Button>
               <Button colorScheme="red" onClick={handleCloseRoom} ml={3}>
-                Close Room
+                Leave Room
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

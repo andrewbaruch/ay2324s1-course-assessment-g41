@@ -137,9 +137,6 @@ services:
       SERVER_PORT: 3000
       COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
       GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/document/key.json"
-      REDIS_DOCUMENT_SYNC_HOST: "redis-document"
-      REDIS_DOCUMENT_SYNC_PORT: 6379
-      REDIS_DOCUMENT_SYNC_PASSWORD: "6359e3fccdc9490ab2d590b39db5661b"
       REDIS_DOCUMENT_URL: redis://redis-document:6379
 
   postgres:

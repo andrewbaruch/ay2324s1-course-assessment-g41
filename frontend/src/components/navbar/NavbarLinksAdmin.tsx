@@ -37,7 +37,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
   const navbarIcon = useColorModeValue("gray.400", "white");
   let menuBg = useColorModeValue("white", "navy.800");
   const textColor = useColorModeValue("secondaryGray.900", "white");
-  const textColorBrand = useColorModeValue("brand.700", "brand.400");
+  const textColorBrand = useColorModeValue("brand.700", "brand.100");
   const ethColor = useColorModeValue("gray.700", "white");
   const borderColor = useColorModeValue("#E6ECFA", "rgba(135, 140, 189, 0.3)");
   const ethBg = useColorModeValue("secondaryGray.300", "navy.900");
@@ -59,7 +59,10 @@ export default function HeaderLinks(props: { secondary: boolean }) {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <SearchBar
+      <Button color={textColorBrand}>
+        Find a match
+      </Button>
+      {/* <SearchBar
         mb={() => {
           if (secondary) {
             return { base: "10px", md: "unset" };
@@ -68,7 +71,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
         }}
         me="10px"
         borderRadius="30px"
-      />
+      /> */}
       <SidebarResponsive routes={routes} />
       <Button
         variant="no-hover"

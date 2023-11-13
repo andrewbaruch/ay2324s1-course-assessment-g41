@@ -1,19 +1,17 @@
 import React from "react";
 // Chakra imports
-import { Box, Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Flex, Text, useColorModeValue } from "@chakra-ui/react";
 // Custom components
 import Card from "src/components/card/Card";
 // Assets
-import { FaEthereum } from "react-icons/fa";
 import { Image } from "src/components/image/Image";
 import { StaticImageData } from "next/image";
 
 export default function NFT(props: {
-  image: StaticImageData;
+  image?: StaticImageData;
   name: string;
   author: string;
   date: string;
-  // price: string | number;
 }) {
   const { image, name, author, date } = props;
   // Chakra Color Mode
@@ -34,9 +32,12 @@ export default function NFT(props: {
     >
       <Flex direction={{ base: "column" }} justify="center">
         <Flex position="relative" align="center">
-          <Box>
-            <Image alt="" src={image} w="66px" h="66px" borderRadius="20px" me="16px" />
-          </Box>
+          {
+            image ? (<Box>
+              <Image alt="" src={image} w="66px" h="66px" borderRadius="20px" me="16px" />
+            </Box>) : null
+          }
+
           <Flex
             direction="column"
             w={{ base: "70%", md: "100%" }}
