@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { PATH_MAIN } from "@/routes/paths";
 import useGetIdentity from "@/hooks/auth/useGetIdentity";
 import { NextAvatar } from "../image/Avatar";
+import MatchButton from "./MatchButton";
 export default function HeaderLinks(props: { secondary: boolean }) {
   const { secondary } = props;
   const { colorMode, toggleColorMode } = useColorMode();
@@ -59,17 +60,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <Button color={textColorBrand}>Find a match</Button>
-      {/* <SearchBar
-        mb={() => {
-          if (secondary) {
-            return { base: "10px", md: "unset" };
-          }
-          return "unset";
-        }}
-        me="10px"
-        borderRadius="30px"
-      /> */}
+      <MatchButton size="md" mb={secondary ? { base: "10px", md: "unset" } : "unset"} me="10px" />
       <SidebarResponsive routes={routes} />
       <Button
         variant="no-hover"
