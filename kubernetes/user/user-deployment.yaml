@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/user:<commit-sha>
+        image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/user:latest
         ports:
         - containerPort: 3000
         envFrom:

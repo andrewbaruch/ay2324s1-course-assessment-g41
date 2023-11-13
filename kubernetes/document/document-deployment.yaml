@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: document
-        image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/document:${{ github.sha }}
+        image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/document:latest
         ports:
         - containerPort: 3000
         envFrom:
