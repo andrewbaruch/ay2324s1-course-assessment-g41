@@ -44,7 +44,7 @@ jobs:
         "$GAR_LOCATION-docker.pkg.dev"
     
     - name: Create GCP Key File
-      run: echo '${{ secrets.GCP_KEY }}' > key.json
+      run: echo '${{ secrets.GCP_KEY }}' > backend/key.json
 
     - name: List files in the repository
       run: ls -lah
