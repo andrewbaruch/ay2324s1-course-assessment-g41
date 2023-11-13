@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { socketAuthMiddleware } from './middlewares/auth-middleware';
+import Redis from 'ioredis';
 import { createAdapter } from 'socket.io-redis';
 
 // karwi: refactor into layers
@@ -40,9 +41,64 @@ class ServerApp {
   // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
 
   private configSocket() {
-    const redisAdapter = createAdapter(
+    console.log(`Server: process.env.REDIS_URL: ${process.env.REDIS_URL}`);
+
+    const pubClient = new Redis(
       process.env.REDIS_URL || 'redis://localhost:6379'
     );
+    const subClient = new Redis(
+      process.env.REDIS_URL || 'redis://localhost:6379'
+    );
+
+    // Create the Redis adapter using ioredis clients
+    const redisAdapter = createAdapter({ pubClient, subClient });
+
+    const printRedisURL = (client: Redis) => {
+      const options = client.options;
+      const host = options.host;
+      const port = options.port;
+      const url = `redis://${host}:${port}`;
+
+      console.log(`Connected to Redis at URL: ${url}`);
+    };
+
+    // Use the function to print the URLs
+    pubClient.on('connect', () => {
+      printRedisURL(pubClient);
+    });
+
+    subClient.on('connect', () => {
+      printRedisURL(subClient);
+    });
+
+    // Listen for when the connection is ready to use
+    pubClient.on('ready', () => {
+      console.log('Redis Publisher Ready');
+    });
+
+    subClient.on('ready', () => {
+      console.log('Redis Subscriber Ready');
+    });
+
+    // Handle connection errors
+    pubClient.on('error', (err) => {
+      console.error('Redis Publisher Error:', err);
+    });
+
+    subClient.on('error', (err) => {
+      console.error('Redis Subscriber Error:', err);
+    });
+
+    // Handle disconnection
+    pubClient.on('end', () => {
+      console.log('Redis Publisher Disconnected');
+    });
+
+    subClient.on('end', () => {
+      console.log('Redis Subscriber Disconnected');
+    });
+
+    // Attach the adapter to your Socket.IO server
     this.io.adapter(redisAdapter);
 
     this.io.use(socketAuthMiddleware);

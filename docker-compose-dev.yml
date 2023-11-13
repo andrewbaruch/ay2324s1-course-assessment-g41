@@ -66,7 +66,7 @@ services:
       - redis
     environment:
       <<: *common-variables
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: rediss://default:abe53920082242ca86a2ecf741fe86fb@engaged-hedgehog-38273.upstash.io:38273
 
   question:
     container_name: question
