@@ -1,15 +1,14 @@
 FROM node:lts
 
 # Set the working directory
-WORKDIR /home/microservices/matching
+WORKDIR /home/microservices/videostreaming
 
 # Copy the shared and microservices directories
 COPY shared ../../shared
-COPY microservices/matching ./
-COPY ../key.json ./
+COPY microservices/videostreaming ./
 
 # Install dependencies for the shared directory
-RUN cd ../../shared && npm ci && cd ../microservices/matching
+RUN cd ../../shared && npm install && cd ../microservices/videostreaming
 # Install dependencies for the microservice
 RUN npm ci
 
