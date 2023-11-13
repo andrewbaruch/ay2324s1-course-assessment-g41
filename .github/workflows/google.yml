@@ -46,6 +46,9 @@ jobs:
     - name: Create GCP Key File
       run: echo '${{ secrets.GCP_KEY }}' > key.json
 
+    - name: List files in the repository
+      run: ls -lah
+
     # Build the Docker image
     - name: Build User
       run: |-
