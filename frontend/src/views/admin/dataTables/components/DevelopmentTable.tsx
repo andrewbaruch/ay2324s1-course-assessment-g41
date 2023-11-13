@@ -27,16 +27,17 @@ import * as React from "react";
 // Assets
 
 type RowObj = {
-  name: string;
-  tech: any;
+  roomName: string;
+  language: string;
+  attemptId: number;
   date: string;
-  progress: number;
 };
 
 const columnHelper = createColumnHelper<RowObj>();
 
 // const columns = columnsDataCheck;
 export default function ComplexTable(props: { tableData: any }) {
+  console.log("in complex table");
   const { tableData } = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const textColor = useColorModeValue("secondaryGray.900", "white");
@@ -53,7 +54,7 @@ export default function ComplexTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          NAME
+          Room Name
         </Text>
       ),
       cell: (info: any) => (
@@ -64,7 +65,7 @@ export default function ComplexTable(props: { tableData: any }) {
         </Flex>
       ),
     }),
-    columnHelper.accessor("tech", {
+    columnHelper.accessor("language", {
       id: "tech",
       header: () => (
         <Text
@@ -73,7 +74,7 @@ export default function ComplexTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          STATUS
+          Language
         </Text>
       ),
       cell: (info) => (
@@ -99,7 +100,7 @@ export default function ComplexTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          DATE
+          Last Updated
         </Text>
       ),
       cell: (info) => (
@@ -108,8 +109,8 @@ export default function ComplexTable(props: { tableData: any }) {
         </Text>
       ),
     }),
-    columnHelper.accessor("progress", {
-      id: "progress",
+    columnHelper.accessor("attemptId", {
+      id: "attemptId",
       header: () => (
         <Text
           justifyContent="space-between"
@@ -117,21 +118,14 @@ export default function ComplexTable(props: { tableData: any }) {
           fontSize={{ sm: "10px", lg: "12px" }}
           color="gray.400"
         >
-          PROGRESS
+          Attempt Id
         </Text>
       ),
       cell: (info) => (
         <Flex align="center">
           <Text me="10px" color={textColor} fontSize="sm" fontWeight="700">
-            {info.getValue()}%
+            {info.getValue()}
           </Text>
-          <Progress
-            variant="table"
-            colorScheme="brandScheme"
-            h="8px"
-            w="63px"
-            value={info.getValue()}
-          />
         </Flex>
       ),
     }),
@@ -148,6 +142,8 @@ export default function ComplexTable(props: { tableData: any }) {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
+
+  console.log(table);
   return (
     <Card flexDirection="column" w="100%" px="0px" overflowX={{ sm: "scroll", lg: "hidden" }}>
       <Flex px="25px" mb="8px" justifyContent="space-between" align="center">

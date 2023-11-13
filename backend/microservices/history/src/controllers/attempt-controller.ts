@@ -50,9 +50,10 @@ export async function getAttemptsByUser(req: Request, res: Response) {
     } | null | undefined
   }[] = []
 
-  roomNames.forEach(async (room) => {
+  for (let i = 0; i < roomNames.length; i++) {
+    const room = roomNames[i];
     const attempts = await AttemptService.findAllAttemptsFrom(room);
     result = [...result, ...attempts];
-  })
+  }
   res.status(200).json(result)
 }

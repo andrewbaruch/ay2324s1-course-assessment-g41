@@ -9,7 +9,6 @@ import { codeEditorOptions, themifyCodeEditor } from "@/utils/codeEditor";
 import { useCollabContext } from "@/hooks/contexts/useCollabContext";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
-import { MonacoBinding } from "y-monaco";
 
 interface Props {
   onEditorMount: (editor: any) => void;
@@ -27,8 +26,8 @@ export const CodeEditor: React.FC<Props> = ({ onEditorMount, provider }) => {
 
   useEffect(() => {
     return () => {
-      provider?.disconnect()
-    }
+      provider?.disconnect();
+    };
   }, []);
 
   return (

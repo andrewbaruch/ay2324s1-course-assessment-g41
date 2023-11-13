@@ -22,7 +22,7 @@ interface CollabRoomPropsContextValue {
   listOfAttempts: Attempt[];
   listOfActiveUsers: User[];
   currentAttempt: Attempt;
-  onDeleteAttempt: (attemptId: number) => void;
+  onSaveAttempt: () => void;
   onCloseRoom: () => void;
   onNewAttempt: () => void;
   onQuestionChange: (newQuestionId: string, attemptId: number) => void;
@@ -44,7 +44,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
   listOfAttempts,
   listOfActiveUsers,
   currentAttempt,
-  onDeleteAttempt,
+  onSaveAttempt,
   onCloseRoom,
   onNewAttempt,
   onQuestionChange,
@@ -66,7 +66,7 @@ const CollabRoom: FunctionComponent<CollabRoomProps> = ({
         listOfAttempts,
         listOfActiveUsers,
         currentAttempt,
-        onDeleteAttempt,
+        onSaveAttempt,
         onCloseRoom,
         onNewAttempt,
         onQuestionChange,

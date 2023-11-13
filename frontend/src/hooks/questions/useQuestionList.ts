@@ -12,10 +12,11 @@ const questionListAtom = atom<QuestionListAtom>({
 });
 
 export const useQuestions = ({
-  difficulties = undefined, sorting = undefined
+  difficulties = undefined,
+  sorting = undefined,
 }: {
-    difficulties?: QuestionComplexity[] | undefined,
-    sorting?: "asc" | "desc" | undefined | null
+  difficulties?: QuestionComplexity[] | undefined;
+  sorting?: "asc" | "desc" | undefined | null;
 }) => {
   const [questionListWrapper, setQuestionListWrapper] = useAtom(questionListAtom);
 
@@ -27,7 +28,8 @@ export const useQuestions = ({
 
   useEffect(() => {
     QuestionService.getQuestions({
-      difficulties, sorting
+      difficulties,
+      sorting,
     }).then((questions) => {
       setQuestionList(questions);
     });

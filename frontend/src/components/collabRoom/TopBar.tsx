@@ -20,7 +20,8 @@ interface OptionType extends OptionBase {
 }
 
 const TopBar = () => {
-  const { languageTotalList, currentAttempt, onLanguageChange, onCloseRoom } = useCollabContext();
+  const { languageTotalList, currentAttempt, listOfAttempts, onLanguageChange, onCloseRoom } =
+    useCollabContext();
   const [isCloseRoomModalOpen, setIsCloseRoomModalOpen] = useState(false);
   const cancelRef = useRef(null);
 
@@ -41,6 +42,9 @@ const TopBar = () => {
 
   const currentLanguage = currentAttempt?.language;
   const options = languageTotalList;
+  const currentPage = listOfAttempts.findIndex(
+    (attempt) => attempt.attemptId === currentAttempt.attemptId,
+  );
 
   return (
     <Flex align="center" justify="space-between" pb={4}>
@@ -50,12 +54,13 @@ const TopBar = () => {
           onChange={handleLanguageChange}
           value={currentLanguage}
           placeholder="Select language"
+          isDisabled={currentPage <= 0}
         />
       </Box>
 
       {/* Position the Close Room button on the right */}
       <Button colorScheme="red" onClick={() => setIsCloseRoomModalOpen(true)}>
-        Close Room
+        Leave
       </Button>
 
       {/* AlertDialog for closing room confirmation */}
@@ -67,17 +72,18 @@ const TopBar = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Close Room
+              Leave Room
             </AlertDialogHeader>
             <AlertDialogBody>
-              Are you sure you want to close this room? All unsaved changes will be lost.
+              Are you sure you want to leave this room? You will be redirected to the dashboard
+              page.
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseCloseRoomModal}>
                 Cancel
               </Button>
               <Button colorScheme="red" onClick={handleCloseRoom} ml={3}>
-                Close Room
+                Leave Room
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

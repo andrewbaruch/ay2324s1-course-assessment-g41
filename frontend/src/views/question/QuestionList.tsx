@@ -18,7 +18,13 @@ import { BsCodeSquare } from "react-icons/bs";
 import { ComplexityBadge } from "../../components/complexity";
 import Link from "next/link";
 
-export const QuestionsList = ({ questions, hasWritePerms }: { questions: Question[], hasWritePerms: boolean }) => {
+export const QuestionsList = ({
+  questions,
+  hasWritePerms,
+}: {
+  questions: Question[];
+  hasWritePerms: boolean;
+}) => {
   const bgColor = useColorModeValue("white", "navy.800");
   const hoverColor = useColorModeValue("gray.100", "navy.900");
 
@@ -26,8 +32,8 @@ export const QuestionsList = ({ questions, hasWritePerms }: { questions: Questio
     <Stack spacing={4}>
       {questions.length > 0 ? (
         <>
-          {hasWritePerms
-            ? (<Tooltip
+          {hasWritePerms ? (
+            <Tooltip
               label="Design your own question, or save a question you encountered from a technical interview here!"
               hasArrow
               placement="right"
@@ -35,10 +41,10 @@ export const QuestionsList = ({ questions, hasWritePerms }: { questions: Questio
               <Link href={"/coding-questions/add-question"}>
                 <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
                   Craft Question
-              </Button>
+                </Button>
               </Link>
-            </Tooltip>) : null
-          }
+            </Tooltip>
+          ) : null}
 
           <Stack borderWidth={1} borderRadius={4} spacing={0} background={bgColor}>
             {questions.map((q, index) =>
@@ -52,36 +58,42 @@ export const QuestionsList = ({ questions, hasWritePerms }: { questions: Questio
                   </Box>
                 </Link>
               ) : (
-                  <Link key={index} href={`coding-questions/${q.id}`}>
-                    <Box
-                      p={4}
-                      key={`q-${index}`}
-                      _hover={{ background: hoverColor, cursor: "pointer" }}
-                    >
-                      <QuestionCard {...q} />
-                    </Box>
-                  </Link>
-                ),
+                <Link key={index} href={`coding-questions/${q.id}`}>
+                  <Box
+                    p={4}
+                    key={`q-${index}`}
+                    _hover={{ background: hoverColor, cursor: "pointer" }}
+                  >
+                    <QuestionCard {...q} />
+                  </Box>
+                </Link>
+              ),
             )}
           </Stack>
         </>
       ) : (
-          <Alert borderRadius={16}>
-            <Stack>
-              <AlertTitle>{hasWritePerms ? `Looks like you have not saved a question!` : `Looks like there are no questions.`}</AlertTitle>
-              <AlertDescription>
-                {hasWritePerms ? `This question repository helps you save questions you have encountered from past
-                interviews! You can also design and save your own question!` : `The question repostiroy is currently empty. Try again later.`}
-              </AlertDescription>
+        <Alert borderRadius={16}>
+          <Stack>
+            <AlertTitle>
               {hasWritePerms
-                ? <Link href={"/coding-questions/add-question"}>
-                  <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
-                    Craft Question
-                  </Button>
-                </Link> : null}
-            </Stack>
-          </Alert>
-        )}
+                ? "Looks like you have not saved a question!"
+                : "Looks like there are no questions."}
+            </AlertTitle>
+            <AlertDescription>
+              {hasWritePerms
+                ? "This question repository helps you save questions you have encountered from past interviews! You can also design and save your own question!"
+                : "The question repostiroy is currently empty. Try again later."}
+            </AlertDescription>
+            {hasWritePerms ? (
+              <Link href={"/coding-questions/add-question"}>
+                <Button w="fit-content" leftIcon={<BsCodeSquare />} size="sm">
+                  Craft Question
+                </Button>
+              </Link>
+            ) : null}
+          </Stack>
+        </Alert>
+      )}
     </Stack>
   );
 };

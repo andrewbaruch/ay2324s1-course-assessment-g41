@@ -5,12 +5,12 @@ import { useToast } from "@chakra-ui/react";
 /**
  * Hook that binds the document to the editor and provides the shared document
  * provider that syncs data changes across the document.
- * @param roomName the unique roomName that the document is to be local to. 
+ * @param roomName the unique roomName that the document is to be local to.
  */
 export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
   const [editor, setEditor] = useState<any>(null);
   const [documentService, setDocumentService] = useState<DocumentService | null>(null);
-  const toast = useToast()
+  const toast = useToast();
 
   useEffect(() => {
     if (!editor) {
@@ -23,27 +23,28 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
 
     return () => {
       documentService?.provider?.disconnect();
-    }
+    };
   }, [editor]);
 
   useEffect(() => {
-    if (!documentService) return
+    if (!documentService) return;
 
     if (documentService.provider && !documentService.provider.isAuthenticated) {
       // not authorized
       toast({
         title: "OOPS! You are not authorized to enter this room.",
-        description: "Are you sure you're at the right room? All changes to this document will not be broadcasted or saved.",
+        description:
+          "Are you sure you're at the right room? All changes to this document will not be broadcasted or saved.",
         status: "error",
         duration: 9000,
         isClosable: true,
-      })
+      });
     }
 
     return () => {
       documentService?.provider?.disconnect();
-    }
-  }, [documentService])
+    };
+  }, [documentService]);
 
   const handleEditorMount = (editor: any) => {
     setEditor(editor);

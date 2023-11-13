@@ -5,12 +5,12 @@ import { Doc } from "yjs";
 export const useGetDocumentValue = ({
   sharedKey,
   document,
-  defaultValue
+  defaultValue,
 }: {
-    sharedKey: string;
-    document: Doc | null;
-    defaultValue: any
-  }) => {
+  sharedKey: string;
+  document: Doc | null;
+  defaultValue: any;
+}) => {
   const [val, setVal] = useState(defaultValue);
 
   useEffect(() => {
@@ -20,24 +20,22 @@ export const useGetDocumentValue = ({
     upsertDocumentValue({
       sharedKey,
       document,
-      valueToUpdate: defaultValue
+      valueToUpdate: defaultValue,
     });
-
-  }, [document])
+  }, [document]);
 
   useEffect(() => {
     if (!document) return;
     const ymap = document.getMap(sharedKey);
-    // event handler that subscribes to changes in specified ymap[sharedKey] value 
+    // event handler that subscribes to changes in specified ymap[sharedKey] value
     // and resets states for all who gets
     ymap.observe((e) => {
       if (e?.target?._map.get(sharedKey)?.content.getContent().length === 0) return;
       setVal(e?.target._map.get(sharedKey)?.content.getContent()[0]);
     });
-
-  }, [sharedKey, document, document?.get(sharedKey), val])
+  }, [sharedKey, document, document?.get(sharedKey), val]);
 
   return {
-    sharedValue: val
+    sharedValue: val,
   };
-}
+};

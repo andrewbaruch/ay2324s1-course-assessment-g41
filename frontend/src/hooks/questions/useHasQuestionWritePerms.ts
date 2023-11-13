@@ -5,23 +5,23 @@ import { Role } from "@/@types/user";
 const useHasQuestionWritePerms = () => {
   const [hasWritePerms, setHasWritePerms] = useState(false);
 
-  const { identity } = useGetIdentity()
+  const { identity } = useGetIdentity();
 
   useEffect(() => {
-    console.log('roles', identity.roles)
-    const isAdmin = identity.roles && identity.roles.filter((role) => role === Role.ADMIN).length > 0
+    console.log("roles", identity.roles);
+    const isAdmin =
+      identity.roles && identity.roles.filter((role) => role === Role.ADMIN).length > 0;
 
     if (isAdmin) {
       setHasWritePerms(true);
-      return
+      return;
     }
     setHasWritePerms(false);
-  }, [identity])
-
+  }, [identity]);
 
   return {
-    hasWritePerms
-  }
-}
+    hasWritePerms,
+  };
+};
 
 export default useHasQuestionWritePerms;

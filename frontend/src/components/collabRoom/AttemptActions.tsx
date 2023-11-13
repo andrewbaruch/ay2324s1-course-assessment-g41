@@ -1,33 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
-import {
-  Button,
-  IconButton,
-  Text,
-  Flex,
-  Box,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogCloseButton,
-} from "@chakra-ui/react";
-import { DeleteIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import React, { useEffect, useCallback } from "react";
+import { Button, IconButton, Text, Flex, Box } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { useCollabContext } from "src/hooks/contexts/useCollabContext";
+import { MdSaveAs } from "react-icons/md";
 
 const AttemptActions = () => {
-  const { listOfAttempts, onNewAttempt, onDeleteAttempt, onAttemptChange, currentAttempt } =
+  const { listOfAttempts, onNewAttempt, onSaveAttempt, onAttemptChange, currentAttempt } =
     useCollabContext();
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const onCloseDeleteModal = () => setIsDeleteModalOpen(false);
-  const cancelRef = React.useRef(null);
 
   const currentPage = listOfAttempts.findIndex(
     (attempt) => attempt.attemptId === currentAttempt.attemptId,
   );
 
-  console.log(currentPage, 'currentPage', listOfAttempts);
+  console.log(currentPage, "currentPage", listOfAttempts);
 
   const handlePageChange = useCallback(
     async (pageIndex: number) => {
@@ -50,9 +35,8 @@ const AttemptActions = () => {
     }
   };
 
-  const handleDeleteAttempt = (attemptId: number) => {
-    onDeleteAttempt(attemptId);
-    onCloseDeleteModal();
+  const handleSaveAttempt = () => {
+    onSaveAttempt();
   };
 
   return (
@@ -62,7 +46,7 @@ const AttemptActions = () => {
           <IconButton
             aria-label="Previous Page"
             icon={<ChevronLeftIcon />}
-            isDisabled={currentPage === 0}
+            isDisabled={currentPage <= 0}
             onClick={() => handlePageChange(currentPage - 1)}
           />
           <Text mx={2}>{currentPage + 1}</Text>
@@ -76,41 +60,13 @@ const AttemptActions = () => {
         {currentAttempt && (
           <>
             <IconButton
-              aria-label="Delete Attempt"
-              icon={<DeleteIcon />}
-              onClick={() => setIsDeleteModalOpen(true)}
-              colorScheme="red"
+              aria-label="Save Attempt"
+              icon={<MdSaveAs />}
+              onClick={handleSaveAttempt}
+              colorScheme="green"
               variant="outline"
+              isDisabled={currentPage <= 0}
             />
-            <AlertDialog
-              isOpen={isDeleteModalOpen}
-              leastDestructiveRef={cancelRef}
-              onClose={onCloseDeleteModal}
-            >
-              <AlertDialogOverlay>
-                <AlertDialogContent>
-                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                    Delete Attempt
-                  </AlertDialogHeader>
-                  <AlertDialogCloseButton />
-                  <AlertDialogBody>
-                    Are you sure you want to delete this attempt? This action cannot be undone.
-                  </AlertDialogBody>
-                  <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={onCloseDeleteModal}>
-                      Cancel
-                    </Button>
-                    <Button
-                      colorScheme="red"
-                      onClick={() => handleDeleteAttempt(currentAttempt.attemptId)}
-                      ml={3}
-                    >
-                      Delete
-                    </Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialogOverlay>
-            </AlertDialog>
           </>
         )}
         <Button colorScheme="blue" onClick={handleNewAttempt}>

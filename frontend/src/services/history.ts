@@ -5,45 +5,63 @@ import { BE_API } from "@/utils/api";
 import authorizedAxios from "@/utils/axios/authorizedAxios";
 import QuestionService from "./question";
 
-const fetchQuestionFromAttempt = (attempt: { questionId: string, text: string, language: Language, attemptId: number }) => {
-  if (!attempt.questionId || attempt.questionId === '' || attempt.questionId === '-1') {
+const fetchQuestionFromAttempt = (attempt: {
+  questionId: string;
+  text: string;
+  language: Language;
+  attemptId: number;
+}) => {
+  if (!attempt.questionId || attempt.questionId === "" || attempt.questionId === "-1") {
     return null;
   }
   return QuestionService.getQuestion(attempt.questionId);
-}
+};
 
-const getAllAttemptsInRoom = async (roomName: string): Promise<(Attempt & { roomName: string, text: string })[]> => {
+const getAllAttemptsInRoom = async (
+  roomName: string,
+): Promise<(Attempt & { roomName: string; text: string })[]> => {
   const response = await authorizedAxios.get(`${BE_API.history}/${roomName}`);
-  const listOfAttempts: { questionId: string, text: string, language: Language, attemptId: number }[] = response.data
-  console.log('attempts', listOfAttempts);
-  const questions: (Question | null)[] = await Promise.all(listOfAttempts.map(attempt => fetchQuestionFromAttempt(attempt)));
+  const listOfAttempts: {
+    questionId: string;
+    text: string;
+    language: Language;
+    attemptId: number;
+  }[] = response.data;
+  console.log("attempts", listOfAttempts);
+  const questions: (Question | null)[] = await Promise.all(
+    listOfAttempts.map((attempt) => fetchQuestionFromAttempt(attempt)),
+  );
 
-  return listOfAttempts.map( (attempt, index) => {
-    const { text, language, attemptId } = attempt
-    const question = questions[index]
+  return listOfAttempts.map((attempt, index) => {
+    const { text, language, attemptId } = attempt;
+    const question = questions[index];
     return {
       roomName,
       attemptId,
       question,
       text,
-      language
-    }
+      language,
+    };
   });
-}
+};
 
-const getAttempt = async (attemptId: number, roomName: string): Promise<Attempt & { roomName: string, text: string }> => {
+const getAttempt = async (
+  attemptId: number,
+  roomName: string,
+): Promise<Attempt & { roomName: string; text: string }> => {
   const response = await authorizedAxios.get(`${BE_API.history}/${roomName}/${attemptId}`);
-  const attempt: { questionId: string, text: string, language: Language, attemptId: number } = response.data;
+  const attempt: { questionId: string; text: string; language: Language; attemptId: number } =
+    response.data;
   const question = await fetchQuestionFromAttempt(attempt);
-  
+
   return {
     attemptId,
     question,
     roomName,
     text: attempt.text,
-    language: attempt.language
+    language: attempt.language,
   };
-}
+};
 
 const getAllAttemptsByUser = async () => {
   try {
@@ -52,13 +70,8 @@ const getAllAttemptsByUser = async () => {
     return attempts;
   } catch (err) {
     console.log(err);
-    return []
+    return [];
   }
-  
-}
+};
 
-export {
-  getAllAttemptsInRoom,
-  getAttempt,
-  getAllAttemptsByUser
-}
+export { getAllAttemptsInRoom, getAttempt, getAllAttemptsByUser };
