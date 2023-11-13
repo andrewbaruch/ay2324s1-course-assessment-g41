@@ -42,12 +42,18 @@ jobs:
       run: |-
         gcloud auth configure-docker \
         "$GAR_LOCATION-docker.pkg.dev"
+    
+    - name: Create GCP Key File
+      run: echo '${{ secrets.GCP_KEY }}' > backend/key.json
+
+    - name: List files in the repository
+      run: ls -lah
 
     # Build the Docker image
     - name: Build User
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$USER_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$USER_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           --file ./backend/microservices/user/Dockerfile \
@@ -56,7 +62,7 @@ jobs:
     - name: Build Questions
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$QUESTIONS_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$QUESTIONS_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           --file ./backend/microservices/question/Dockerfile \
@@ -65,7 +71,7 @@ jobs:
     - name: Build Matching
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$MATCHING_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$MATCHING_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           --file ./backend/microservices/matching/Dockerfile \
@@ -74,7 +80,7 @@ jobs:
     - name: Build Collab
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$COLLAB_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$COLLAB_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           --file ./backend/microservices/user/Dockerfile \
@@ -83,7 +89,7 @@ jobs:
     - name: Build Client
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           --file ./frontend/Dockerfile.dev \
@@ -92,60 +98,60 @@ jobs:
     - name: Build Video
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --file ./backend/microservices/videostreaming/Dockerfile.local \
+          --file ./backend/microservices/videostreaming/Dockerfile \
           ./backend
     
     - name: Build History
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$HISTORY_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$HISTORY_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --file ./backend/microservices/history/Dockerfile.local \
+          --file ./backend/microservices/history/Dockerfile \
           ./backend
 
     - name: Build Doc
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$DOCUMENT_IMAGE:$GITHUB_SHA" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$DOCUMENT_IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --file ./backend/microservices/document/Dockerfile.local \
+          --file ./backend/microservices/document/Dockerfile \
           ./backend
     
     # Push the Docker image to Google Artifact Registry
     - name: Publish User
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$USER_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$USER_IMAGE:latest"
 
     - name: Publish Questions
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$QUESTIONS_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$QUESTIONS_IMAGE:latest"
 
      # Push the Docker image to Google Artifact Registry
     - name: Publish Matching
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$MATCHING_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$MATCHING_IMAGE:latest"
 
     - name: Publish Collab
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$COLLAB_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$COLLAB_IMAGE:latest"
 
     - name: Publish Client
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CLIENT_IMAGE:latest"
 
     - name: Publish History
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$HISTORY_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$HISTORY_IMAGE:latest"
 
     - name: Publish Video
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$VIDEO_IMAGE:latest"
 
     - name: Publish Document
       run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$DOCUMENT_IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$DOCUMENT_IMAGE:latest"
