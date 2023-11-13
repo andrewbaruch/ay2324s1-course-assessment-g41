@@ -1,127 +1,112 @@
 // components/VideoStream.tsx
-import React, { useRef, useEffect, useState } from "react";
-import { Flex, Box, IconButton, useColorModeValue, useToast } from "@chakra-ui/react";
+import React, { useRef, useEffect } from "react";
+import { Flex, Box, IconButton, Button, Stack, useColorModeValue } from "@chakra-ui/react";
 import { MdVideocam, MdVideocamOff, MdMic, MdMicOff } from "react-icons/md";
+import { useVideoContext } from "@/contexts/VideoContext";
 
 interface VideoStreamProps {
-  localStream: MediaStream | null;
-  remoteStream: MediaStream | null;
-  onToggleCamera: () => void;
-  onToggleMicrophone: () => void;
-  isCameraOn: boolean;
-  isMicrophoneOn: boolean;
+  // localStream: MediaStream | null;
+  // remoteStream: MediaStream | null;
+  // onToggleCamera: () => void;
+  // toggleMicrophone: () => void;
+  // isCameraOn: boolean;
+  // isMicrophoneOn: boolean;
+  // isLoading: boolean;
 }
 
-const VideoStream: React.FC<VideoStreamProps> = ({
-  localStream,
-  remoteStream,
-  onToggleCamera,
-  onToggleMicrophone,
-  isCameraOn,
-  isMicrophoneOn,
-}) => {
+const VideoStream: React.FC<VideoStreamProps> = () => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const bgColor = useColorModeValue("whiteAlpha.600", "blackAlpha.600");
+  const {
+    localStream,
+    remoteStream,
+    toggleCamera,
+    toggleMicrophone,
+    isCameraOn,
+    isMicrophoneOn,
+    isLoading,
+  } = useVideoContext();
 
-  // useEffect(() => {
-  //   let disconnect: () => void;
-
-  //   // Immediately invoked async function to use await
-  //   (async () => {
-  //     try {
-  //       // Wait for the Promise from connectToRemoteStream to resolve to the disconnect function
-  //       disconnect = await connectToRemoteStream();
-  //     } catch (error) {
-  //       console.error("Failed to connect to remote stream:", error);
-  //     }
-  //   })();
-
-  //   // The cleanup function for the useEffect hook
-  //   return () => {
-  //     if (disconnect) {
-  //       disconnect();
-  //     }
-  //   };
-  // }, [connectToRemoteStream]);
-
-  // Set up local video stream
   useEffect(() => {
     if (localVideoRef.current) {
-      console.log("VideoStream: localStream:", localStream);
       localVideoRef.current.srcObject = localStream;
     }
   }, [localStream]);
 
-  // Set up remote video stream
   useEffect(() => {
     if (remoteVideoRef.current) {
-      console.log("VideoStream: remoteStream:", remoteStream);
       remoteVideoRef.current.srcObject = remoteStream;
     }
   }, [remoteStream]);
 
   return (
-    <Flex direction="row" align="center">
-      {/* Local Video element */}
-      <Box position="relative" width="160px" height="120px" bg="black" ml={4} borderRadius="lg">
-        <video
-          ref={localVideoRef}
-          autoPlay
-          playsInline
-          muted
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transform: "scaleX(-1)",
-            borderRadius: "8px",
-          }}
-        />
-        <Flex
-          position="absolute"
-          bottom="0"
-          left="0"
-          right="0"
-          justify="space-around"
-          bg={bgColor}
-          p={0.5}
-          borderRadius="lg"
-          overflow="hidden"
-        >
-          <IconButton
-            aria-label="Toggle camera"
-            icon={isCameraOn ? <MdVideocam /> : <MdVideocamOff />}
-            onClick={onToggleCamera}
-            size="sm"
-            variant="ghost"
+    <Stack direction={["column", "row"]} spacing={4} align="center" justify="center">
+      {localStream ? (
+        <Box position="relative" width="160px" height="120px" bg="black" borderRadius="lg">
+          <video
+            ref={localVideoRef}
+            autoPlay
+            playsInline
+            muted
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transform: "scaleX(-1)",
+              borderRadius: "8px",
+            }}
           />
-          <IconButton
-            aria-label="Toggle microphone"
-            icon={isMicrophoneOn ? <MdMic /> : <MdMicOff />}
-            onClick={onToggleMicrophone}
-            size="sm"
-            variant="ghost"
-          />
-        </Flex>
-      </Box>
+          <Flex
+            position="absolute"
+            bottom="0"
+            left="0"
+            right="0"
+            justify="space-around"
+            bg={bgColor}
+            p={0.5}
+            borderRadius="lg"
+            overflow="hidden"
+          >
+            <IconButton
+              aria-label="Toggle camera"
+              icon={isCameraOn ? <MdVideocam /> : <MdVideocamOff />}
+              onClick={toggleCamera}
+              size="sm"
+              variant="ghost"
+            />
+            <IconButton
+              aria-label="Toggle microphone"
+              icon={isMicrophoneOn ? <MdMic /> : <MdMicOff />}
+              onClick={toggleMicrophone}
+              size="sm"
+              variant="ghost"
+            />
+          </Flex>
+        </Box>
+      ) : (
+        <Button onClick={toggleCamera} colorScheme="blue" size="md" isLoading={isLoading}>
+          Start Video Call
+        </Button>
+      )}
 
-      {/* Remote Video element */}
-      <Box position="relative" width="160px" height="120px" bg="black" ml={4} borderRadius="lg">
-        <video
-          ref={remoteVideoRef}
-          autoPlay
-          playsInline
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transform: "scaleX(-1)",
-            borderRadius: "8px",
-          }}
-        />
-      </Box>
-    </Flex>
+      {remoteStream && (
+        <Box position="relative" width="160px" height="120px" bg="black" borderRadius="lg">
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            playsInline
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transform: "scaleX(-1)",
+              borderRadius: "8px",
+            }}
+          />
+        </Box>
+      )}
+    </Stack>
   );
 };
 

@@ -36,6 +36,7 @@ class ServerApp {
   // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
   // karwi: ensure no duplicate user
   // see: https://chat.openai.com/c/66fbe369-61be-4d2a-a91f-d486ecca9e8d
+
   private configSocket() {
     this.io.use(socketAuthMiddleware);
 
@@ -52,50 +53,51 @@ class ServerApp {
             if (sockets.length < 2) {
               console.log(`Client ${socket.id} joining room: ${roomId}`);
               socket.join(roomId);
+
+              // Register event listeners inside the then block
+              socket.on('disconnect', () => {
+                console.log(`Client disconnected: ${socket.id}`);
+                // Inform other clients in the room about the disconnection
+                socket
+                  .to(roomId)
+                  .emit('peerDisconnected', { peerId: socket.id });
+                console.log(`Client ${socket.id} left room: ${roomId}`);
+              });
+
+              socket.on('callUser', (data) => {
+                console.log(`Broadcasting call signal in room: ${data.roomId}`);
+                socket.to(data.roomId).emit('callUser', {
+                  signal: data.signalData,
+                  name: data.name,
+                });
+              });
+
+              socket.on('answerCall', (data) => {
+                console.log(
+                  `Broadcasting answer signal in room: ${data.roomId}`
+                );
+                socket.to(data.roomId).emit('callAccepted', data.signal);
+              });
+
+              socket.on('streamStopped', (data) => {
+                console.log(
+                  `Received 'streamStopped' event in room ${data.roomId}`
+                );
+                socket.to(data.roomId).emit('streamStopped');
+              });
             } else {
               console.log(
                 `Room ${roomId} is full. Client ${socket.id} cannot join.`
               );
-              // Optionally, send a message back to the client
               socket.emit('roomFull', roomId);
             }
           })
           .catch((error) => {
             console.error(`Error fetching sockets for room ${roomId}:`, error);
           });
+      } else {
+        console.warn(`Socket ${socket.id} is not in room ${roomId}`);
       }
-
-      socket.on('disconnect', () => {
-        console.log(`Client disconnected: ${socket.id}`);
-        if (roomId) {
-          // Inform other clients in the room about the disconnection
-          socket.to(roomId).emit('peerDisconnected', { peerId: socket.id });
-
-          // Additional cleanup if needed
-          console.log(`Client ${socket.id} left room: ${roomId}`);
-        }
-      });
-
-      socket.on('callUser', (data) => {
-        console.log(`Broadcasting call signal in room: ${data.roomId}`);
-        socket
-          .to(data.roomId)
-          .emit('callUser', { signal: data.signalData, name: data.name });
-      });
-
-      socket.on('answerCall', (data) => {
-        console.log(`Broadcasting answer signal in room: ${data.roomId}`);
-        socket.to(data.roomId).emit('callAccepted', data.signal);
-      });
-
-      socket.on('streamStopped', (data) => {
-        console.log(
-          `Server: Received 'streamStopped' event from ${socket.id} for room ${data.roomId}`
-        );
-        socket.to(data.roomId).emit('streamStopped');
-      });
-
-      // Additional socket event listeners as needed
     });
   }
 
