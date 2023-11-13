@@ -1,86 +1,88 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ingress
-  annotations:
-    kubernetes.io/ingress.class: "gce"
-    kubernetes.io/ingress.allow-http: "false"
-spec:
-  rules:
-  - host: www.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
-      - path: /sockjs-node
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
-      - path: /_next/webpack-hmr
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: ingress
+    annotations:
+      kubernetes.io/ingress.class: "gce"
+      kubernetes.io/ingress.allow-http: "false"
+      networking.gke.io/managed-certificates: managed-cert
+      kubernetes.io/ingress.global-static-ip-name: "peerprep-ip"
+  spec:
+    rules:
+    - host: peerprep.dev
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend-service
+              port:
+                number: 80
+        - path: /sockjs-node
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend-service
+              port:
+                number: 80
+        - path: /_next/webpack-hmr
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend-service
+              port:
+                number: 80
 
-  - host: api.example.com
-    http:
-      paths:
-      - path: /user
-        pathType: Prefix
-        backend:
-          service:
-            name: user-service
-            port:
-              number: 80
-      - path: /question
-        pathType: Prefix
-        backend:
-          service:
-            name: question-service
-            port:
-              number: 80
-      - path: /matching
-        pathType: Prefix
-        backend:
-          service:
-            name: matching-service
-            port:
-              number: 80
-      - path: /collaboration
-        pathType: Prefix
-        backend:
-          service:
-            name: collab-service
-            port:
-              number: 80
-      - path: /document
-        pathType: Prefix
-        backend:
-          service:
-            name: document-service
-            port:
-              number: 80
-      - path: /history
-        pathType: Prefix
-        backend:
-          service:
-            name: history-service
-            port:
-              number: 80
-      - path: /videostreaming
-        pathType: Prefix
-        backend:
-          service:
-            name: videostreaming-service
-            port:
-              number: 80
+    - host: api.peerprep.dev
+      http:
+        paths:
+        - path: /user
+          pathType: Prefix
+          backend:
+            service:
+              name: user-service
+              port:
+                number: 80
+        - path: /question
+          pathType: Prefix
+          backend:
+            service:
+              name: question-service
+              port:
+                number: 80
+        - path: /matching
+          pathType: Prefix
+          backend:
+            service:
+              name: matching-service
+              port:
+                number: 80
+        - path: /collaboration
+          pathType: Prefix
+          backend:
+            service:
+              name: collab-service
+              port:
+                number: 80
+        - path: /document
+          pathType: Prefix
+          backend:
+            service:
+              name: document-service
+              port:
+                number: 80
+        - path: /history
+          pathType: Prefix
+          backend:
+            service:
+              name: history-service
+              port:
+                number: 80
+        - path: /videostreaming
+          pathType: Prefix
+          backend:
+            service:
+              name: videostreaming-service
+              port:
+                number: 80

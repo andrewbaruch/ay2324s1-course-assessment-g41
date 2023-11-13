@@ -9,4 +9,4 @@ data:
   POSTGRES_TIMEOUT: "300"
   OAUTH_GOOGLE_CLIENT: "client"
   OAUTH_GOOGLE_SECRET: "secret"
-  AUTH_DOMAIN: "http://localhost:3000/user"
+  AUTH_DOMAIN: "peerprep.dev/user"

@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: client-config
 data:
-  NEXT_PUBLIC_HOST_API_KEY: "http://localhost:3000/"
+  NEXT_PUBLIC_HOST_API_KEY: "https://api.peerprep.dev/"
   NEXT_PUBLIC_DEBUG: "false"

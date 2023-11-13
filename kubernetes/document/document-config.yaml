@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: document-config
 data:
-  COLLAB_SERVICE_ENDPOINT: "http://nginx:80/collaboration"
+  COLLAB_SERVICE_ENDPOINT: "http://collab-service:80/collaboration"
   GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/document/key.json"
   REDIS_DOCUMENT_URL: "redis://redis-document:6379"
