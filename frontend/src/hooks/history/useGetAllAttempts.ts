@@ -16,6 +16,7 @@ export const useGetAllAttempts = ({
       const allAttempts = await HistoryService.getAllAttemptsInRoom(roomName);
       setAttempts(allAttempts);
     };
+    setAttempts((prevAttempts) => [...prevAttempts, currentAttempt]);
     getAttempts();
   }, [roomName, currentAttempt]);
 
