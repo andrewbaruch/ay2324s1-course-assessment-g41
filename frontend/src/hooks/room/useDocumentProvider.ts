@@ -21,9 +21,9 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
     // once editor is mounted, initialise the room service to bind editor to websocket broadcast
     const docService = new DocumentService(roomName, editor);
     if (docService && docService.provider) {
-      console.log('listen to auth event')
+      console.log("listen to auth event");
       docService.provider.on("authenticationFailed", () => {
-        console.log('fail to authenticate');
+        console.log("fail to authenticate");
         toast({
           title: "OOPS! You are not authorized to enter this room.",
           description:
@@ -32,18 +32,17 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
           duration: 9000,
           isClosable: true,
         });
-      })
+      });
 
       docService.provider.on("authenticated", () => {
         toast({
           title: `Welcome to room ${roomName}.`,
-          description:
-            "All changes to this document is automatically saved. Start collaborating!",
+          description: "All changes to this document is automatically saved. Start collaborating!",
           status: "success",
           duration: 9000,
           isClosable: true,
         });
-      })
+      });
     }
     setDocumentService(docService);
 
