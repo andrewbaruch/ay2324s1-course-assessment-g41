@@ -27,20 +27,16 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
   const router = useRouter();
 
   const handleClose = (provider: HocuspocusProvider | null) => {
-    if (!provider) return
-    console.log('disconnecting provider');
-    provider.disconnect()
-    router.push("/dashboard")
-  }
+    if (!provider) return;
+    console.log("disconnecting provider");
+    provider.disconnect();
+    router.push("/dashboard");
+  };
 
   const { handleEditorMount, provider, document } = useDocumentProvider({ roomName: id });
   const { activeUsers } = useManageUsersInRoom({ provider });
-  const { currentAttempt,
-    listOfSavedAttempts,
-    createNewAttempt,
-    toggleToAttempt,
-    saveAttempt
-  } = useManageAttempt({ document, provider, roomName: id });
+  const { currentAttempt, listOfSavedAttempts, createNewAttempt, toggleToAttempt, saveAttempt } =
+    useManageAttempt({ document, provider, roomName: id });
   const { supportedLanguages, handleLanguageChange } = useManageCodingLanguages({ document });
   const { complexity } = useMatchingContext();
   const { filteredQuestions, handleQuestionChange } = useManageQuestionsInRoom({

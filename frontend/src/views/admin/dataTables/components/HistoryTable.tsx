@@ -113,8 +113,10 @@ export default function HistoryTable(props: { tableData: any }) {
       ),
       cell: (info) => (
         <Text color={textColor} fontSize="sm" fontWeight="700">
-          {new Date(info.getValue()).toLocaleDateString('en-SG', {
-            day: '2-digit', month: '2-digit', year: '2-digit'
+          {new Date(info.getValue()).toLocaleDateString("en-SG", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
           })}
         </Text>
       ),
@@ -174,30 +176,29 @@ export default function HistoryTable(props: { tableData: any }) {
             ))}
           </Thead>
           <Tbody>
-            {table
-              .getRowModel()
-              .rows
-              .map((row) => {
-                const cellsInRow = row.getVisibleCells();
-                return (
-                  <Tr key={row.id}>
-                    {cellsInRow.map((cell) => {
-                      return (
-                        <Td
-                          key={cell.id}
-                          fontSize={{ sm: "14px" }}
-                          minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                          borderColor="transparent"
+            {table.getRowModel().rows.map((row) => {
+              const cellsInRow = row.getVisibleCells();
+              return (
+                <Tr key={row.id}>
+                  {cellsInRow.map((cell) => {
+                    return (
+                      <Td
+                        key={cell.id}
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor="transparent"
+                      >
+                        <Link
+                          href={`/attempts/${row.getValue("name")}/${row.getValue("attemptId")}`}
                         >
-                          <Link href={`/attempts/${row.getValue("name")}/${row.getValue("attemptId")}`}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </Link>
-                        </Td>
-                      );
-                    })}
-                  </Tr>
-                );
-              })}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </Link>
+                      </Td>
+                    );
+                  })}
+                </Tr>
+              );
+            })}
           </Tbody>
         </Table>
       </Box>

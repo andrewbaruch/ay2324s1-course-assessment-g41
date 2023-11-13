@@ -50,7 +50,7 @@ export const MatchingForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [progressValue, setProgressValue] = useState(100);
   const router = useRouter();
-  const { setComplexity } = useMatchingContext()
+  const { setComplexity } = useMatchingContext();
 
   return (
     <Stack
@@ -86,8 +86,8 @@ export const MatchingForm = () => {
               required: "Complexity of the question is required.",
             })}
           >
-            {Object.values(QuestionComplexity).map((complexity) => (
-              <option>{complexity}</option>
+            {Object.values(QuestionComplexity).map((complexity, index) => (
+              <option key={index}>{complexity}</option>
             ))}
           </Select>
           {errors.complexity ? (
@@ -127,31 +127,34 @@ export const MatchingForm = () => {
                     const responseStatus = response.status;
                     console.log("in frontend, status code", response);
 
-                    if (intervalId && responseStatus == Status.paired) {
+                    if (intervalId && responseStatus === Status.paired) {
                       clearInterval(intervalId);
                       intervalId = null;
                       if (response.roomId) {
-                        openRoom(response.roomId).then(res => {
-                          // save complexity
-                          const enumIndex = Object.values(QuestionComplexity).findIndex(
-                            (complexityVal) => complexityVal === data.complexity
-                          );
-                          setComplexity(enumIndex + 1);
-                          router.push(`/collab-room/${response.roomId}`);
-                        }).catch(err => {
-                          toast({
-                            description: err?.message || "Unknown error occured. Please try again later.",
-                            status: "error",
-                            isClosable: true,
-                            duration: 3000,
-                            position: "bottom",
+                        openRoom(response.roomId)
+                          .then((res) => {
+                            // save complexity
+                            const enumIndex = Object.values(QuestionComplexity).findIndex(
+                              (complexityVal) => complexityVal === data.complexity,
+                            );
+                            setComplexity(enumIndex + 1);
+                            router.push(`/collab-room/${response.roomId}`);
                           })
-                          router.push('/dashboard');
-                        });
+                          .catch((err) => {
+                            toast({
+                              description:
+                                err?.message || "Unknown error occured. Please try again later.",
+                              status: "error",
+                              isClosable: true,
+                              duration: 3000,
+                              position: "bottom",
+                            });
+                            router.push("/dashboard");
+                          });
                       }
                       return;
                     }
-                    if (intervalId && responseStatus == Status.expired) {
+                    if (intervalId && responseStatus === Status.expired) {
                       clearInterval(intervalId);
                       intervalId = null;
                       setIsLoading(false);

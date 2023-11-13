@@ -17,7 +17,7 @@ export const Cursor = ({ yProvider }: { yProvider: HocuspocusProvider }) => {
 
     yProvider.awareness?.setLocalStateField("user", {
       name: identity.name,
-      color: `#38A169`, // TODO: support multiple client connections
+      color: "#38A169", // TODO: support multiple client connections
     });
 
     yProvider.awareness?.on("change", set);

@@ -10,15 +10,14 @@ const useManageCodingLanguages = ({ document }: { document: Doc | null }) => {
     upsertDocumentValue({
       sharedKey: "language",
       valueToUpdate: newLanguageValue,
-      document
-    })
+      document,
+    });
   };
 
   return {
     supportedLanguages,
     handleLanguageChange,
-  }
-
-}
+  };
+};
 
 export default useManageCodingLanguages;

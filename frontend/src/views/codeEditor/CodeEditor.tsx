@@ -26,8 +26,8 @@ export const CodeEditor: React.FC<Props> = ({ onEditorMount, provider }) => {
 
   useEffect(() => {
     return () => {
-      provider?.disconnect()
-    }
+      provider?.disconnect();
+    };
   }, []);
 
   return (

@@ -14,7 +14,6 @@ import { Select } from "chakra-react-select";
 import ReactMarkdown from "react-markdown";
 import { Question } from "@/@types/models/question";
 
-
 const getBadgeColorScheme = (complexity: string) => {
   switch (complexity.toLowerCase()) {
     case "easy":
@@ -29,23 +28,19 @@ const getBadgeColorScheme = (complexity: string) => {
 };
 
 const QuestionDetails = ({ question }: { question: Question | null }) => {
-  const options = question ? [{ value: question.id, label: question.title, }] : [];
+  const options = question ? [{ value: question.id, label: question.title }] : [];
   return question ? (
     <Box rounded="md">
       <Select
         options={options}
         isDisabled={true}
-        value={{ value: question.id, label: question.title, }}
+        value={{ value: question.id, label: question.title }}
         placeholder="Select a question"
       />
       {question && (
         <VStack align="start" spacing={2} mt={4}>
           <Box display="flex" alignItems="center">
-            <Badge
-              colorScheme={getBadgeColorScheme(question.complexity)}
-              fontSize="sm"
-              p={1}
-            >
+            <Badge colorScheme={getBadgeColorScheme(question.complexity)} fontSize="sm" p={1}>
               {question.complexity}
             </Badge>
           </Box>

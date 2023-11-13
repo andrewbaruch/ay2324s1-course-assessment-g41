@@ -59,9 +59,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <Button color={textColorBrand}>
-        Find a match
-      </Button>
+      <Button color={textColorBrand}>Find a match</Button>
       {/* <SearchBar
         mb={() => {
           if (secondary) {

@@ -8,7 +8,7 @@ interface IUser {
 }
 
 const BottomBar: React.FC = () => {
-  const listOfActiveUsers: IUser[] = []
+  const listOfActiveUsers: IUser[] = [];
 
   return (
     <Flex align="center" justify="space-between" p={4}>

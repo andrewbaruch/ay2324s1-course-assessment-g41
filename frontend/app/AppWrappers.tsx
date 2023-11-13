@@ -12,9 +12,7 @@ export default function AppWrappers({ children }: { children: ReactNode }) {
     <CacheProvider>
       <ChakraProvider theme={theme}>
         <ProfileProvider authProvider={googleAuthProvider}>
-          <MatchingProvider>
-            {children}
-          </MatchingProvider>
+          <MatchingProvider>{children}</MatchingProvider>
         </ProfileProvider>
       </ChakraProvider>
     </CacheProvider>

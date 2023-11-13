@@ -5,12 +5,11 @@ import { useGetAttempt } from "@/hooks/history/useGetAttempt";
 const AttemptView = ({ params }: { params: { roomNameAttemptId: string[] } }) => {
   const [roomName, attemptId] = params.roomNameAttemptId;
   const { attempt } = useGetAttempt({
-    roomName, attemptId: parseInt(attemptId)
-  })
+    roomName,
+    attemptId: parseInt(attemptId),
+  });
 
-  return attempt ? (
-    <IndividualRoom attempt={attempt} />
-  ) : null
-}
+  return attempt ? <IndividualRoom attempt={attempt} /> : null;
+};
 
 export default AttemptView;
