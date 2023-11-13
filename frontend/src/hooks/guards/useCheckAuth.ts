@@ -3,6 +3,7 @@ import { PATH_AUTH } from "src/routes/paths";
 import useAuthProvider from "../auth/useAuthProvider";
 import { useToast } from "@chakra-ui/react";
 import useLogout from "../auth/useLogout";
+import useTrackDependencies from "../dev/useTrackDependencies";
 
 type CheckAuth = (
   params: {
@@ -51,6 +52,8 @@ const useCheckAuth = (): CheckAuth => {
   const authProvider = useAuthProvider();
   const toast = useToast();
   const logout = useLogout();
+
+  useTrackDependencies("useCheckAuth", [authProvider, toast, logout]);
 
   const checkAuth = useCallback(
     async ({
