@@ -20,6 +20,8 @@ spec:
         envFrom:
         - configMapRef:
             name: collaboration-config
+        - configMapRef:
+            name: global-config
         resources:
           requests: 
             memory: "64Mi"
