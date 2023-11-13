@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { DocumentService } from "@/services/document";
 import { useToast } from "@chakra-ui/react";
+import MatchingService from "@/services/matching";
 
 /**
  * Hook that binds the document to the editor and provides the shared document
@@ -23,6 +24,7 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
 
     return () => {
       documentService?.provider?.disconnect();
+      MatchingService.removeMatchingPair();
     };
   }, [editor]);
 
@@ -43,6 +45,7 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
 
     return () => {
       documentService?.provider?.disconnect();
+      MatchingService.removeMatchingPair();
     };
   }, [documentService]);
 
