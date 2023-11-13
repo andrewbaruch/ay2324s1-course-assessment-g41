@@ -1,4 +1,4 @@
-import React, { useState, useRef, FC } from "react";
+import React, { useState, useRef, FC, useCallback } from "react";
 import {
   Button,
   AlertDialog,
@@ -39,13 +39,50 @@ const MatchButton: FC<ButtonProps> = (buttonProps) => {
   const { sendMatchingRequest, getMatchingStatus } = useMatching();
   const { setComplexity } = useMatchingContext();
   const requestExpiryTimeInSeconds = 30;
-  let intervalId: NodeJS.Timeout;
+  const intervalId = useRef<NodeJS.Timeout>(); // useRef to hold the interval ID
 
   // Complexity options created from QuestionComplexity enum/object
   const complexityOptions: OptionType[] = Object.values(QuestionComplexity).map((complexity) => ({
     value: complexity,
     label: complexity,
   }));
+
+  const cancelMatching = () => {
+    clearInterval(intervalId.current);
+    setIsLoading(false);
+    setCountdown(30); // Reset countdown
+    toast({
+      title: "Matching Cancelled",
+      description: "You have cancelled the matching process.",
+      status: "info",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const onRoomPaired = useCallback(
+    (response: any) => {
+      if (response.roomId) {
+        openRoom(response.roomId).then(() => {
+          setComplexity(selectedComplexity);
+          router.push(`/collab-room/${response.roomId}`);
+        });
+      }
+    },
+    [selectedComplexity, setComplexity, router],
+  );
+
+  const handleMatchingResponse = useCallback(
+    (response: any) => {
+      if (response.status === Status.paired) {
+        setIsLoading(false);
+        onRoomPaired(response);
+      } else if (response.status === Status.expired) {
+        setIsLoading(false);
+      }
+    },
+    [onRoomPaired],
+  );
 
   const startMatching = () => {
     if (!selectedComplexity) {
@@ -60,67 +97,37 @@ const MatchButton: FC<ButtonProps> = (buttonProps) => {
     }
 
     setIsLoading(true);
-    setCountdown(requestExpiryTimeInSeconds); // Assuming 30 seconds for the countdown
+    setCountdown(requestExpiryTimeInSeconds); // Set the initial countdown
     onClose();
 
     sendMatchingRequest(selectedComplexity).then(async () => {
-      let intervalId = setInterval(() => {
+      intervalId.current = setInterval(() => {
         setCountdown((prevCountdown) => {
-          if (prevCountdown <= 1) {
-            clearInterval(intervalId);
-            setIsLoading(false);
-            getMatchingStatus()
-              .then((response) => {
-                handleMatchingResponse(response, intervalId);
-              })
-              .catch(() => {
-                toast({
-                  status: "error",
-                  description: "Error occurred during matching. Please try again later.",
-                  isClosable: true,
-                  duration: 3000,
-                  position: "bottom",
-                });
+          // Check the matching status every second
+          getMatchingStatus()
+            .then((response) => {
+              handleMatchingResponse(response);
+            })
+            .catch(() => {
+              toast({
+                status: "error",
+                description: "Error occurred during matching. Please try again later.",
+                isClosable: true,
+                duration: 3000,
+                position: "bottom",
               });
+            });
+
+          // Countdown logic
+          if (prevCountdown <= 1) {
+            clearInterval(intervalId.current);
+            setIsLoading(false);
             return 0;
           }
           return prevCountdown - 1;
         });
       }, 1000);
     });
-  };
-
-  const cancelMatching = () => {
-    clearInterval(intervalId);
-    setIsLoading(false);
-    setCountdown(30); // Reset countdown
-    toast({
-      title: "Matching Cancelled",
-      description: "You have cancelled the matching process.",
-      status: "info",
-      duration: 3000,
-      isClosable: true,
-    });
-  };
-
-  const handleMatchingResponse = (response: any, intervalId: NodeJS.Timeout) => {
-    if (response.status === Status.paired) {
-      clearInterval(intervalId);
-      onRoomPaired(response);
-    } else if (response.status === Status.expired) {
-      clearInterval(intervalId);
-      setIsLoading(false);
-    }
-  };
-
-  const onRoomPaired = (response: any) => {
-    if (response.roomId) {
-      openRoom(response.roomId).then(() => {
-        // Using selectedComplexity from the state instead of the old prop
-        setComplexity(selectedComplexity);
-        router.push(`/collab-room/${response.roomId}`);
-      });
-    }
   };
 
   return (
