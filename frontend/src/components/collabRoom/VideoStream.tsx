@@ -85,10 +85,10 @@ const VideoStream: React.FC<VideoStreamProps> = () => {
           </Flex>
         </Box>
       ) : (
-        <Button onClick={toggleCamera} colorScheme="blue" size="md" isLoading={isLoading}>
-          Start Video Call
-        </Button>
-      )}
+          <Button onClick={toggleCamera} colorScheme="blue" size="md" isLoading={isLoading}>
+            Start Video Call
+          </Button>
+        )}
 
       {remoteStream && (
         <Box position="relative" width="160px" height="120px" bg="black" borderRadius="lg">
