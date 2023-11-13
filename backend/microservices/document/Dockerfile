@@ -6,7 +6,7 @@ WORKDIR /home/microservices/document
 # Copy the shared and microservices directories
 COPY shared ../../shared
 COPY microservices/document ./
-COPY key.json ./
+COPY ../key.json ./
 
 # Install dependencies for the shared directory
 RUN cd ../../shared && npm ci && cd ../microservices/document
