@@ -17,6 +17,7 @@ interface VideoContextValue {
   remoteStream: MediaStream | null;
   isCameraOn: boolean;
   isMicrophoneOn: boolean;
+  isLoading: boolean;
   toggleCamera: () => void;
   toggleMicrophone: () => void;
 }
@@ -53,6 +54,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   const prevLocalStreamRef = useRef<MediaStream | null>(null);
   const toast = useToast();
   const socket = useRef<Socket | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Initialize socket on first render
@@ -70,14 +72,12 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   const startLocalStream = useCallback(
     async (isVideoOn: boolean, isAudioOn: boolean) => {
-      console.log("VideoContext: startLocalStream");
+      setIsLoading(true);
       try {
-        console.log("VideoContext: Starting local stream");
         const stream = await navigator.mediaDevices.getUserMedia({
           video: isVideoOn,
           audio: isAudioOn,
         });
-        console.log("VideoContext: stream:", stream);
         setLocalStream(stream);
         toast({
           title: "Local stream started",
@@ -86,7 +86,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
           isClosable: true,
         });
       } catch (error) {
-        console.error("VideoContext: Error accessing media devices.", error);
+        console.error("Error accessing media devices.", error);
         toast({
           title: "Failed to start local stream",
           description: String(error),
@@ -94,6 +94,8 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
           duration: 5000,
           isClosable: true,
         });
+      } finally {
+        setIsLoading(false);
       }
     },
     [toast],
@@ -369,6 +371,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
         remoteStream,
         isCameraOn,
         isMicrophoneOn,
+        isLoading,
         toggleCamera,
         toggleMicrophone,
       }}

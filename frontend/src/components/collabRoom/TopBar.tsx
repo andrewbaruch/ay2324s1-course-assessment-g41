@@ -20,7 +20,8 @@ interface OptionType extends OptionBase {
 }
 
 const TopBar = () => {
-  const { languageTotalList, currentAttempt, onLanguageChange, onCloseRoom } = useCollabContext();
+  const { languageTotalList, currentAttempt, listOfAttempts, onLanguageChange, onCloseRoom } =
+    useCollabContext();
   const [isCloseRoomModalOpen, setIsCloseRoomModalOpen] = useState(false);
   const cancelRef = useRef(null);
 
@@ -41,6 +42,9 @@ const TopBar = () => {
 
   const currentLanguage = currentAttempt?.language;
   const options = languageTotalList;
+  const currentPage = listOfAttempts.findIndex(
+    (attempt) => attempt.attemptId === currentAttempt.attemptId,
+  );
 
   return (
     <Flex align="center" justify="space-between" pb={4}>
@@ -50,6 +54,7 @@ const TopBar = () => {
           onChange={handleLanguageChange}
           value={currentLanguage}
           placeholder="Select language"
+          isDisabled={currentPage <= 0}
         />
       </Box>
 

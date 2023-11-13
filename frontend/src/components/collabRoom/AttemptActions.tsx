@@ -46,7 +46,7 @@ const AttemptActions = () => {
           <IconButton
             aria-label="Previous Page"
             icon={<ChevronLeftIcon />}
-            isDisabled={currentPage === 0}
+            isDisabled={currentPage <= 0}
             onClick={() => handlePageChange(currentPage - 1)}
           />
           <Text mx={2}>{currentPage + 1}</Text>
@@ -65,6 +65,7 @@ const AttemptActions = () => {
               onClick={handleSaveAttempt}
               colorScheme="green"
               variant="outline"
+              isDisabled={currentPage <= 0}
             />
           </>
         )}
