@@ -52,7 +52,7 @@ export class Server {
 
   private configRouter() {
     this.app.use('/history', attemptRouter)
-    this.app.use('/health', healthCheckRouter)
+    this.app.use('/', healthCheckRouter)
   }
 }
 
