@@ -49,7 +49,7 @@ export class Server {
   }
 
   private configRouter() {
-    this.app.use('/room', roomRouter)
+    this.app.use('/collaboration/room', roomRouter)
     this.app.use('/health', healthCheckRouter)
   }
 }

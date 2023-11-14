@@ -43,8 +43,8 @@ class Server {
 
   private configRouter() {
     // NOTE: Central router if necessary
+    this.app.use("/matching", routes);
     this.app.use("/health", healthCheckRouter);
-    this.app.use("/", routes);
   }
 
   public start() {

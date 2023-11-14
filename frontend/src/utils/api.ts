@@ -10,20 +10,20 @@ const ROOTS_VIDEO = "/videostreaming";
 // karwi: refactor groups. each shd be microservice
 export const BE_API = {
   auth: {
-    checkAuth: `${ROOTS_USER}/auth/checkAuth`,
+    checkAuth: "/auth/checkAuth",
     google: "/auth/google",
-    refresh: `${ROOTS_USER}/auth/refresh`,
-    logout: `${ROOTS_USER}/auth/logout`,
+    refresh: "/auth/refresh",
+    logout: "/auth/logout",
   },
   users: {
-    root: `${ROOTS_USER}/user`,
-    topics: `${ROOTS_USER}/user/topics`,
-    user: (id: string) => `${ROOTS_USER}/user/${id}`,
+    root: "/user",
+    topics: "/user/topics",
+    user: (id: string) => `/user/${id}`,
     // karwi: remove this
-    uploadImageUrl: `${ROOTS_USER}/user/uploadImageUrl`,
+    uploadImageUrl: "/user/uploadImageUrl",
   },
   questions: {
-    root: `${ROOTS_QUESTION}/question`,
+    root: "/question",
   },
   matching: {
     request: `${ROOTS_MATCHING}/request`,
@@ -32,10 +32,10 @@ export const BE_API = {
   collaboration: {
     room: `${ROOTS_COLLAB}/room`,
   },
-  document: ROOTS_DOCUMENT,
-  history: `${ROOTS_HISTORY}/history`,
-  topics: `${ROOTS_USER}/topics`,
-  languages: `${ROOTS_USER}/languages`,
+  document: "/document",
+  history: "/history",
+  topics: "/topics",
+  languages: "/languages",
   video: {
     root: `${ROOTS_VIDEO}`,
     signaling: `${ROOTS_VIDEO}/signaling`,

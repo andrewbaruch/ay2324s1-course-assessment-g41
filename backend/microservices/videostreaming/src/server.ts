@@ -23,7 +23,7 @@ class ServerApp {
         origin: '*',
         methods: ['GET', 'POST'],
       },
-      path: '/socket.io', // Set custom path here
+      path: '/videostreaming/socket.io', // Set custom path here
     });
     this.port = process.env.SERVER_PORT || 3000;
     this.configMiddleware();
