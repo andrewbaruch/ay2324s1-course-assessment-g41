@@ -1,5 +1,3 @@
-import { editor } from "monaco-editor";
-
 export const themifyCodeEditor = (colorMode: string) => {
   switch (colorMode) {
     case "light":
@@ -11,7 +9,7 @@ export const themifyCodeEditor = (colorMode: string) => {
   }
 };
 
-export const codeEditorOptions: editor.IStandaloneEditorConstructionOptions = {
+export const codeEditorOptions: any = {
   autoIndent: "full",
   contextmenu: true,
   fontFamily: "monospace",
