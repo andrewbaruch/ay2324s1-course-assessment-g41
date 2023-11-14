@@ -34,11 +34,16 @@ class Server {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
     this.app.use(cookieParser());
-    this.app.use(
-      cors({
-        origin: "*",
-      })
-    );
+    this.app.use(cors({
+      origin: [
+        "https://peerprep.dev",
+        "https://www.peerprep.dev",
+        "https://api.peerprep.dev",
+        "https://www.api.peerprep.dev:3000",
+        "http://localhost:3000"
+      ],
+      credentials: true,
+    }));
   }
 
   private configRouter() {
