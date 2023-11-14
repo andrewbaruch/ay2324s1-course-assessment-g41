@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 import router from '@/routes/question-router'
+import healthCheckRouter from "../../../shared/router/healthcheck-router"
 
 class Server {
     private app
@@ -28,6 +29,7 @@ class Server {
     private configRouter() {
         // NOTE: Central router if necessary
         this.app.use('/question', router);
+        this.app.get('/', healthCheckRouter);
     }
 
     public start() {

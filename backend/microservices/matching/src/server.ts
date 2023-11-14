@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import routes from "@/routes/matching-router";
 import ComplexitySubscriber from "./subscribers/complexity-subscriber";
+import healthCheckRouter from "../../../shared/router/healthcheck-router";
 
 class Server {
   private app;
@@ -38,6 +39,7 @@ class Server {
   private configRouter() {
     // NOTE: Central router if necessary
     this.app.use("/", routes);
+    this.app.use("/health", healthCheckRouter);
   }
 
   public start() {
