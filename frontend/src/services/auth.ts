@@ -4,6 +4,7 @@ import unauthorizedAxios from "../utils/axios/unauthorizedAxios";
 import { HOST_API } from "@/config";
 
 export const loginWithGoogle = () => {
+  console.log("redirecting to: ", `${HOST_API}${BE_API.auth.google}`);
   return new Promise(() => {
     window.location.href = `${HOST_API}${BE_API.auth.google}`;
   });
