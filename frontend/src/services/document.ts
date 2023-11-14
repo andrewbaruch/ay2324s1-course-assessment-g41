@@ -1,6 +1,5 @@
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
-import * as monaco from "monaco-editor";
 import { MonacoBinding } from "y-monaco";
 import { BE_API } from "@/utils/api";
 import { HOST_API } from "@/config";
@@ -10,7 +9,7 @@ export class DocumentService {
   readonly provider: HocuspocusProvider | undefined;
   readonly binding: MonacoBinding | undefined;
 
-  constructor(roomName: string, editor: monaco.editor.IStandaloneCodeEditor) {
+  constructor(roomName: string, editor: any) {
     const { document, provider } = this.initWsConnection(roomName);
     this.document = document;
     this.provider = provider;
@@ -38,23 +37,18 @@ export class DocumentService {
     return val && val === "true" ? val : undefined;
   }
 
-  private bindDocumentToMonacoEditor(editor: monaco.editor.IStandaloneCodeEditor) {
+  private bindDocumentToMonacoEditor(editor: any) {
     if (!this.document || !this.provider || typeof window === "undefined") {
       // throw error
       return { binding: undefined };
     }
 
     const text = this.document.getText("monaco");
-    const model = editor.getModel() as monaco.editor.ITextModel;
+    const model = editor.getModel();
     const binding =
       typeof window === "undefined"
         ? undefined
-        : new MonacoBinding(
-            text,
-            model,
-            new Set([editor as monaco.editor.IStandaloneCodeEditor]),
-            this.provider.awareness,
-          );
+        : new MonacoBinding(text, model, new Set([editor]), this.provider.awareness);
     return { binding };
   }
 }
