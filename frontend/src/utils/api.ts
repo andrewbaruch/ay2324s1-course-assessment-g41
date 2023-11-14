@@ -11,7 +11,7 @@ const ROOTS_VIDEO = "/videostreaming";
 export const BE_API = {
   auth: {
     checkAuth: `${ROOTS_USER}/auth/checkAuth`,
-    google: `${ROOTS_USER}/auth/google`,
+    google: `/auth/google`,
     refresh: `${ROOTS_USER}/auth/refresh`,
     logout: `${ROOTS_USER}/auth/logout`,
   },
