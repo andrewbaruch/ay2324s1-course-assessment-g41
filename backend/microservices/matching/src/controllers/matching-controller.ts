@@ -51,3 +51,7 @@ export async function getMatchingStatus(
     res.status(200).json({ status: Status.Expired });
   }
 }
+
+export const healthCheck = async (req: Request, res: Response) => {
+  res.status(200).send();
+};

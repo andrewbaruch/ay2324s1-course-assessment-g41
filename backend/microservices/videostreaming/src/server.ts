@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { socketAuthMiddleware } from './middlewares/auth-middleware';
+import healthCheckRouter from "../../../shared/router/healthcheck-router"
 import Redis from 'ioredis';
 import { createAdapter } from 'socket.io-redis';
 
@@ -33,6 +34,7 @@ class ServerApp {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json({ limit: '1mb' }));
     this.app.use(cors({ origin: '*' }));
+    this.app.use('/health', healthCheckRouter);
   }
 
   // karwi: room authentication
