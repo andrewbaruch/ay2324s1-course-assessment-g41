@@ -3,6 +3,7 @@ import * as Y from "yjs";
 import * as monaco from "monaco-editor";
 import { MonacoBinding } from "y-monaco";
 import { BE_API } from "@/utils/api";
+import { HOST_API } from "@/config";
 
 export class DocumentService {
   readonly document: Y.Doc | undefined;
@@ -23,7 +24,7 @@ export class DocumentService {
 
     // Connect to peers with WebSocket
     let yProvider: HocuspocusProvider = new HocuspocusProvider({
-      url: `${process.env.NEXT_PUBLIC_HOST_API_KEY?.replace("http://", "ws://")}${BE_API.document}`,
+      url: `${HOST_API.replace("https://", "wss://")}${BE_API.document}`,
       name: roomName, // room name
       document: yDoc,
       token: this.shouldAuthRoom(),
