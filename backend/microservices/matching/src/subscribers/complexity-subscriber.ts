@@ -22,7 +22,7 @@ class ComplexitySubscriber {
 
   start() {
     this.pubSubClient.subscribeToTopic(
-      MATCHING_REQUEST_TOPIC_SUBSCRIPTION,
+      process.env.MATCHING_TOPIC_SUB || MATCHING_REQUEST_TOPIC_SUBSCRIPTION,
       (message) =>
         this.handleMessage(message, this.complexityMatchingPullService)
     );

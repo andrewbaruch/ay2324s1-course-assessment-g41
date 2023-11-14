@@ -26,6 +26,11 @@ export class Server {
       process.exit();
     }
 
+    if (!process.env.ATTEMPT_TOPIC_SUB) {
+      console.log("Missing ATTEMPT_TOPIC_SUB");
+      process.exit();
+    }
+
     this.port = port
     this.app = express()
     this.configMiddleware()

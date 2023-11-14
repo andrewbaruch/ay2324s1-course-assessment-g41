@@ -16,6 +16,11 @@ class Server {
       process.exit();
     }
 
+    if (!process.env.MATCHING_TOPIC || !process.env.MATCHING_TOPIC_SUB) {
+      console.log("Missing MATCHING_TOPIC or MATCHING_TOPIC_SUB");
+      process.exit();
+    }
+
     this.port = port;
     this.app = express();
     this.configMiddleware();
