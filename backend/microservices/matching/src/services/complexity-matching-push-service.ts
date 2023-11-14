@@ -14,7 +14,7 @@ class ComplexityMatchingPushService {
       questionComplexity,
       time: new Date().getTime(),
     });
-    this.publishToTopic(MATCHING_REQUEST_TOPIC_PUBLISH, data)
+    this.publishToTopic(process.env.MATCHING_TOPIC || MATCHING_REQUEST_TOPIC_PUBLISH, data)
   }
 
   private publishToTopic(topic: string, data: string) {

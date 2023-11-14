@@ -6,7 +6,7 @@ import { Message } from "@google-cloud/pubsub";
 class AttemptSubscriber {
   private readonly pubSubClient: typeof PubSubClient;
   // TODO: push topic into env variables
-  private readonly attemptTopic: string = "DEV_ATTEMPT_TOPIC-sub";
+  private readonly attemptTopic: string = process.env.ATTEMPT_TOPIC_SUB || "DEV_ATTEMPT_TOPIC-sub";
 
   constructor() {
     this.pubSubClient = PubSubClient;
