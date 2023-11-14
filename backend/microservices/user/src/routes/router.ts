@@ -13,6 +13,6 @@ routes.get('/languages', ResourceController.getLanguages)
 routes.use('/user', userRouter);
 routes.use('/auth', authRouter);
 
-routes.get('/', healthCheckRouter);
+routes.get('/health', healthCheckRouter);
 
 export default routes;
