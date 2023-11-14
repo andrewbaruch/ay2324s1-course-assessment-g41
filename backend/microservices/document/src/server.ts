@@ -1,3 +1,6 @@
+import cors from 'cors';
+import express from "express";
+import expressWebsockets from "express-ws";
 import { Server as HocuspocusServer } from '@hocuspocus/server'
 import { Logger } from '@hocuspocus/extension-logger'
 import broadcastRouter from './routes/broadcast-router'
@@ -13,6 +16,7 @@ import Redis from "ioredis";
 class BroadcastServer {
   readonly broadcastWebsocketServer: typeof HocuspocusServer
   readonly port: number
+  readonly app: expressWebsockets.Application;
 
   constructor() {
     const port = process.env.SERVER_PORT
@@ -43,10 +47,34 @@ class BroadcastServer {
 
     this.port = parseInt(port)
     this.broadcastWebsocketServer = this.createAndConfigureWebsocketServer()
+    const { app } = expressWebsockets(express());
+    this.app = app;
+    this.configMiddleware();
+    this.configRouter();
   }
 
   start() {
-    this.broadcastWebsocketServer.listen(this.port)
+    this.app.listen(this.port, () => {
+      console.log(`Broadcast server is listening on port "${this.port}"!`);
+    })
+    // this.broadcastWebsocketServer.listen(this.port)
+  }
+
+  private configMiddleware() {
+    this.app.use(cors({
+      origin: '*',
+    }));
+  }
+
+  private configRouter() {
+    this.app.get("/", (req, res) => {
+      // for health check
+      res.status(200).send();
+    });
+
+    this.app.ws("/document", (websocket, request) => {
+      this.broadcastWebsocketServer.handleConnection(websocket, request);
+    });
   }
 
   private createAndConfigureWebsocketServer() {
