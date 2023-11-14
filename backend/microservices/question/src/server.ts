@@ -29,7 +29,7 @@ class Server {
     private configRouter() {
         // NOTE: Central router if necessary
         this.app.use('/question', router);
-        this.app.get('/health', healthCheckRouter);
+        this.app.use('/health', healthCheckRouter);
     }
 
     public start() {
