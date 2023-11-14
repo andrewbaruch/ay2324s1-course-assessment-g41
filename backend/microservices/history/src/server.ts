@@ -51,7 +51,13 @@ export class Server {
     this.app.use(bodyParser.json())
     this.app.use(cookieParser())
     this.app.use(cors({
-      origin: ["peerprep.dev", "www.peerprep.dev", "api.peerprep.dev", "www.api.peerprep.dev:3000", "localhost:3000" ],
+      origin: [
+        "https://peerprep.dev",
+        "https://www.peerprep.dev",
+        "https://api.peerprep.dev",
+        "https://www.api.peerprep.dev:3000",
+        "http://localhost:3000"
+      ],
       credentials: true,
     }));
   }

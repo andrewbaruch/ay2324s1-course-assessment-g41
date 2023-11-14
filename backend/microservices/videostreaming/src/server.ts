@@ -20,7 +20,13 @@ class ServerApp {
     this.httpServer = createServer(this.app);
     this.io = new SocketIOServer(this.httpServer, {
       cors: {
-        origin: ["peerprep.dev", "www.peerprep.dev", "api.peerprep.dev", "www.api.peerprep.dev:3000", "localhost:3000" ],
+        origin: [
+        "https://peerprep.dev",
+        "https://www.peerprep.dev",
+        "https://api.peerprep.dev",
+        "https://www.api.peerprep.dev:3000",
+        "http://localhost:3000"
+      ],
         credentials: true,
       },
       path: '/videostreaming/socket.io', // Set custom path here
@@ -34,7 +40,13 @@ class ServerApp {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json({ limit: '1mb' }));
     this.app.use(cors({
-      origin: ["peerprep.dev", "www.peerprep.dev", "api.peerprep.dev", "www.api.peerprep.dev:3000", "localhost:3000" ],
+      origin: [
+        "https://peerprep.dev",
+        "https://www.peerprep.dev",
+        "https://api.peerprep.dev",
+        "https://www.api.peerprep.dev:3000",
+        "http://localhost:3000"
+      ],
       credentials: true,
     }));
     this.app.use('/health', healthCheckRouter);
