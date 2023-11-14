@@ -42,7 +42,7 @@ class Server {
 
   private configRouter() {
     // NOTE: Central router if necessary
-    this.app.use("/", routes);
+    this.app.use("/matching", routes);
   }
 
   public start() {
