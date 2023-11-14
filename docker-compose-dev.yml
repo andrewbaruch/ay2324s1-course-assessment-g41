@@ -49,6 +49,14 @@ services:
     networks:
       - backend
 
+  redis-videostreaming:
+    container_name: redis-videostreaming
+    image: redis:latest
+    ports:
+      - "6381:6379"
+    networks:
+      - backend
+
   videostreaming:
     container_name: videostreaming
     build:
@@ -63,10 +71,10 @@ services:
     networks:
       - backend
     depends_on:
-      - redis
+      - redis-videostreaming
     environment:
       <<: *common-variables
-      REDIS_URL: rediss://default:abe53920082242ca86a2ecf741fe86fb@engaged-hedgehog-38273.upstash.io:38273
+      REDIS_URL: redis://redis-videostreaming:6379
 
   question:
     container_name: question
@@ -244,6 +252,8 @@ services:
     restart: on-failure
     networks:
       - backend
+    depends_on:
+      - redis
     environment:
       <<: *common-variables
       GOOGLE_APPLICATION_CREDENTIALS: "/home/microservices/matching/key.json"
