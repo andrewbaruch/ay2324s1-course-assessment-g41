@@ -34,7 +34,7 @@ class ServerApp {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json({ limit: '1mb' }));
     this.app.use(cors({ origin: '*' }));
-    this.app.get('/', healthcheckrouter);
+    this.app.get('/health', healthcheckrouter);
   }
 
   // karwi: room authentication

@@ -50,7 +50,7 @@ export class Server {
 
   private configRouter() {
     this.app.use('/room', roomRouter)
-    this.app.use('/', healthCheckRouter)
+    this.app.use('/health', healthCheckRouter)
   }
 }
 
