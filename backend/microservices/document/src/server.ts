@@ -36,6 +36,11 @@ class BroadcastServer {
       process.exit();
     }
 
+    if (!process.env.ATTEMPT_TOPIC) {
+      console.log("Missing ATTEMPT_TOPIC");
+      process.exit();
+    }
+
     this.port = parseInt(port)
     this.broadcastWebsocketServer = this.createAndConfigureWebsocketServer()
   }
