@@ -11,7 +11,7 @@ import useNotAuthenticated from "@/hooks/guards/useNotAuthenticated";
 
 // Custom Chakra theme
 
-interface AuthProps extends PropsWithChildren { }
+interface AuthProps extends PropsWithChildren {}
 
 export default function AuthLayout({ children }: AuthProps) {
   useNotAuthenticated();
