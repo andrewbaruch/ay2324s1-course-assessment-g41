@@ -22,7 +22,8 @@ class Server {
         this.app.use(cookieParser()); 
 
         this.app.use(cors({
-            origin: '*',
+            origin: ["peerprep.dev", "www.peerprep.dev", "api.peerprep.dev", "www.api.peerprep.dev:3000", "localhost:3000" ],
+            credentials: true,
         }));
     }
 
