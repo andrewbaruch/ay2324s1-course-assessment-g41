@@ -114,7 +114,7 @@ const useManageAttempt = ({
     try {
       log("createNewAttempt: Creating attempt on new attempt");
       const newAttempt = await serverCreateNewAttempt({ roomName });
-      console.log('server create attempt', newAttempt);
+      console.log("server create attempt", newAttempt);
       upsertDocumentValue({
         sharedKey: "attemptId",
         valueToUpdate: newAttempt.attemptId,
@@ -133,14 +133,14 @@ const useManageAttempt = ({
       });
 
       resetTextInDocument({ document, defaultText: newAttempt.text });
-      
+
       setCurrentAttempt({
         attemptId: newAttempt.attemptId,
         question: newAttempt.question as Question | null,
         language: newAttempt.language,
       });
     } catch (err) {
-      logError("createAttempt: Error occurred", err)
+      logError("createAttempt: Error occurred", err);
     }
   };
 

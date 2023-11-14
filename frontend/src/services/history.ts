@@ -6,10 +6,10 @@ import authorizedAxios from "@/utils/axios/authorizedAxios";
 import QuestionService from "./question";
 
 const createNewAttempt = async ({ roomName }: { roomName: string }) => {
-  const response = await authorizedAxios.post(`${BE_API.history}/${roomName}`)
-  console.log('retrieve response', response);
+  const response = await authorizedAxios.post(`${BE_API.history}/${roomName}`);
+  console.log("retrieve response", response);
   return response.data;
-}
+};
 
 const fetchQuestionFromAttempt = (attempt: {
   questionId: string;
