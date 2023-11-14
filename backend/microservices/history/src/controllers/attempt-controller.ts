@@ -13,12 +13,30 @@ export async function getAttempt(req: Request, res: Response) {
   return
 }
 
+export async function createAttemptInRoom(req: Request, res: Response) {
+  const { roomName } = req.params;
+  let doc = await AttemptService.findAllAttemptsFrom(roomName);
+  const newAttemptId = Math.max(...doc.map((attempt) => attempt.attemptId) as number[]) + 1;
+  await AttemptService.upsertAttempt({
+    attemptId: newAttemptId,
+    questionId: null,
+    roomName,
+    text: "",
+    language: {
+      label: "Plain Text",
+      value: "plaintext"
+    }
+  });
+  const newAttempt = await AttemptService.findAttemptFromDatabase(newAttemptId, roomName);
+  res.status(200).json(newAttempt);
+}
+
 export async function getAllAttemptsInRoom(req: Request, res: Response) {
   const { roomName } = req.params;
   let doc = await AttemptService.findAllAttemptsFrom(roomName);
   if (doc.length === 0) {
     // create default attempt for room
-    const defaultAttempt = await AttemptService.upsertAttempt({
+    await AttemptService.upsertAttempt({
       attemptId: 1,
       questionId: null,
       roomName,
@@ -28,6 +46,7 @@ export async function getAllAttemptsInRoom(req: Request, res: Response) {
         value: "plaintext"
       }
     })
+    const defaultAttempt = await AttemptService.findAttemptFromDatabase(1, roomName);
     if (defaultAttempt) {
       doc.push(defaultAttempt);
     }

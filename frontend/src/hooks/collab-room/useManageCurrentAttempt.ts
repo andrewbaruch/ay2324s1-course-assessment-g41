@@ -1,6 +1,6 @@
 import { Language } from "@/@types/language";
 import { Question } from "@/@types/models/question";
-import { getAttempt } from "@/services/history";
+import { getAttempt, createNewAttempt as serverCreateNewAttempt } from "@/services/history";
 import { resetTextInDocument, sendAttemptToDocServer, upsertDocumentValue } from "@/utils/document";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { useEffect, useState } from "react";
@@ -87,7 +87,7 @@ const useManageAttempt = ({
     });
   }, [sharedAttemptId, sharedLanguage, sharedQuestion]);
 
-  const createNewAttempt = () => {
+  const createNewAttempt = async () => {
     if (!provider || !document) {
       log("createNewAttempt: Provider and document are not initiated, no attempt to create");
 
@@ -111,29 +111,37 @@ const useManageAttempt = ({
       });
     }
     // create new attempt
-    log("createNewAttempt: Creating attempt on new attempt", listOfSavedAttempts.length + 1);
+    try {
+      log("createNewAttempt: Creating attempt on new attempt");
+      const newAttempt = await serverCreateNewAttempt({ roomName });
+      console.log('server create attempt', newAttempt);
+      upsertDocumentValue({
+        sharedKey: "attemptId",
+        valueToUpdate: newAttempt.attemptId,
+        document,
+      });
+      upsertDocumentValue({
+        sharedKey: "language",
+        valueToUpdate: newAttempt.language,
+        document,
+      });
 
-    const newAttemptId = Math.max(...listOfSavedAttempts.map((attempt) => attempt.attemptId)) + 1;
-    upsertDocumentValue({
-      sharedKey: "attemptId",
-      valueToUpdate: newAttemptId,
-      document,
-    });
-    resetTextInDocument({ document });
-    sendAttemptToDocServer({
-      provider,
-      attemptId: newAttemptId,
-      language,
-      text: "",
-      questionId: null,
-    });
+      upsertDocumentValue({
+        sharedKey: "question",
+        valueToUpdate: newAttempt.question,
+        document,
+      });
 
-    setCurrentAttempt({
-      ...currentAttempt,
-      attemptId: newAttemptId,
-      question: null,
-      language: language,
-    });
+      resetTextInDocument({ document, defaultText: newAttempt.text });
+      
+      setCurrentAttempt({
+        attemptId: newAttempt.attemptId,
+        question: newAttempt.question as Question | null,
+        language: newAttempt.language,
+      });
+    } catch (err) {
+      logError("createAttempt: Error occurred", err)
+    }
   };
 
   const toggleToAttempt = async (nextAttemptId: number) => {
