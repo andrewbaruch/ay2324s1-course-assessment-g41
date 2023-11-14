@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import express from 'express'
 import roomRouter from './routes/room-router';
+import healthCheckRouter from "../../../shared/router/healthcheck-router";
 
 export class Server {
   private app
@@ -49,6 +50,7 @@ export class Server {
 
   private configRouter() {
     this.app.use('/room', roomRouter)
+    this.app.use('/', healthCheckRouter)
   }
 }
 

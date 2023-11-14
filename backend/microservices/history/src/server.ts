@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import express from 'express'
 import attemptRouter from "@/routes/attempt-router";
 import AttemptSubscriber from "@/subscribers/attempt-subscriber";
+import healthCheckRouter from "../../../shared/router/healthcheck-router";
 
 export class Server {
   private app
@@ -56,6 +57,7 @@ export class Server {
 
   private configRouter() {
     this.app.use('/history', attemptRouter)
+    this.app.use('/', healthCheckRouter)
   }
 }
 
