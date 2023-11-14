@@ -7,3 +7,5 @@ data:
   COLLAB_SERVICE_ENDPOINT: "http://collab-service:80/collaboration"
   MATCHING_REQUEST_REDIS_URL: "redis://redis:6379"
   MATCHING_PAIR_REDIS_URL: "redis://redis:6379"
+  MATCHING_TOPIC: "PROD_MATCHING_TOPIC"
+  MATCHING_TOPIC_SUB: "PROD_MATCHING_TOPIC-sub"

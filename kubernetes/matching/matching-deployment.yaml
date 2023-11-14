@@ -17,6 +17,10 @@ spec:
         image: asia-southeast1-docker.pkg.dev/cs3219-402414/peerprepimages/matching:latest
         ports:
         - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
         envFrom:
         - configMapRef:
             name: global-config
