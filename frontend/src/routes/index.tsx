@@ -28,22 +28,6 @@ const routes: IRoute[] = [
     secondary: true,
   },
   {
-    name: "Peer Coding",
-    layout: "",
-    path: "/peercoding",
-    icon: <Icon as={MdLink} width="20px" height="20px" color="inherit" />,
-    // component: NFTMarketplace,
-    secondary: true,
-  },
-  {
-    name: "Collab Room",
-    layout: "",
-    path: "/collab-room",
-    icon: <Icon as={MdLink} width="20px" height="20px" color="inherit" />,
-    // component: NFTMarketplace,
-    secondary: true,
-  },
-  {
     name: "Past Attempts",
     layout: "",
     path: "/attempts",

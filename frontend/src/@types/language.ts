@@ -4,6 +4,9 @@ export interface Language {
 }
 
 export type LanguageRequest = Partial<Language>;
-export type LanguageResponse = Language;
+export type LanguageResponse = {
+  id: string;
+  name: string;
+};
 
 export type LanguagesResponse = LanguageResponse[];

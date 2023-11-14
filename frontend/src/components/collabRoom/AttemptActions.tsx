@@ -12,7 +12,7 @@ const AttemptActions = () => {
     (attempt) => attempt.attemptId === currentAttempt.attemptId,
   );
 
-  console.log(currentPage, "currentPage", listOfAttempts);
+  // console.log(currentPage, "currentPage", listOfAttempts);
 
   const handlePageChange = useCallback(
     async (pageIndex: number) => {
@@ -27,6 +27,7 @@ const AttemptActions = () => {
   useEffect(() => {
     // on mount, create a new attempt
     handlePageChange(1); // Set the first page as default display
+    // karwi: fix deps
   }, []);
 
   const handleNewAttempt = () => {
@@ -65,7 +66,7 @@ const AttemptActions = () => {
               onClick={handleSaveAttempt}
               colorScheme="green"
               variant="outline"
-              isDisabled={currentPage <= 0}
+              isDisabled={currentPage < 0}
             />
           </>
         )}

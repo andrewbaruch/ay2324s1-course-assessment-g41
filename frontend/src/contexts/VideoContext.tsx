@@ -12,6 +12,14 @@ import io, { Socket } from "socket.io-client";
 import { HOST_API } from "@/config";
 import { useToast } from "@chakra-ui/react";
 
+const log = (message: string, data: any = {}) => {
+  console.log(`[VideoContext] ${message}`, data);
+};
+
+const logError = (message: string, error: any = {}) => {
+  console.error(`[VideoContext Error] ${message}`, error);
+};
+
 interface VideoContextValue {
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
@@ -86,7 +94,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
           isClosable: true,
         });
       } catch (error) {
-        console.error("Error accessing media devices.", error);
+        logError("Error accessing media devices.", error);
         toast({
           title: "Failed to start local stream",
           description: String(error),
@@ -102,11 +110,11 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   );
 
   const stopLocalStream = useCallback(() => {
-    console.log("VideoContext: stopLocalStream");
+    log("stopLocalStream");
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
       setLocalStream(null);
-      console.log("VideoContext: emit streamStopped");
+      log("emit streamStopped");
       socket.current?.emit("streamStopped", { roomId });
     }
   }, [localStream, socket, roomId]);
@@ -150,7 +158,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       });
 
       peer.on("error", (err) => {
-        console.error("VideoContext: Peer connection error:", err);
+        logError("Peer connection error:", err);
         toast({
           title: "Peer Connection Error",
           description: String(err),
@@ -161,11 +169,11 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
       });
 
       peer.on("connect", () => {
-        console.log("VideoContext: Peer connection established");
+        log("Peer connection established");
       });
 
       peer.on("close", () => {
-        console.log("VideoContext: Peer connection closed");
+        log("Peer connection closed");
       });
 
       peer.on("stream", setRemoteStream);
@@ -199,7 +207,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
 
   const answerCall = useCallback(
     (signal: SignalData) => {
-      console.log("VideoContext: Answering call");
+      log("Answering call");
       const peer = createAndSetupPeer(false, signal);
 
       peer.on("signal", (data) => {
@@ -219,7 +227,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   );
 
   const leaveCall = useCallback(() => {
-    console.log("VideoContext: Leaving call");
+    log("Leaving call");
     // Close call peer connection
     if (callPeerConnectionRef.current) {
       callPeerConnectionRef.current.destroy();
@@ -245,10 +253,10 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, []);
 
   useEffect(() => {
-    console.log("VideoContext: Setting up socket event listeners");
+    log("Setting up socket event listeners");
 
     socket.current?.on("connect", () => {
-      console.log("VideoContext: Successfully connected to socket server");
+      log("Successfully connected to socket server");
       toast({
         title: "Connected",
         description: "Connected to the socket server.",
@@ -259,7 +267,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     });
 
     socket.current?.on("error", (error) => {
-      console.error("VideoContext: Socket error: ", error);
+      logError("Socket error: ", error);
       toast({
         title: "Socket Error",
         description: "An error occurred with the socket connection.",
@@ -270,7 +278,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     });
 
     socket.current?.on("callUser", (data) => {
-      console.log("VideoContext: Received call from peer");
+      log("Received call from peer");
       toast({
         title: "Incoming Call",
         description: "You're receiving a call.",
@@ -282,7 +290,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     });
 
     socket.current?.on("callAccepted", (signal) => {
-      console.log("VideoContext: Call accepted by peer");
+      log("Call accepted by peer");
       toast({
         title: "Call Accepted",
         description: "Your call has been accepted.",
@@ -296,7 +304,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     });
 
     socket.current?.on("streamStopped", () => {
-      console.log("VideoContext: Remote peer's stream stopped.");
+      log("Remote peer's stream stopped.");
       setRemoteStream(null);
       toast({
         title: "Stream Stopped",
@@ -333,7 +341,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     });
 
     return () => {
-      console.log("VideoContext: Cleaning up socket event listeners");
+      log("Cleaning up socket event listeners");
       socket.current?.off("callUser");
       socket.current?.off("callAccepted");
       socket.current?.off("error");
@@ -344,7 +352,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
   }, [answerCall, socket, toast]);
 
   useEffect(() => {
-    console.log("VideoContext: Checking for call initiation or reinitiation.");
+    log("Checking for call initiation or reinitiation.");
 
     // Initiate or reinitiate call if room ID is set and either:
     // - The local stream has been updated and not null
@@ -357,9 +365,7 @@ export const VideoContextProvider: React.FC<VideoContextProviderProps> = ({ chil
     prevLocalStreamRef.current = localStream;
 
     return () => {
-      console.log(
-        "VideoContext: Leaving call due to component unmount, room ID change, or local stream update.",
-      );
+      console.log("Leaving call due to component unmount, room ID change, or local stream update.");
       leaveCall();
     };
   }, [roomId, localStream, callPeer, leaveCall]);

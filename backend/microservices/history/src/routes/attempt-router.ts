@@ -7,6 +7,7 @@ attemptRouter.use(authJWT);
 attemptRouter.get('/:roomName/:attemptId', AttemptController.getAttempt)
 attemptRouter.get('/:roomName', AttemptController.getAllAttemptsInRoom)
 attemptRouter.get('/', AttemptController.getAttemptsByUser)
+attemptRouter.post('/:roomName', AttemptController.createAttemptInRoom)
 
 
 export default attemptRouter

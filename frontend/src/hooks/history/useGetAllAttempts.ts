@@ -13,9 +13,14 @@ export const useGetAllAttempts = ({
 
   useEffect(() => {
     const getAttempts = async () => {
-      const allAttempts = await HistoryService.getAllAttemptsInRoom(roomName);
-      setAttempts(allAttempts);
+      try {
+        const allAttempts = await HistoryService.getAllAttemptsInRoom(roomName);
+        setAttempts((prevAttempts) => allAttempts);
+      } catch (err) {
+        console.log(err, "get all attempts error");
+      }
     };
+    // server will create a default attempt
     getAttempts();
   }, [roomName, currentAttempt]);
 
