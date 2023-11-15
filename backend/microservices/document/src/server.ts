@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from "express";
 import expressWebsockets from "express-ws";
-import { Server as HocuspocusServer } from '@hocuspocus/server'
+import { onUpgradePayload, Server as HocuspocusServer } from '@hocuspocus/server'
 import { Logger } from '@hocuspocus/extension-logger'
 import broadcastRouter from './routes/broadcast-router'
 import { Redis as ExtensionRedis } from '@hocuspocus/extension-redis'
@@ -105,6 +105,16 @@ class BroadcastServer {
         this.emitEvent(`SAVED_DOCUMENT_${data.documentName}`)
       },
       onStateless: broadcastRouter.onStateless,
+      onUpgrade: async (data: onUpgradePayload) => {
+        console.log("========= UPGRADE RESPONSE ==========")
+        console.log("head", data.head)
+        console.log("socket", data.socket)
+        console.log("socket", data.instance)
+        console.log("request", data.request);
+        return new Promise<void>((resolve, reject) => {
+          resolve();
+        });
+      },
       onDisconnect: broadcastRouter.onDisconnect,
     })
   }
