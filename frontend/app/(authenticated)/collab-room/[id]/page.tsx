@@ -23,7 +23,7 @@ interface CollabRoomContainerProps {
 const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => {
   const { id } = params;
 
-  // useRoomAccess(id);
+  useRoomAccess(id);
   const router = useRouter();
 
   const handleClose = (provider: HocuspocusProvider | null) => {

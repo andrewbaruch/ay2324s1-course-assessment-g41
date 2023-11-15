@@ -12,8 +12,9 @@ const autoSaveAttempt = (data: onStoreDocumentPayload) => {
 
 const checkAuthForUser = async (data: onAuthenticatePayload) => {
   console.log("REQUEST HEADERS FOR AUTH", data.requestHeaders);
-  const token = parseCookie(data.requestHeaders.cookie || "");
-  const userId = AuthService.verifyUserExists(token)
+  // const token = parseCookie(data.requestHeaders.cookie || "");
+  // const userId = AuthService.verifyUserExists(token)
+  const userId = data.token;
   const promiseVerifications = [RoomService.verifyUserBelongsInRoom(userId, data.documentName), RoomService.verifyRoomIsOpen(data.documentName)] 
   try {
     await Promise.all(promiseVerifications)

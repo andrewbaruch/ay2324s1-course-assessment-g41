@@ -9,15 +9,15 @@ export class DocumentService {
   readonly provider: HocuspocusProvider | undefined;
   readonly binding: MonacoBinding | undefined;
 
-  constructor(roomName: string, editor: any) {
-    const { document, provider } = this.initWsConnection(roomName);
+  constructor(roomName: string, editor: any, userId: string) {
+    const { document, provider } = this.initWsConnection(roomName, userId);
     this.document = document;
     this.provider = provider;
     const { binding } = this.bindDocumentToMonacoEditor(editor);
     this.binding = binding;
   }
 
-  private initWsConnection(roomName: string) {
+  private initWsConnection(roomName: string, userId: string) {
     // Initialise yjs
     let yDoc: Y.Doc = new Y.Doc();
 
@@ -26,7 +26,7 @@ export class DocumentService {
       url: `${HOST_API.replace("https://", "wss://")}${BE_API.document}`,
       name: roomName, // room name
       document: yDoc,
-      token: "true",
+      token: userId,
     });
 
     return { document: yDoc, provider: yProvider };
