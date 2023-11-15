@@ -3,6 +3,8 @@ import { CacheName } from "src/@types/cache";
 import { PATH_AUTH } from "src/routes/paths";
 import { checkAuth, loginWithGoogle, logoutWithGoogle } from "@/services/auth";
 import { getUser } from "src/services/users";
+import authorizedAxios from "@/utils/axios/authorizedAxios";
+import { BE_API } from "@/utils/api";
 
 const isPublicUrl = (url: string) => [PATH_AUTH.general.login].includes(url);
 const deleteCache = (name: CacheName) =>
@@ -10,9 +12,14 @@ const deleteCache = (name: CacheName) =>
     .open(name)
     .then((cache) => cache.keys().then((requests) => requests.map((req) => cache.delete(req))));
 
-const verifyRoomAccess = (roomId: string) => {
+const verifyRoomAccess = async (roomId: string) => {
   // TODO: implement check room access
-  return true;
+  console.log("VERIFYING ROOM ACCESS");
+  await authorizedAxios.get(`${BE_API.collaboration.room}/${roomId}/access`);
+  const response = await authorizedAxios.get(`${BE_API.collaboration.room}/${roomId}/status`);
+  const { isOpen } = response.data;
+  console.log("VERIFIED", isOpen);
+  return isOpen;
 };
 
 export const googleAuthProvider: AuthProvider = {
@@ -47,6 +54,8 @@ export const googleAuthProvider: AuthProvider = {
     if (isPublicUrl(window.location.hash)) {
       return;
     }
+
+    console.log("HIT FIND ROOM NAME", roomId);
 
     // If roomId is provided, use it to check if the current user has access to that room
     if (roomId) {

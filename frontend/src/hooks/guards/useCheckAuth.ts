@@ -57,12 +57,15 @@ const useCheckAuth = (): CheckAuth => {
   useTrackDependencies("useCheckAuth", [authProvider, toast, logout]);
 
   const checkAuth = useCallback(
-    async ({
-      logoutOnError = true,
-      disableNotification = false,
-      redirectTo = PATH_AUTH.general.login,
-      message = "Please log in to continue",
-    }) => {
+    async (
+      {
+        logoutOnError = true,
+        disableNotification = false,
+        redirectTo = PATH_AUTH.general.login,
+        message = "Please log in to continue",
+      },
+      roomId: string | undefined,
+    ) => {
       const callLogout = () => {
         if (!disableNotification) {
           toast({
@@ -80,7 +83,17 @@ const useCheckAuth = (): CheckAuth => {
       };
 
       try {
-        await authProvider.checkAuth();
+        console.log("hit auth provider check auth");
+        await authProvider.checkAuth(
+          {
+            logoutOnError,
+            disableNotification,
+            redirectTo: PATH_AUTH.root,
+            message:
+              "You do not have permission to enter the room. The room has either been closed or this is not your room.",
+          },
+          roomId,
+        );
       } catch (error) {
         callLogout();
         throw error;

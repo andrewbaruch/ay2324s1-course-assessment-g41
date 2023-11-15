@@ -13,6 +13,7 @@ import useManageUsersInRoom from "@/hooks/collab-room/useManageUsersInRoom";
 import { useMatchingContext } from "@/contexts/MatchingContext";
 import useManageQuestionsInRoom from "@/hooks/collab-room/useManageQuestions";
 import { useRouter } from "next/navigation";
+import useRoomAccess from "@/hooks/guards/useRoomAccess";
 
 interface CollabRoomContainerProps {
   params: { id: string };
@@ -22,6 +23,7 @@ interface CollabRoomContainerProps {
 const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => {
   const { id } = params;
   const router = useRouter();
+  useRoomAccess(id);
 
   const handleClose = (provider: HocuspocusProvider | null) => {
     if (!provider) return;

@@ -5,7 +5,7 @@ import { RoomUser } from "@/models/room-user";
 
 export class RoomService {
   static async openRoom(roomName: string, userId: string) {
-    if (!RoomService.doesUserHaveAccessToRoom(userId, roomName)) {
+    if (!(await RoomService.doesUserHaveAccessToRoom(userId, roomName))) {
       throw new Error(`This user does not have access to the room.`)
     }
     const updatedRoom = await knexPgClient("Room").where("name", roomName).update({
@@ -15,7 +15,7 @@ export class RoomService {
   }
 
   static async closeRoom(roomName: string, userId: string) {
-    if (!RoomService.doesUserHaveAccessToRoom(userId, roomName)) {
+    if (!(await RoomService.doesUserHaveAccessToRoom(userId, roomName))) {
       throw new Error(`This user does not have access to the room.`)
     }
 
@@ -34,7 +34,8 @@ export class RoomService {
     const { roomName } = await RoomService.generateRoomName();
     console.log('write into db', userId1, userId2)
     const room: Room[] = await knexPgClient("Room").insert({
-      name: roomName
+      name: roomName,
+      isOpen: true, // let room be open on creation
     }, ["id", "name", "isOpen"])
 
     const toInsert = [{ roomName, userId: userId1 }, { roomName, userId: userId2 }];
