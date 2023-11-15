@@ -3,7 +3,6 @@
   metadata:
     name: ingress
     annotations:
-      kubernetes.io/ingress.allow-http: "false"
       networking.gke.io/managed-certificates: managed-cert
       kubernetes.io/ingress.global-static-ip-name: peerprep-ip
   spec:

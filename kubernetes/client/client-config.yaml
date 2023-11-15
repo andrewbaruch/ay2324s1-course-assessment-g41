@@ -5,3 +5,4 @@ metadata:
 data:
   NEXT_PUBLIC_HOST_API_KEY: "https://api.peerprep.dev/"
   NEXT_PUBLIC_DEBUG: "false"
+  NEXT_PUBLIC_SHOULD_AUTH_ROOM: "true"
