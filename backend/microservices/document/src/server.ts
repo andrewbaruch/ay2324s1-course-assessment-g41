@@ -91,7 +91,7 @@ class BroadcastServer {
       onListen: async (data) => {
         console.log(`Broadcast server is listening on port "${data.port}"!`);
       },
-      onAuthenticate: broadcastRouter.onAuthenticate,
+      // onAuthenticate: broadcastRouter.onAuthenticate,
       onStoreDocument: async (data) => {
         this.emitEvent(`SAVING_DOCUMENT_${data.documentName}`)
         await broadcastRouter.onStoreDocument(data)
