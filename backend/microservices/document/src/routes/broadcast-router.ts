@@ -2,9 +2,9 @@ import { Extension, onAuthenticatePayload, onChangePayload, onDisconnectPayload,
 import * as BroadcastController from "@/controllers/broadcast-controller";
 
 class BroadcastRouter implements Extension {
-  async onAuthenticate(data: onAuthenticatePayload) {
-    await BroadcastController.checkAuthForUser(data)
-  }
+  // async onAuthenticate(data: onAuthenticatePayload) {
+  //   await BroadcastController.checkAuthForUser(data)
+  // }
 
   /**
    * Calls to store the attempt at debounced. 
