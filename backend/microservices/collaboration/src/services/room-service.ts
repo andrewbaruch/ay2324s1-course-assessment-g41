@@ -34,7 +34,8 @@ export class RoomService {
     const { roomName } = await RoomService.generateRoomName();
     console.log('write into db', userId1, userId2)
     const room: Room[] = await knexPgClient("Room").insert({
-      name: roomName
+      name: roomName,
+      isOpen: true, // let room be open on creation
     }, ["id", "name", "isOpen"])
 
     const toInsert = [{ roomName, userId: userId1 }, { roomName, userId: userId2 }];

@@ -25,7 +25,8 @@ export async function openRoom(req: Request, res: Response) {
 
 export async function checkUserInRoom(req: Request, res: Response) {
   const { roomName } = req.params;
-  const { userId }: { userId: string } = req.body
+  const userId: string = res.locals.userId;
+  // const { userId }: { userId: string } = req.body
   try {
     await RoomService.doesUserHaveAccessToRoom(userId, roomName)
     res.status(200).send()
@@ -35,6 +36,7 @@ export async function checkUserInRoom(req: Request, res: Response) {
 }
 
 export async function isRoomOpen(req: Request, res: Response) {
+  console.log('IS THIS CALLED');
   const { roomName } = req.params;
   try {
     const isOpen = await RoomService.isRoomOpen(roomName)
