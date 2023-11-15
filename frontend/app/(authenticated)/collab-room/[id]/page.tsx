@@ -1,7 +1,7 @@
 "use client";
 
 // pages/CollabRoomContainer.tsx
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import CollabRoom from "@/components/collabRoom/CollabRoom";
 import { CodeEditor } from "@/views/codeEditor";
 import { useDocumentProvider } from "@/hooks/room/useDocumentProvider";
@@ -23,7 +23,7 @@ interface CollabRoomContainerProps {
 const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => {
   const { id } = params;
 
-  useRoomAccess(id);
+  const { hasRoomAccess } = useRoomAccess(id);
   const router = useRouter();
 
   const handleClose = (provider: HocuspocusProvider | null) => {
@@ -43,6 +43,12 @@ const CollabRoomContainer: React.FC<CollabRoomContainerProps> = ({ params }) => 
     complexity,
     document,
   });
+
+  useEffect(() => {
+    if (!hasRoomAccess) {
+      router.push("/dashboard");
+    }
+  }, [hasRoomAccess]);
 
   return (
     <VideoContextProvider roomId={id}>
