@@ -2,9 +2,12 @@ import { Extension, onAuthenticatePayload, onChangePayload, onDisconnectPayload,
 import * as BroadcastController from "@/controllers/broadcast-controller";
 
 class BroadcastRouter implements Extension {
-  // async onAuthenticate(data: onAuthenticatePayload) {
-  //   await BroadcastController.checkAuthForUser(data)
-  // }
+  async onAuthenticate(data: onAuthenticatePayload) {
+    console.log("THIS IS THE AUTH PATH");
+    console.log("REQUEST HEADERS", data.requestHeaders);
+    console.log("REQUEST PARAMS", data.requestParameters);
+    // await BroadcastController.checkAuthForUser(data)
+  }
 
   /**
    * Calls to store the attempt at debounced. 
