@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { DocumentService } from "@/services/document";
 import { useToast } from "@chakra-ui/react";
 import MatchingService from "@/services/matching";
-import useGetIdentity from "../auth/useGetIdentity";
 
 /**
  * Hook that binds the document to the editor and provides the shared document
@@ -13,19 +12,14 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
   const [editor, setEditor] = useState<any>(null);
   const [documentService, setDocumentService] = useState<DocumentService | null>(null);
   const toast = useToast();
-  const { identity } = useGetIdentity();
 
   useEffect(() => {
     if (!editor) {
       return;
     }
 
-    if (!identity || !identity.id) {
-      return;
-    }
-
     // once editor is mounted, initialise the room service to bind editor to websocket broadcast
-    const docService = new DocumentService(roomName, editor, identity.id);
+    const docService = new DocumentService(roomName, editor);
     if (docService && docService.provider) {
       console.log("listen to auth event");
       docService.provider.on("authenticationFailed", () => {
@@ -56,7 +50,7 @@ export const useDocumentProvider = ({ roomName }: { roomName: string }) => {
       documentService?.provider?.disconnect();
       MatchingService.removeMatchingPair();
     };
-  }, [editor, identity]);
+  }, [editor]);
 
   const handleEditorMount = (editor: any) => {
     setEditor(editor);
