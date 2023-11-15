@@ -5,7 +5,7 @@ import { RoomUser } from "@/models/room-user";
 
 export class RoomService {
   static async openRoom(roomName: string, userId: string) {
-    if (!RoomService.doesUserHaveAccessToRoom(userId, roomName)) {
+    if (!(await RoomService.doesUserHaveAccessToRoom(userId, roomName))) {
       throw new Error(`This user does not have access to the room.`)
     }
     const updatedRoom = await knexPgClient("Room").where("name", roomName).update({
@@ -15,7 +15,7 @@ export class RoomService {
   }
 
   static async closeRoom(roomName: string, userId: string) {
-    if (!RoomService.doesUserHaveAccessToRoom(userId, roomName)) {
+    if (!(await RoomService.doesUserHaveAccessToRoom(userId, roomName))) {
       throw new Error(`This user does not have access to the room.`)
     }
 

@@ -28,7 +28,12 @@ export async function checkUserInRoom(req: Request, res: Response) {
   const userId: string = res.locals.userId;
   // const { userId }: { userId: string } = req.body
   try {
-    await RoomService.doesUserHaveAccessToRoom(userId, roomName)
+    const hasAcces = await RoomService.doesUserHaveAccessToRoom(userId, roomName)
+    if (!hasAcces) {
+      res.status(403).send();
+      return;
+    }
+    
     res.status(200).send()
   } catch (err) {
     res.status(403).send()

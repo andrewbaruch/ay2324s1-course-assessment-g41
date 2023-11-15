@@ -4,9 +4,7 @@ import packageJson from "../package.json";
 
 // API
 
-export const HOST_API = "http://localhost:3000";
-
-// "https://api.peerprep.dev";
+export const HOST_API = "https://api.peerprep.dev";
 
 // UTILS
 
