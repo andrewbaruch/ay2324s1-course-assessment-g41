@@ -26,7 +26,7 @@ export class DocumentService {
       url: `${HOST_API.replace("https://", "wss://")}${BE_API.document}`,
       name: roomName, // room name
       document: yDoc,
-      token: this.shouldAuthRoom(),
+      token: "true",
     });
 
     return { document: yDoc, provider: yProvider };
