@@ -103,7 +103,7 @@ class ServerApp {
     // Attach the adapter to your Socket.IO server
     this.io.adapter(redisAdapter);
 
-    this.io.use(socketAuthMiddleware);
+    // this.io.use(socketAuthMiddleware);
 
     this.io.on('connection', async (socket) => {
       console.log(`Connected client with ID: ${socket.id}`);
