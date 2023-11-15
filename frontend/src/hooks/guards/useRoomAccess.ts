@@ -13,24 +13,26 @@ const useRoomAccess = (roomId: string) => {
   const toast = useToast();
 
   useEffect(() => {
-    authorizedAxios.get(`${BE_API.collaboration.room}/${roomId}/acceess`, {
-      data: {
-        userId: identity.id
-      },
-    }).then(res => {
-      console.log('user has access rights')
-    }).catch(err => {
-      console.log("user does not have access to room");
-      toast({
-        title: "Insufficient permissions",
+    authorizedAxios
+      .get(`${BE_API.collaboration.room}/${roomId}/acceess`, {
+        data: {
+          userId: identity.id,
+        },
+      })
+      .then((res) => {
+        console.log("user has access rights");
+      })
+      .catch((err) => {
+        console.log("user does not have access to room");
+        toast({
+          title: "Insufficient permissions",
           description: "You do not have the necessary permissions to view this page.",
           status: "error",
           duration: 5000,
           isClosable: true,
-      })
-      router.push("/dashboard");
-      
-    })
+        });
+        router.push("/dashboard");
+      });
   }, [roomId]);
 
   // This hook doesn't return anything, as it's only responsible for side effects
