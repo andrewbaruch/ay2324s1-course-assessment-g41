@@ -3,7 +3,10 @@ import * as BroadcastController from "@/controllers/broadcast-controller";
 
 class BroadcastRouter implements Extension {
   async onAuthenticate(data: onAuthenticatePayload) {
-    await BroadcastController.checkAuthForUser(data)
+    console.log("THIS IS THE AUTH PATH");
+    console.log("REQUEST HEADERS", data.requestHeaders);
+    console.log("REQUEST PARAMS", data.requestParameters);
+    // await BroadcastController.checkAuthForUser(data)
   }
 
   /**
